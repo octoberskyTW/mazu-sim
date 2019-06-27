@@ -1,0 +1,39 @@
+/************************TRICK HEADER*************************
+PURPOSE:
+    (This S_define works with the RUN_analytic input file)
+LIBRARY DEPENDENCIES:
+    (
+    )
+*************************************************************/
+
+#include "sim_objects/default_trick_sys.sm"
+//##include "hello.h"
+
+class SDTSimObject : public Trick::SimObject {
+
+    public:
+
+        double int_step = 0.05;
+        double send_delay = 0.005;
+        void trick_heartbeat(void) {
+            char date_buf[80];
+            char currentTime[84] = "";
+            static struct timespec ts;
+            uint32_t milli;
+            clock_gettime(CLOCK_MONOTONIC, &ts);
+            ts.tv_sec = time(NULL);
+            milli = ts.tv_nsec / 1000000;
+            strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
+            snprintf(currentTime, sizeof(currentTime), "%s.%03d", date_buf, milli);
+            fprintf(stderr, "[%s] sim_time = %f\n", currentTime, exec_get_sim_time());
+        };
+
+        SDTSimObject()
+        {
+        	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
+            P1 (1, "scheduled") trick_heartbeat();
+            //P1 (1, "scheduled") say_hello();
+        }
+} ;
+
+SDTSimObject dyn ;
