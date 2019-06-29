@@ -22,7 +22,7 @@ trick-build: modules_build
 modules_build:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module-build $(SIM_MODULES_PATH)
 run:
-	cd $(SIM_EXE_TRICK_PATH); echo "I'm in exe/HIL/sdt_sample_code/"; \
+	cd sim_exe/HIL/sdt_sample_code/; echo "I'm in exe/HIL/sdt_sample_code/"; \
 	./S_main_Linux_7_x86_64.exe RUN_test/input.cpp
 
 clean:
