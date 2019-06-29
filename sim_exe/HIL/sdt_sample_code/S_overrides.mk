@@ -1,5 +1,4 @@
 
-MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 TOP_HOME = $(shell TOP_HOME=Unable_To_Find_Top_Dir; \
 				CUR_DIR=$$(pwd); \
 				while [ "$$CUR_DIR" != "/" ]; \
@@ -11,7 +10,6 @@ TOP_HOME = $(shell TOP_HOME=Unable_To_Find_Top_Dir; \
 				done;\
 				echo $$TOP_HOME)
 
-$(info MKFILE_PATH = $(MKFILE_PATH))
 $(info TOP_HOME = $(TOP_HOME))
 
 INCLUDES = ${TOP_HOME}/modules/hello_world
