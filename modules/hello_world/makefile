@@ -1,6 +1,5 @@
 
-
-hello:
+build-target:
 	gcc -fPIC -shared -o libhello.so hello.c
 
 clean:
