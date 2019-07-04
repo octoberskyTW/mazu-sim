@@ -46,30 +46,28 @@ echo "INFO: $top_dir"
 echo "INFO: $build_system_mode"
 shift 2
 # Loop for all MODULES 
-for var in "$@" 
-    do
-    echo "Compiling $var" 
+
+file_list=( "$@" )
+for var in "${file_list[@]}"
+do
+    echo "Compiling $var"
     target_dir=$var
-    case "$build_system_mode" in
+    case $build_system_mode in
         trick-build)
-            do_local_trick_cp $target_dir
-            break
+            do_local_trick_cp $var
             ;;
         trick-clean)
-            do_local_trick_cp_clean $target_dir $top_dir
-            break
+            do_local_trick_cp_clean $var $top_dir
             ;;
         module-build)
-            do_local_make $target_dir
-            break
+            do_local_make $var
             ;;
         module-clean)
-            do_local_clean $target_dir
-            break
+            do_local_clean $var
             ;;
 
-        *) echo "$build_system : unknow."
+        *) echo "$build_system : unknown."
     esac
     error_code=$? 
     if [ $error_code -ne 0 ]; then exit $error_code; fi 
-done 
+done
