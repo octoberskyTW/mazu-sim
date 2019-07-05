@@ -12,7 +12,7 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 TARGET=libringbuffer.a
 
 # FLAGS
-CFLAGS = -Wall -g -MD -save-temps
+CFLAGS = -Wall -g -MD -save-temps -fPIC
 CFLAGS += -I.
 LDFLAGS =
 
@@ -30,7 +30,9 @@ $(TARGET): $(OBJECTS)
 
 -include $(OBJECTS:.o=.d)
 
-
+test: $(TARGET) $(C_SOURCES) tests/tests_ringbuffer.cpp
+	g++ -Wall -g tests/tests_ringbuffer.cpp  $< -I. -o $@
+	./test
 .PHONY : clean
 clean:
 	find . -name "*.so" -type f -delete
@@ -39,3 +41,4 @@ clean:
 	find . -name "*.i" -type f -delete
 	find . -name "*.d" -type f -delete
 	find . -name "*.s" -type f -delete
+	find . -name "test" -type f -delete

@@ -13,12 +13,19 @@ struct ringbuffer_t {
     uint32_t ring_size;
     uint32_t full_cnt;
     pthread_mutex_t ring_lock;
-    void *pCell;
+    void **p_cell;
 };
 
-int  rb_init(struct ringbuffer_t *rb, uint32_t size);
-void rb_deinit(struct ringbuffer_t *rb);
-void rb_push(struct ringbuffer_t *rb, void *payload);
-void *rb_pop(struct ringbuffer_t *rb);
+#ifdef __cplusplus
+extern "C" {
+#endif
+int rb_init(struct ringbuffer_t *rb, size_t size);
+int rb_deinit(struct ringbuffer_t *rb);
+int rb_push(struct ringbuffer_t *rb, void *payload);
+int rb_pop(struct ringbuffer_t *rb, void **payload);
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif  //  __ringbuffer_h__
