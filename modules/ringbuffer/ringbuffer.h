@@ -7,13 +7,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <stdbool.h>
 struct ringbuffer_t {
     uint32_t head;
     uint32_t tail;
-    uint32_t ring_size;
+    uint32_t size;
     uint32_t full_cnt;
     pthread_mutex_t ring_lock;
-    void **p_cell;
+    void **p_data;
 };
 
 #ifdef __cplusplus
