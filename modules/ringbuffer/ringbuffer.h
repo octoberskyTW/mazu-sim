@@ -17,6 +17,11 @@ struct ringbuffer_t {
     void **p_data;
 };
 
+enum {
+    RB_ERROR = -1,
+    RB_SUCCESS = 0
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif

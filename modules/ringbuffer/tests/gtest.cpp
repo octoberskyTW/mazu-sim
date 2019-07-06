@@ -1,9 +1,11 @@
 #include "ringbuffer.c"
+#include "integration_test_cases.cpp"
 #include <gtest/gtest.h>
  
-TEST(Ringbuffer_rb_init_Test, PositiveNos) {
+TEST(ringbuffer_basic_test, PositiveNos) {
     struct ringbuffer_t rb;
-    ASSERT_EQ(0, rb_init(&rb,8));
+    ASSERT_EQ(0, ringbuffer_basic_test());
+    ASSERT_EQ(0, rb_init(&rb, 8));
 }
  
 int main(int argc, char **argv) {
