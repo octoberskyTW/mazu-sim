@@ -91,6 +91,3 @@ int rb_pop(struct ringbuffer_t *rb, void **payload)
     pthread_mutex_unlock(&rb->ring_lock);
     return rc;
 }
-
-
-

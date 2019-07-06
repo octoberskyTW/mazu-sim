@@ -1,6 +1,6 @@
 #include "ringbuffer.h"
 
-int main(int argc, char const *argv[])
+int ringbuffer_test(int argc, char const *argv[])
 {
     uint32_t idx = 0;
     struct ringbuffer_t rb;

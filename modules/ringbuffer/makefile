@@ -30,9 +30,14 @@ $(TARGET): $(OBJECTS)
 
 -include $(OBJECTS:.o=.d)
 
-test: $(TARGET) $(C_SOURCES) tests/tests_ringbuffer.cpp
-	g++ -Wall -g tests/tests_ringbuffer.cpp  $< -I. -o $@
-	./test
+test: $(TARGET) $(C_SOURCES)
+	mkdir -p build
+	cd build; cmake -S $(TOP_DIR)/modules/ringbuffer/tests/ ;\
+	make
+	./build/runTests
+
+#	g++ -Wall -g tests/tests_ringbuffer.cpp  $< -I. -o $@
+#	./test
 .PHONY : clean
 clean:
 	find . -name "*.so" -type f -delete
@@ -41,4 +46,4 @@ clean:
 	find . -name "*.i" -type f -delete
 	find . -name "*.d" -type f -delete
 	find . -name "*.s" -type f -delete
-	find . -name "test" -type f -delete
+	rm -rf build
