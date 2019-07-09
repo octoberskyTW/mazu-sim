@@ -1,5 +1,5 @@
-#ifndef __ringbuffer_h__ 
-#define __ringbuffer_h__
+#ifndef __RINGBUFFER_H__ 
+#define __RINGBUFFER_H__
 
 #include <stdint.h>
 #include <pthread.h>
@@ -34,4 +34,4 @@ int rb_pop(struct ringbuffer_t *rb, void **payload);
 #endif
 
 
-#endif  //  __ringbuffer_h__
+#endif  //  __RINGBUFFER_H__

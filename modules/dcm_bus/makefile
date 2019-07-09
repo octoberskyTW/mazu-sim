@@ -9,30 +9,31 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				    CUR_DIR=$$(dirname $$CUR_DIR); } \
 				done;\
 				echo $$TOP_DIR)
-TARGET=libringbuffer.a
-
+TARGET=libdcm_bus.a
+include $(TOP_DIR)/modules-path_var.mk
 # FLAGS
-CFLAGS = -Wall -g -MD -save-temps
-CFLAGS += -I.
+CXXFLAGS = -Wall -g -MD -save-temps
+CXXFLAGS += -I.
+CXXFLAGS += -I$(module_ringbuffer)
 LDFLAGS =
-
 # Source code
-C_SOURCES += $(TOP_DIR)/modules/ringbuffer/ringbuffer.c
-OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
+CPP_SOURCES += $(TOP_DIR)/modules/dcm_bus/dcm_bus.cpp
 
-all: $(TARGET) $(C_SOURCES)
+OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
-%.o: %.c %.h
-	$(CC) -c $(CFLAGS) -o $@ $<
+all: $(TARGET) $(CPP_SOURCES)
+
+%.o: %.cpp %.hh
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 $(TARGET): $(OBJECTS)
 	$(AR) rcs $@ $<
 
 -include $(OBJECTS:.o=.d)
 
-test: $(TARGET) $(C_SOURCES)
+test: $(TARGET) $(CPP_SOURCES)
 	mkdir -p build
-	cd build; cmake -S $(TOP_DIR)/modules/ringbuffer/tests/ ;\
+	cd build; cmake -S $(TOP_DIR)/modules/dcm_bus/tests/ ;\
 	make
 	./build/runTests
 
@@ -44,6 +45,7 @@ clean:
 	find . -name "*.a" -type f -delete
 	find . -name "*.o" -type f -delete
 	find . -name "*.i" -type f -delete
+	find . -name "*.ii" -type f -delete
 	find . -name "*.d" -type f -delete
 	find . -name "*.s" -type f -delete
 	rm -rf build
