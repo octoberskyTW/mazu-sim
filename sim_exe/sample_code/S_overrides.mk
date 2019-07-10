@@ -16,6 +16,7 @@ INCLUDES = -I${TOP_HOME}/modules/hello_world \
            -I${TOP_HOME}/modules/dcm_bus
 TRICK_USER_LINK_LIBS = -L${TOP_HOME}/modules/hello_world -lhello
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcm_bus -ldcm_bus
+TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/ringbuffer -lringbuffer
 TRICK_CXXFLAGS += ${INCLUDES}
 #TRICK_CFLAGS += ${INCLUDES} -g -D_GNU_SOURCE
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow

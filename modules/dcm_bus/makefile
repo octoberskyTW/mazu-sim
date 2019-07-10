@@ -26,7 +26,7 @@ all: $(TARGET) $(CPP_SOURCES)
 %.o: %.cpp %.hh
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
-$(TARGET): $(OBJECTS) $(module_ringbuffer)/ringbuffer.o
+$(TARGET): $(OBJECTS)
 	$(AR) rcs $@ $^
 
 -include $(OBJECTS:.o=.d)
