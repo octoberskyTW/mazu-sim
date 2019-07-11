@@ -13,9 +13,9 @@ TOP_HOME = $(shell TOP_HOME=Unable_To_Find_Top_Dir; \
 $(info TOP_HOME = $(TOP_HOME))
 
 INCLUDES = -I${TOP_HOME}/modules/hello_world \
-           -I${TOP_HOME}/modules/dcm_bus
+           -I${TOP_HOME}/modules/dcmbus
 TRICK_USER_LINK_LIBS = -L${TOP_HOME}/modules/hello_world -lhello
-TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcm_bus -ldcm_bus
+TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/ringbuffer -lringbuffer
 TRICK_CXXFLAGS += ${INCLUDES}
 #TRICK_CFLAGS += ${INCLUDES} -g -D_GNU_SOURCE

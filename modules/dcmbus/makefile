@@ -9,35 +9,35 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				    CUR_DIR=$$(dirname $$CUR_DIR); } \
 				done;\
 				echo $$TOP_DIR)
-TARGET=libdcm_bus.a
+TARGET=libdcmbus.a
 include $(TOP_DIR)/modules-path_var.mk
 # FLAGS
-CXXFLAGS = -Wall -g -MD -save-temps -fPIC
-CXXFLAGS += -I.
-CXXFLAGS += -I$(module_ringbuffer)
+CFLAGS = -Wall -g -MD -save-temps -fPIC
+CFLAGS += -I.
+CFLAGS += -I$(module_ringbuffer)
 LDFLAGS =
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/dcm_bus/dcm_bus.cpp
+C_SOURCES += $(TOP_DIR)/modules/dcmbus/dcmbus.c
 
-OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
+OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
 
-all: $(TARGET) $(CPP_SOURCES)
+all: $(TARGET) $(C_SOURCES)
 
-%.o: %.cpp %.hh
-	$(CXX) -c $(CXXFLAGS) -o $@ $<
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(TARGET): $(OBJECTS)
 	$(AR) rcs $@ $^
 
 -include $(OBJECTS:.o=.d)
 
-test: $(TARGET) $(CPP_SOURCES)
+test: $(TARGET) $(C_SOURCES)
 	mkdir -p build
-	cd build; cmake -S $(TOP_DIR)/modules/dcm_bus/tests/ ;\
+	cd build; cmake -S $(TOP_DIR)/modules/dcmbus/tests/ ;\
 	make
 	./build/runTests
 
-#	g++ -Wall -g tests/tests_ringbuffer.cpp  $< -I. -o $@
+#	g++ -Wall -g tests/tests_ringbuffer.c  $< -I. -o $@
 #	./test
 .PHONY : clean
 clean:

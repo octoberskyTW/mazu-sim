@@ -9,7 +9,7 @@ LIBRARY DEPENDENCIES:
 
 #include "sim_objects/default_trick_sys.sm"
 ##include "hello.h"
-##include "dcm_bus.hh"
+##include "dcmbus.h"
 
 class SDTSimObject : public Trick::SimObject {
 
@@ -33,7 +33,7 @@ class SDTSimObject : public Trick::SimObject {
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            ("initialization") dcm_bus_load_cfg();
+            ("initialization") dcmbus_load_cfg();
             P1 (1, "scheduled") trick_heartbeat();
             P1 (1, "scheduled") say_hello();
         }
