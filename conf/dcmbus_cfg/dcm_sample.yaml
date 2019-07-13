@@ -1,0 +1,18 @@
+fc_eth_channel:
+    - direction: TRX
+    - type: tcp_server
+    - role: socket
+    - info: { ipaddr: 127.0.0.1:8700 }
+    - blocking: false
+fc_can_channel:
+    - direction: RX
+    - type: can
+    - role: socket
+    - info: { ifname: can0}
+    - blocking: false
+ratetable_rs422_channel:
+    - direction: TX
+    - type: rs422
+    - role: dev_file
+    - info: {path:/dev/ttyAP0, baudrate:921600}
+    - blocking: false

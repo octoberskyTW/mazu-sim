@@ -12,7 +12,7 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 TARGET=libdcmbus.a
 include $(TOP_DIR)/modules-path_var.mk
 # FLAGS
-CFLAGS = -Wall -g -MD -save-temps -fPIC
+CFLAGS = -Wall -g -MD -save-temps -fPIC -std=c99 -pedantic -W -Werror
 CFLAGS += -I.
 CFLAGS += -I$(module_ringbuffer)
 LDFLAGS =

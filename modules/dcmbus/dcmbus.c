@@ -5,16 +5,16 @@ int dcmbus_load_cfg (void) {
     struct ringbuffer_t rb;
     rb_init(&rb, 128);
     rb_deinit(&rb);
-    printf("[dutsai] %s\n", __FUNCTION__);
+    printf("[dutsai] %s\n", __func__);
     return 0;
 }
 
 
 int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, int system_type) {
 
-    struct dcmbus_channel_t *dchannel;
-    struct dcmbus_driver_ops *drv_ops;
-    int idx;
+    //struct dcmbus_channel_t *dchannel;
+    //struct dcmbus_driver_ops *drv_ops;
+    //int idx;
 
     D->system_type = system_type;
 

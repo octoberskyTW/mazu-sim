@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include "dcmbus_driver.h"
-
+#include "list.h"
 typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
     DCMBUS_TCP_SERVER = 0x1,
     DCMBUS_TCP_CLIENT = 0x2,
@@ -20,18 +20,27 @@ typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
     DCMBUS_NULL_CHANNEL_TYPE
 }ENUM_DCMBUS_CHANNEL_TYPE;
 
+struct channel_cfg {
+    char name[16];
+    char direction[4]; //TX, RX, TRX
+    char role[16];     //socket, dev_file
+    char type[32];     //tcp_server, tcp_client ...
+    char ifname[128];
+    uint32_t options;
+    uint8_t blocking;
+};
+
 struct dcmbus_channel_t {
     int fd;
-    int channel_type;
-    char mode[16];
-    char channel_name[16];
-    void *drv_priv_data;
+    struct list_head list;
+    struct channel_cfg config;
     struct dcmbus_driver_ops *drv_ops;
+    void *drv_priv_data;
 };
 
 struct dcmbus_ctrlblk_t {
     int system_type;
-    struct dcmbus_channel_t *dcmbus_chan[16];
+    struct dcmbus_channel_t *dcmbus_list;
 };
 
 #ifdef __cplusplus

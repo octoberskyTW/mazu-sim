@@ -1,7 +1,8 @@
 #ifndef __DCMBUS_DRIVER_H__
 #define __DCMBUS_DRIVER_H__
+#include <sys/time.h>
 struct dcmbus_driver_ops {
-    int (*open_interface)(void **priv_data, char *ifname, int netport);
+    int (*open_interface)(void **priv_data, void *config);
     int (*recv_data)(void *priv_data, uint8_t *rx_buff, uint32_t buff_size);
     int (*send_data)(void *priv_data, uint8_t *payload, uint32_t frame_len);
     int (*header_set)(void *priv_data, const uint8_t *payload, const uint32_t data_len);
