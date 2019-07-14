@@ -1,7 +1,7 @@
 #ifndef __DCMBUS_UTILITY_H_
 #define __DCMBUS_UTILITY_H_
 #include "dcmbus_linux_header.h"
-#define ICF_DEBUG_ENABLE 0
+#define DCMBUS_DEBUG_ENABLE 0
 /* Must can devide by 8*/
 #define BILLION             1000000000L
 #define FTRACE_TIME_STAMP(id) do { syscall(id);} while (0)
@@ -23,7 +23,7 @@
 #define errExit(msg)    do { perror(msg); \
                              abort();} while (0)
 
-#define debug_print(...) do { if (ICF_DEBUG_ENABLE) \
+#define debug_print(...) do { if (DCMBUS_DEBUG_ENABLE) \
                                    fprintf(stderr, __VA_ARGS__);} while (0)
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #define PP_HTONS(x) ((uint16_t)((((x) & (uint16_t)0x00ffU) << 8) | (((x) & (uint16_t)0xff00U) >> 8)))
