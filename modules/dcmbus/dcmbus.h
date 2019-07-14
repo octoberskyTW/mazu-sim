@@ -38,7 +38,6 @@ struct dcmbus_ring_t {
 
 struct dcmbus_channel_t {
     struct list_head list;
-    int fd;
     struct channel_config conf;
     struct dcmbus_driver_ops *drv_ops;
     void *drv_priv_data;

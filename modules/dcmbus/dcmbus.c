@@ -16,10 +16,10 @@ static int dcmbus_channel_create(struct dcmbus_ctrlblk_t* D, int driver_idx) {
         goto error_malloc;
     item->drv_ops = dcmbus_drivers[driver_idx];
     list_add_tail(&item->list, &(D->channel_lhead));
-
+    return 0;
 error_malloc:
     fprintf(stderr, "[%s:%d] Allocate Fail\n", __func__, __LINE__);
-    return 0;
+    return -1;
 }
 
 int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, int system_type) {
