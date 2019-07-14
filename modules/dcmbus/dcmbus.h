@@ -4,6 +4,8 @@
 #include "linux_common.h"
 #include "dcmbus_driver_intf.h"
 #include "list.h"
+#include "ringbuffer.h"
+
 typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
     DCMBUS_TCP_SERVER = 0x1,
     DCMBUS_TCP_CLIENT = 0x2,

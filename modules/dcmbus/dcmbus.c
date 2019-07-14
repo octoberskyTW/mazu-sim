@@ -1,4 +1,3 @@
-#include "ringbuffer.h"
 #include "dcmbus.h"
 
 int dcmbus_load_cfg (void) {
