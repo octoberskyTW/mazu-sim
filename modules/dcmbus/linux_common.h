@@ -1,5 +1,5 @@
-#ifndef __DCMBUS_LINUX_HEADER_H__
-#define __DCMBUS_LINUX_HEADER_H__
+#ifndef __LINUX_COMMON_H__
+#define __LINUX_COMMON_H__
 
 #include <stdio.h>   /* Standard input/output definitions */
 #include <string.h>  /* String function definitions */
@@ -23,4 +23,4 @@
 #include <sys/select.h>
 #include <endian.h>
 #include <limits.h>
-#endif  //  __DCMBUS_LINUX_HEADER_H__
+#endif  //  __LINUX_COMMON_H__

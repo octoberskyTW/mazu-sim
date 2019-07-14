@@ -1,5 +1,4 @@
 #include "ethernet.h"
-#include <net/if.h>
 static int ethernet_tcp_socket_server(struct ethernet_device_info_t *dev_info, char *ifname, int net_port) {
     int err;
     int optval = 1; /* prevent from address being taken */
@@ -335,7 +334,7 @@ int ethernet_accept(void *priv_data) {
     return dev_info->client_fd;
 }
 
-struct dcmbus_driver_ops dcmbus_driver_ethernet_ops = {
+struct dcmbus_driver_ops dcmbus_driver_ethernet_tcp_ops = {
     .open_interface = ethernet_tcp_init,
     .recv_data = ethernet_data_recv,
     .send_data = ethernet_data_send,

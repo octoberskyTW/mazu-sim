@@ -1,6 +1,13 @@
 #ifndef __DCMBUS_DRIVER_INTF_H__
 #define __DCMBUS_DRIVER_INTF_H__
-#include "dcmbus_linux_header.h"
+#include "linux_common.h"
+
+enum {
+    DCMBUS_DRIVER_TCP = 0,
+    DCMBUS_DRIVER_UDP = 1,
+    DCMBUS_DRIVER_EMPTY
+};
+
 struct dcmbus_driver_ops {
     int (*open_interface)(void **priv_data, char *ifname, int netport);
     int (*recv_data)(void *priv_data, uint8_t *rx_buff, uint32_t buff_size);
@@ -19,6 +26,6 @@ struct dcmbus_driver_ops {
     int (*accept)(void *priv_data);
 };
 
-//extern struct dcm_driver_ops *dcm_drivers[];
+extern struct dcmbus_driver_ops *dcmbus_drivers[];
 
 #endif  //  __DCMBUS_DRIVER_INTF_H__

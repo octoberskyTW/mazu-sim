@@ -1,13 +1,7 @@
 #ifndef __DCMBUS_H__ 
 #define __DCMBUS_H__
 
-#include <stdint.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <stdbool.h>
+#include "linux_common.h"
 #include "dcmbus_driver_intf.h"
 #include "list.h"
 typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
@@ -32,9 +26,17 @@ struct channel_config {
     uint8_t blocking;
 };
 
-struct dcmbus_channel_t {
-    int fd;
+struct dcmbus_ring_t {
     struct list_head list;
+    uint8_t enable;
+    int queue_idx;
+    uint8_t direction;
+    struct ringbuffer_t data_ring;
+};
+
+struct dcmbus_channel_t {
+    struct list_head list;
+    int fd;
     struct channel_config conf;
     struct dcmbus_driver_ops *drv_ops;
     void *drv_priv_data;
@@ -42,7 +44,7 @@ struct dcmbus_channel_t {
 
 struct dcmbus_ctrlblk_t {
     int system_type;
-    struct dcmbus_channel_t *dcmbus_list;
+    struct list_head  channel_lhead;
 };
 
 #ifdef __cplusplus

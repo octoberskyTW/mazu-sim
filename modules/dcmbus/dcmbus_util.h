@@ -1,6 +1,6 @@
 #ifndef __DCMBUS_UTILITY_H_
 #define __DCMBUS_UTILITY_H_
-#include "dcmbus_linux_header.h"
+#include "linux_common.h"
 #define DCMBUS_DEBUG_ENABLE 0
 /* Must can devide by 8*/
 #define BILLION             1000000000L

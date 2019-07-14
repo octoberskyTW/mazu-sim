@@ -18,7 +18,8 @@ CFLAGS += -I$(module_ringbuffer)
 LDFLAGS =
 # Source code
 C_SOURCES += $(TOP_DIR)/modules/dcmbus/dcmbus.c \
-             $(TOP_DIR)/modules/dcmbus/ethernet.c
+             $(TOP_DIR)/modules/dcmbus/ethernet.c \
+             $(TOP_DIR)/modules/dcmbus/dcmbus_driver_intf.c
 
 
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))

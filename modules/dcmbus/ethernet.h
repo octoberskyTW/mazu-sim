@@ -1,8 +1,9 @@
 #ifndef __ETHERNET_H__
 #define __ETHERNET_H__
 #include "dcmbus_driver_intf.h"
-#include "dcmbus_linux_header.h"
 #include "dcmbus_util.h"
+#include "linux_common.h"
+
 struct ethernet_device_info_t {
     char ifname[IF_NAMESIZE];
     int server_enable;

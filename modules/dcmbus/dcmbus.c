@@ -10,15 +10,27 @@ int dcmbus_load_cfg (void) {
 }
 
 
+static int dcmbus_channel_create(struct dcmbus_ctrlblk_t* D, int driver_idx) {
+    struct dcmbus_channel_t *item = NULL;
+    item = (struct dcmbus_channel_t *) malloc(sizeof(*item));
+    if(!item)
+        goto error_malloc;
+    item->drv_ops = dcmbus_drivers[driver_idx];
+    list_add_tail(&item->list, &(D->channel_lhead));
+
+error_malloc:
+    fprintf(stderr, "[%s:%d] Allocate Fail\n", __func__, __LINE__);
+    return 0;
+}
+
 int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, int system_type) {
 
-    //struct dcmbus_channel_t *dchannel;
-    //struct dcmbus_driver_ops *drv_ops;
-    //int idx;
-
     D->system_type = system_type;
+    INIT_LIST_HEAD(&(D->channel_lhead));
 
-    // for (idx = 0; idx < get_arr_num(port_tbl_size, sizeof(struct dcmbus_channel_t)); idx++) {
+
+    dcmbus_channel_create(D, DCMBUS_DRIVER_TCP);
+    // for (idx = 0; idx < get_arr_num(port_tbl_size, sizeof(struct icf_ctrl_port)); idx++) {
     //     ctrlport = &which_port_tbl[idx];
     //     C->ctrlport[ctrlport->hw_port_idx] = ctrlport;
     //     ctrlport->drv_priv_ops = icf_drivers[icf_pidx_to_drivers_id(ctrlport->hw_port_idx, system_type)];
