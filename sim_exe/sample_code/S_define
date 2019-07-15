@@ -33,7 +33,7 @@ class SDTSimObject : public Trick::SimObject {
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            ("initialization") dcmbus_load_cfg();
+            ("initialization") dcmbus_load_channel_conf ("/home/jake/Workspace/mazu-sim/conf/dcmbus/dcm_sample.cfg");
             P1 (1, "scheduled") trick_heartbeat();
             P1 (1, "scheduled") say_hello();
         }

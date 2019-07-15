@@ -14,10 +14,12 @@ $(info TOP_HOME = $(TOP_HOME))
 
 INCLUDES = -I${TOP_HOME}/modules/hello_world \
            -I${TOP_HOME}/modules/dcmbus \
-           -I${TOP_HOME}/modules/ringbuffer
+           -I${TOP_HOME}/modules/ringbuffer \
+           -I${TOP_HOME}/modules/config_util
 TRICK_USER_LINK_LIBS = -L${TOP_HOME}/modules/hello_world -lhello
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/ringbuffer -lringbuffer
+TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/config_util -lconfig_util
 TRICK_CXXFLAGS += ${INCLUDES}
 #TRICK_CFLAGS += ${INCLUDES} -g -D_GNU_SOURCE
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow

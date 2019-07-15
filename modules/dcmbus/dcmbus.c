@@ -1,10 +1,21 @@
 #include "dcmbus.h"
 
-int dcmbus_load_cfg (void) {
-    struct ringbuffer_t rb;
-    rb_init(&rb, 128);
-    rb_deinit(&rb);
-    printf("[dutsai] %s\n", __func__);
+static struct channel_config g_channel_config[16];
+
+int dcmbus_load_channel_conf (const char *path) {
+    int numEntries,idx;
+    char specifier[] = "STRING:16 NUMBER:4 NUMBER:4 NUMBER:1";
+    memset(g_channel_config, 0, sizeof(g_channel_config));
+    read_config(g_channel_config, &numEntries, path, specifier);
+    printf("[%s] Entries: %d \n", __func__, numEntries);
+    printf("%16s %16s %16s %16s\n", "ifname", "netport", "options", "blocking");
+    for (idx = 0; idx < numEntries; ++idx) {
+        fprintf(stdout, "%16s %16d %16d %16d\n", 
+                                g_channel_config[idx].ifname, 
+                                g_channel_config[idx].netport,
+                                g_channel_config[idx].options,
+                                g_channel_config[idx].blocking);
+    }
     return 0;
 }
 

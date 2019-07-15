@@ -5,6 +5,7 @@
 #include "dcmbus_driver_intf.h"
 #include "list.h"
 #include "ringbuffer.h"
+#include "config_util.h"
 
 typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
     DCMBUS_TCP_SERVER = 0x1,
@@ -18,11 +19,11 @@ typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
 
 
 struct channel_config {
-    char name[16];
-    char direction[4]; //TX, RX, TRX
-    char role[16];     //socket, dev_file
-    char type[32];     //tcp_server, tcp_client ...
-    char ifname[128];
+    // char name[16];
+    // char direction[4]; //TX, RX, TRX
+    // char role[16];     //socket, dev_file
+    // char type[32];     //tcp_server, tcp_client ...
+    char ifname[16];
     int netport;
     uint32_t options;
     uint8_t blocking;
@@ -38,7 +39,7 @@ struct dcmbus_ring_t {
 
 struct dcmbus_channel_t {
     struct list_head list;
-    struct channel_config conf;
+    struct channel_config *conf;
     struct dcmbus_driver_ops *drv_ops;
     void *drv_priv_data;
 };
@@ -51,7 +52,7 @@ struct dcmbus_ctrlblk_t {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    int dcmbus_load_cfg(void);
+int dcmbus_load_channel_conf (const char *path);
 #ifdef __cplusplus
 }
 #endif

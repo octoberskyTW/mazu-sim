@@ -14,7 +14,8 @@ include $(TOP_DIR)/modules-path_var.mk
 # FLAGS
 CFLAGS = -Wall -g -MD -save-temps -fPIC -std=c99 -pedantic -W -Werror
 CFLAGS += -I.
-CFLAGS += -I$(module_ringbuffer)
+CFLAGS += -I$(module_ringbuffer) \
+          -I$(module_config_util)
 LDFLAGS =
 # Source code
 C_SOURCES += $(TOP_DIR)/modules/dcmbus/dcmbus.c \
