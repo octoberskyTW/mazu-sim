@@ -10,6 +10,7 @@ LIBRARY DEPENDENCIES:
 #include "sim_objects/default_trick_sys.sm"
 ##include "hello.h"
 ##include "dcmbus.h"
+##include <libgen.h>
 
 class SDTSimObject : public Trick::SimObject {
 
@@ -17,23 +18,36 @@ class SDTSimObject : public Trick::SimObject {
 
         double int_step = 0.05;
         double send_delay = 0.005;
+        void get_exe_path(void) {
+            char path[500] = {0};
+            int dest_len = 500;
+            if (readlink ("/proc/self/exe", path, dest_len) != -1)
+            {
+                dirname(path);
+                strcat(path, "/");
+                printf("path=%s\n", path);
+            }
+        };
         void trick_heartbeat(void) {
             char date_buf[80];
             char currentTime[84] = "";
             static struct timespec ts;
             uint32_t milli;
+            char name[] = "TRICK_HOME";
             clock_gettime(CLOCK_MONOTONIC, &ts);
             ts.tv_sec = time(NULL);
             milli = ts.tv_nsec / 1000000;
             strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
             snprintf(currentTime, sizeof(currentTime), "%s.%03d", date_buf, milli);
             fprintf(stderr, "[%s] sim_time = %f\n", currentTime, exec_get_sim_time());
+            fprintf(stderr, "TRICK_HOME: %s\n", get_trick_env(name));
+            get_exe_path();
         };
 
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            ("initialization") dcmbus_load_channel_conf ("/home/jake/Workspace/mazu-sim/conf/dcmbus/dcm_sample.cfg");
+            ("initialization") dcmbus_load_channel_conf ("dcm_sample.cfg");
             P1 (1, "scheduled") trick_heartbeat();
             P1 (1, "scheduled") say_hello();
         }

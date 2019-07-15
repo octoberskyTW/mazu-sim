@@ -24,8 +24,10 @@ modules_build:
 
 run-sample_code:
 	cd $(TOP_DIR)/sim_exe/sample_code;\
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_sample.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_sample.cfg ;\
 	./S_main_*.exe RUN_test/input.cpp
 
 clean:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module-clean $(SIM_MODULES_PATH)
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick-clean $(SIM_EXE_TRICK_PATH)
+	rm $(TOP_DIR)/sim_exe/sample_code/dcm_sample.cfg 
