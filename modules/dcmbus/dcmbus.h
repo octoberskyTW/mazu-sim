@@ -17,19 +17,22 @@ typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
     DCMBUS_NULL_CHANNEL_TYPE
 }ENUM_DCMBUS_CHANNEL_TYPE;
 
-
+#define CHANNEL_SPECIFIER     "STRING:16 NUMBER:1 STRING:4 STRING:16 STRING:32 NUMBER:4 NUMBER:4 NUMBER:1 NUMBER:4"
+#define CHANNEL_FIELDS_NAME   "ch_name", "enable", "direction", "type", "ifname", "netport", "driver_idx", "blocking", "options"
+#define CHANNEL_PRINTF_FORMAT "%16s %16d %16s %16s %16s %16d %16d %16d %16d\n"
 struct channel_config {
-    // char name[16];
-    // char direction[4]; //TX, RX, TRX
-    // char role[16];     //socket, dev_file
-    // char type[32];     //tcp_server, tcp_client ...
-    char ifname[16];
+    char ch_name[16];
+    uint8_t enable;
+    char direction[4]; //TX, RX, TRX
+    char type[16];     //socket, devfile
+    char ifname[32];
     int netport;
-    uint32_t options;
+    int driver_idx;
     uint8_t blocking;
-};
+    uint32_t options;
+}__attribute__ ((packed));
 
-struct dcmbus_ring_t {
+struct dcmbus_ring_blk_t {
     struct list_head list;
     uint8_t enable;
     int queue_idx;
@@ -37,9 +40,12 @@ struct dcmbus_ring_t {
     struct ringbuffer_t data_ring;
 };
 
-struct dcmbus_channel_t {
+struct dcmbus_channel_blk_t {
+    uint8_t enable;
+    char ch_name[16];
     struct list_head list;
-    struct channel_config *conf;
+    char ifname[32];
+    int netport;
     struct dcmbus_driver_ops *drv_ops;
     void *drv_priv_data;
 };
@@ -52,7 +58,7 @@ struct dcmbus_ctrlblk_t {
 #ifdef __cplusplus
 extern "C" {
 #endif
-int dcmbus_load_channel_conf (const char *path);
+int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, const char *path, int system_type);
 #ifdef __cplusplus
 }
 #endif

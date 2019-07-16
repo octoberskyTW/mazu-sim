@@ -2,10 +2,10 @@
 #define __DCMBUS_DRIVER_INTF_H__
 #include "linux_common.h"
 
-enum {
-    DCMBUS_DRIVER_TCP = 0,
-    DCMBUS_DRIVER_UDP = 1,
-    DCMBUS_DRIVER_EMPTY
+enum DCMBUS_DRIVER_ENUMS {
+    DRIVER_TCP = 0,
+    DRIVER_UDP = 1,
+    DRIVER_EMPTY
 };
 
 struct dcmbus_driver_ops {

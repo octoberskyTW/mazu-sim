@@ -15,7 +15,7 @@ LIBRARY DEPENDENCIES:
 class SDTSimObject : public Trick::SimObject {
 
     public:
-
+        struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
         double send_delay = 0.005;
         void get_exe_path(void) {
@@ -47,7 +47,7 @@ class SDTSimObject : public Trick::SimObject {
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            ("initialization") dcmbus_load_channel_conf ("dcm_sample.cfg");
+            ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_sample.cfg", 0);
             P1 (1, "scheduled") trick_heartbeat();
             P1 (1, "scheduled") say_hello();
         }
