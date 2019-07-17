@@ -28,6 +28,7 @@ static int dcmbus_load_channel_conf(const char *path) {
 static int dcmbus_channel_create(struct dcmbus_ctrlblk_t* D, struct channel_config* conf) {
     struct dcmbus_channel_blk_t *item = NULL;
     item = (struct dcmbus_channel_blk_t *) malloc(sizeof(*item));
+    memset(item, 0, sizeof(*item));
     if(!item)
         goto error_malloc;
     item->drv_ops = dcmbus_drivers[conf->driver_idx];
@@ -46,8 +47,9 @@ int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, const char *path, int system
 
     int num_channels;
     int idx, rc = 0;
+    struct dcmbus_channel_blk_t *item = NULL, *is = NULL;
     D->system_type = system_type;
-    INIT_LIST_HEAD(&(D->channel_lhead));
+    INIT_LIST_HEAD(&D->channel_lhead);
 
     num_channels = dcmbus_load_channel_conf(path);
     for (idx = 0; idx < num_channels; ++idx) {
@@ -55,14 +57,12 @@ int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, const char *path, int system
             fprintf(stderr, "[%s:%d] Channel %d create fail !!\n", __func__, __LINE__, idx);
         }
     }
-    // for (idx = 0; idx < get_arr_num(port_tbl_size, sizeof(struct icf_ctrl_port)); idx++) {
-    //     ctrlport = &which_port_tbl[idx];
-    //     C->ctrlport[ctrlport->hw_port_idx] = ctrlport;
-    //     ctrlport->drv_priv_ops = icf_drivers[icf_pidx_to_drivers_id(ctrlport->hw_port_idx, system_type)];
-    //     drv_ops = ctrlport->drv_priv_ops;
-    //     if (ctrlport->enable == 0)
-    //         continue;
-    //     drv_ops->open_interface(&ctrlport->drv_priv_data, ctrlport->ifname, ctrlport->netport);
-    // }
+
+    list_for_each_entry_safe(item, is, &D->channel_lhead, list) {
+        if (item->enable) {
+            printf("%s: %s:%d\n", item->ch_name, item->ifname, item->netport);
+            item->drv_ops->open_interface(&item->drv_priv_data, item->ifname, item->netport);
+        }
+    }
     return 0;
 }
