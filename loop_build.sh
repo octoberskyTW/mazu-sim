@@ -4,6 +4,7 @@ function do_local_trick_cp(){
     local_dir=$1
     cd $local_dir
     echo "Compiling source codes in: $local_dir"
+    make clean
     trick-CP
     make_err=$?
     return $make_err 

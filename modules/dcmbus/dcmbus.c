@@ -7,7 +7,7 @@ static int dcmbus_load_channel_conf(const char *path) {
     char specifier[] = CHANNEL_SPECIFIER;
     memset(g_channel_config, 0, sizeof(g_channel_config));
     read_config(g_channel_config, &numEntries, path, specifier);
-    printf("[%s] Entries: %d \n", __func__, numEntries);
+    printf("Load Entries: %d \n", numEntries);
     printf("%16s %16s %16s %16s %16s %16s %16s %16s %16s\n", CHANNEL_FIELDS_NAME);
     for (idx = 0; idx < numEntries; ++idx) {
         fprintf(stdout, CHANNEL_PRINTF_FORMAT,
@@ -60,7 +60,7 @@ int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, const char *path, int system
 
     list_for_each_entry_safe(item, is, &D->channel_lhead, list) {
         if (item->enable) {
-            printf("%s: %s:%d\n", item->ch_name, item->ifname, item->netport);
+            printf("[%s] %s:%d\n", item->ch_name, item->ifname, item->netport);
             item->drv_ops->open_interface(&item->drv_priv_data, item->ifname, item->netport);
         }
     }
