@@ -50,6 +50,8 @@ class SDTSimObject : public Trick::SimObject {
             ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_sample.cfg", 0);
             P1 (1, "scheduled") trick_heartbeat();
             P1 (1, "scheduled") say_hello();
+            P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 4);
+            ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;
 

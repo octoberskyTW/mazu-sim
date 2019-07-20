@@ -1,4 +1,17 @@
 #include "ethernet.h"
+
+static void set_sock_non_block(int fd) {
+    int flags;
+    flags = fcntl(fd, F_GETFL, 0);
+    if (flags < 0) {
+        errExit("fcntl(F_GETFL) failed");
+
+    }
+    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
+        errExit("fcntl(F_SETFL) failed");
+    }
+}
+
 static int ethernet_tcp_socket_server(struct ethernet_device_info_t *dev_info, char *ifname, int net_port) {
     int err;
     int optval = 1; /* prevent from address being taken */
@@ -10,10 +23,12 @@ static int ethernet_tcp_socket_server(struct ethernet_device_info_t *dev_info, c
     dev_info->server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     dev_info->server_addr.sin_port = htons(net_port);
     err = setsockopt(dev_info->server_fd, SOL_SOCKET,  SO_REUSEADDR, &optval, sizeof(int));
+    
     if (err < 0) {
         close(dev_info->server_fd);
         errExit("ethernet_tcp_socket_server: setsockopt() failed");
     }
+    //set_sock_non_block(dev_info->server_fd);
 
     err = bind(dev_info->server_fd, (struct sockaddr *)&dev_info->server_addr, sizeof(dev_info->server_addr));
     if (err < 0) {

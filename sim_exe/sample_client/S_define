@@ -18,6 +18,7 @@ class SDTSimObject : public Trick::SimObject {
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
         double send_delay = 0.005;
+        int data = 5566;
         void get_exe_path(void) {
             char path[500] = {0};
             int dest_len = 500;
@@ -47,6 +48,8 @@ class SDTSimObject : public Trick::SimObject {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
             ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client.cfg", 0);
             P1 (1, "scheduled") trick_heartbeat();
+            P1 (1, "scheduled") dcmbus_tx_direct(&dcmbus_obj, "fsw-egse", &data, 4);
+            ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;
 

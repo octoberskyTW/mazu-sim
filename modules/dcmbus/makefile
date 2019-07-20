@@ -12,7 +12,8 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 TARGET=libdcmbus.a
 include $(TOP_DIR)/modules-path_var.mk
 # FLAGS
-CFLAGS = -Wall -g -MD -save-temps -fPIC -std=c99 -pedantic -W -Werror
+CFLAGS = -Wall -g -MD -save-temps -fPIC -std=c99 -pedantic -W -Werror -D _GNU_SOURCE
+CFLAGS += -Wno-unused-function
 CFLAGS += -I.
 CFLAGS += -I$(module_ringbuffer) \
           -I$(module_config_util)
@@ -20,7 +21,8 @@ LDFLAGS =
 # Source code
 C_SOURCES += $(TOP_DIR)/modules/dcmbus/dcmbus.c \
              $(TOP_DIR)/modules/dcmbus/ethernet.c \
-             $(TOP_DIR)/modules/dcmbus/dcmbus_driver_intf.c
+             $(TOP_DIR)/modules/dcmbus/dcmbus_driver_intf.c \
+             $(TOP_DIR)/modules/dcmbus/dcmbus_util.c
 
 
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
