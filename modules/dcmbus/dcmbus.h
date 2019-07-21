@@ -51,6 +51,7 @@ struct dcmbus_ring_blk_t {
 
 struct dcmbus_channel_blk_t {
     uint8_t enable;
+    uint8_t blocking;
     int type;
     char ch_name[16];
     struct list_head list;

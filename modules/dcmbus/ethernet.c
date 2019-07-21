@@ -1,15 +1,18 @@
 #include "ethernet.h"
 
-static void set_sock_non_block(int fd) {
-    int flags;
+static int set_sock_non_block(int fd) {
+    int flags, rc = 0;
     flags = fcntl(fd, F_GETFL, 0);
     if (flags < 0) {
-        errExit("fcntl(F_GETFL) failed");
+        fprintf(stderr, "fcntl(F_GETFL) failed");
+        rc = -1;
 
     }
     if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
-        errExit("fcntl(F_SETFL) failed");
+        fprintf(stderr, "fcntl(F_SETFL) failed");
+        rc = -1;
     }
+    return rc;
 }
 
 static int ethernet_tcp_socket_server(struct ethernet_device_info_t *dev_info, char *ifname, int net_port) {
@@ -17,6 +20,7 @@ static int ethernet_tcp_socket_server(struct ethernet_device_info_t *dev_info, c
     int optval = 1; /* prevent from address being taken */
     if ((dev_info->server_fd = socket(AF_INET , SOCK_STREAM , 0)) < 0) {
         fprintf(stderr, "[%s:%d] Socket create fail. status: %s\n", __func__, __LINE__, strerror(errno));
+        errExit("ethernet_tcp_socket_server: socket() failed");
     }
     memset(&dev_info->server_addr, 0, sizeof(dev_info->server_addr));
     dev_info->server_addr.sin_family = AF_INET;
@@ -25,33 +29,56 @@ static int ethernet_tcp_socket_server(struct ethernet_device_info_t *dev_info, c
     err = setsockopt(dev_info->server_fd, SOL_SOCKET,  SO_REUSEADDR, &optval, sizeof(int));
     
     if (err < 0) {
-        close(dev_info->server_fd);
-        errExit("ethernet_tcp_socket_server: setsockopt() failed");
+        fprintf(stderr, "[%s:%d] setsockopt() failed. status: %s\n", __func__, __LINE__, strerror(errno));
+        goto error;
     }
-    //set_sock_non_block(dev_info->server_fd);
+#if 0
+    err = set_sock_non_block(dev_info->server_fd);
+    if (err < 0) {
+        fprintf(stderr, "[%s:%d] set_sock_non_block failed. status: %s\n", __func__, __LINE__, strerror(errno));
+        goto error;
+    }
+#endif
+    dev_info->set = calloc(1, sizeof(fd_set));
+    if (dev_info->set == NULL) {
+        fprintf(stderr, "[%s:%d] fd_set Memory allocate fail. status: %s\n", __func__, __LINE__, strerror(errno));
+        goto error;
+    }
 
     err = bind(dev_info->server_fd, (struct sockaddr *)&dev_info->server_addr, sizeof(dev_info->server_addr));
     if (err < 0) {
-        close(dev_info->server_fd);
-        errExit("ethernet_tcp_socket_server: bind() failed");
+        fprintf(stderr, "[%s:%d] bind() failed. status: %s\n", __func__, __LINE__, strerror(errno));
+        goto error;
     }
 
     err = listen(dev_info->server_fd, 5);
     if (err < 0) {
-        close(dev_info->server_fd);
-        errExit("ethernet_tcp_socket_server: listen() failed");
+        fprintf(stderr, "[%s:%d] listen() failed. status: %s\n", __func__, __LINE__, strerror(errno));
+        goto error;
     }
 
     dev_info->client_addr_len = sizeof(dev_info->client_addr);
-    fprintf(stderr, "ethernet_tcp_socket_server: Waiting for the client ...\n");
-    dev_info->client_fd = accept(dev_info->server_fd, (struct sockaddr*) &(dev_info->client_addr), (socklen_t*)&dev_info->client_addr_len);
-    if (dev_info->client_fd < 0) {
-        fprintf(stderr, "ethernet_tcp_socket_server: Accept Fail ... %s:%d\n", ifname, net_port);
-        goto error;
+    fprintf(stderr, "Waiting for the client ...\n");
+    while(1) {
+        dev_info->client_fd = accept(dev_info->server_fd, (struct sockaddr*) &(dev_info->client_addr), (socklen_t*)&dev_info->client_addr_len);
+        if (dev_info->client_fd < 0) {
+            if ( (errno == EAGAIN) || (errno == EWOULDBLOCK) ) {
+                continue;
+            } else {
+                fprintf(stderr, "[%s:%d] Accept Fail ... %s:%d. status: %s\n", __func__, __LINE__, ifname, net_port, strerror(errno));
+                goto error;
+            }
+        }
+        break;
     }
-    fprintf(stderr, "ethernet_tcp_socket_server: Accept on ... %s:%d\n", ifname, net_port);
+    fprintf(stderr, "Accept on ... %s:%d\n", ifname, net_port);
+
     return 0;
 error:
+    if (dev_info->set) {
+        free(dev_info->set);
+        dev_info->set = NULL;
+    }
     return -1;
 }
 
@@ -251,7 +278,7 @@ int ethernet_data_recv(void *priv_data, uint8_t *rx_buff, uint32_t buff_size) {
 
     while (offset < buff_size) {
         if ((rdlen = recv(dev_info->client_fd, rx_buff + offset, buff_size - offset, 0)) < 0) {
-            if (errno == EINTR) {
+            if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) {
                 rdlen = 0;
             } else {
                 fprintf(stderr, "%s: %s\n", __func__, strerror(errno));

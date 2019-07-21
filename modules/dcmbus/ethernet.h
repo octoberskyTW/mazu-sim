@@ -14,6 +14,7 @@ struct ethernet_device_info_t {
     int client_addr_len;
     uint32_t header_size;
     int sock_type;
+    fd_set *set;
 };
 
 #endif  // __ETHERNET_H__

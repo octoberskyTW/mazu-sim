@@ -54,6 +54,7 @@ static int dcmbus_channel_create(struct dcmbus_ctrlblk_t* D, struct channel_conf
     item->netport = conf->netport;
     item->enable = conf->enable;
     item->type = dcmbus_get_channel_type_enum(conf->type);
+    item->blocking = conf->blocking;
     list_add_tail(&item->list, &(D->channel_lhead));
     return 0;
 error_malloc:
