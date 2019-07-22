@@ -21,6 +21,6 @@ TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/ringbuffer -lringbuffer
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/config_util -lconfig_util
 TRICK_CXXFLAGS += ${INCLUDES}
-#TRICK_CFLAGS += ${INCLUDES} -g -D_GNU_SOURCE
+TRICK_CFLAGS += ${INCLUDES}
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow
 MAKEFLAGS += -j16
