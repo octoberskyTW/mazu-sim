@@ -23,13 +23,15 @@ modules_build:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module-build $(SIM_MODULES_PATH)
 
 run-sample_code:
-	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_sample.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_sample.cfg
-	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_channel.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_channel.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_ring.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_ring.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_ring.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_ring.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_channel.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_channel.cfg
 	./run_sim.sh $(TOP_DIR)
 
 clean:
-	rm -f $(TOP_DIR)/sim_exe/sample_code/dcm_sample.cfg
-	rm -f $(TOP_DIR)/sim_exe/sample_client/dcm_client.cfg
+	rm -f $(TOP_DIR)/sim_exe/sample_code/*.cfg
+	rm -f $(TOP_DIR)/sim_exe/sample_client/*.cfg
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module-clean $(SIM_MODULES_PATH)
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick-clean $(SIM_EXE_TRICK_PATH)
 	

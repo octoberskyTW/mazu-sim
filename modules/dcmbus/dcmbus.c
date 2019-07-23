@@ -2,24 +2,40 @@
 #include "dcmbus_util.h"
 
 static struct channel_config g_channel_config[8];
-
+static struct ring_config g_ring_config[16];
 static struct channel_type_enum_t chan_type_enum_tbl[]= {
     {DCMBUS_SOCKET_ETH, "socket_eth"},
     {DCMBUS_SOCKET_CAN, "socket_can"},
     {DCMBUS_DEV_RS422,  "dev_rs422"}
 };
 
+static int dcmbus_load_ring_conf(const char *path) {
+    int numEntries,idx;
+    char specifier[] = RING_SPECIFIER;
+    memset(g_ring_config, 0, sizeof(g_ring_config));
+    read_config(g_ring_config, &numEntries, path, specifier);
+    printf("Load ring Entries: %d \n", numEntries);
+    printf("%16s %16s %16s %16s\n", RING_FIELDS_NAME);
+    for (idx = 0; idx < numEntries; ++idx) {
+        fprintf(stdout, RING_PRINTF_FORMAT,
+                        g_ring_config[idx].name,
+                        g_ring_config[idx].enable,
+                        g_ring_config[idx].direction,
+                        g_ring_config[idx].ring_size);
+    }
+    return numEntries;
+}
 
 static int dcmbus_load_channel_conf(const char *path) {
     int numEntries,idx;
     char specifier[] = CHANNEL_SPECIFIER;
     memset(g_channel_config, 0, sizeof(g_channel_config));
     read_config(g_channel_config, &numEntries, path, specifier);
-    printf("Load Entries: %d \n", numEntries);
+    printf("Load channel Entries: %d \n", numEntries);
     printf("%16s %16s %16s %16s %16s %16s %16s %16s %16s\n", CHANNEL_FIELDS_NAME);
     for (idx = 0; idx < numEntries; ++idx) {
         fprintf(stdout, CHANNEL_PRINTF_FORMAT,
-                        g_channel_config[idx].ch_name,
+                        g_channel_config[idx].name,
                         g_channel_config[idx].enable,
                         g_channel_config[idx].direction,
                         g_channel_config[idx].type,
@@ -32,6 +48,8 @@ static int dcmbus_load_channel_conf(const char *path) {
     return numEntries;
 }
 
+
+
 static int dcmbus_get_channel_type_enum(const char *type_name) {
     int rc = 0;
     int idx;
@@ -42,14 +60,31 @@ static int dcmbus_get_channel_type_enum(const char *type_name) {
     }
     return rc;
 }
+
+static int dcmbus_ring_create(struct dcmbus_ctrlblk_t* D, struct ring_config* conf) {
+    struct dcmbus_ring_blk_t *item = NULL;
+    item = (struct dcmbus_ring_blk_t *) malloc(sizeof(*item));
+    if(!item)
+        goto error_malloc;
+    memset(item, 0, sizeof(*item));
+    strncpy(item->name, conf->name, 16);
+    item->enable = conf->enable;
+    item->ring_size = conf->ring_size;
+    list_add_tail(&item->list, &(D->ring_lhead));
+    return 0;
+error_malloc:
+    fprintf(stderr, "[%s:%d] Allocate Fail\n", __func__, __LINE__);
+    return -1;
+}
+
 static int dcmbus_channel_create(struct dcmbus_ctrlblk_t* D, struct channel_config* conf) {
     struct dcmbus_channel_blk_t *item = NULL;
     item = (struct dcmbus_channel_blk_t *) malloc(sizeof(*item));
-    memset(item, 0, sizeof(*item));
     if(!item)
         goto error_malloc;
+    memset(item, 0, sizeof(*item));
     item->drv_ops = dcmbus_drivers[conf->driver_idx];
-    strncpy(item->ch_name, conf->ch_name, 16);
+    strncpy(item->name, conf->name, 16);
     strncpy(item->ifname, conf->ifname, 16);
     item->netport = conf->netport;
     item->enable = conf->enable;
@@ -62,15 +97,36 @@ error_malloc:
     return -1;
 }
 
-int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, const char *path, int system_type) {
+int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D,
+                        const char *path_ring,
+                        const char *path_chan,
+                        int system_type) {
 
+    int num_rings;
     int num_channels;
     int idx, rc = 0;
+    struct dcmbus_ring_blk_t *item_r = NULL, *is_r = NULL;
     struct dcmbus_channel_blk_t *item = NULL, *is = NULL;
+    
     D->system_type = system_type;
     INIT_LIST_HEAD(&D->channel_lhead);
+    INIT_LIST_HEAD(&D->ring_lhead);
+    
+    num_rings = dcmbus_load_ring_conf(path_ring);
+    for (idx = 0; idx < num_rings; ++idx) {
+        if ((rc = dcmbus_ring_create(D, &g_ring_config[idx])) < 0) {
+            fprintf(stderr, "[%s:%d] Ring %d create fail !!\n", __func__, __LINE__, idx);
+        }
+    }
 
-    num_channels = dcmbus_load_channel_conf(path);
+    list_for_each_entry_safe(item_r, is_r, &D->ring_lhead, list) {
+        if (item_r->enable) {
+            rb_init(&item_r->data_ring, item_r->ring_size);
+        }
+    }
+
+
+    num_channels = dcmbus_load_channel_conf(path_chan);
     for (idx = 0; idx < num_channels; ++idx) {
         if ((rc = dcmbus_channel_create(D, &g_channel_config[idx])) < 0) {
             fprintf(stderr, "[%s:%d] Channel %d create fail !!\n", __func__, __LINE__, idx);
@@ -79,7 +135,6 @@ int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, const char *path, int system
 
     list_for_each_entry_safe(item, is, &D->channel_lhead, list) {
         if (item->enable) {
-            printf("[%s] %s:%d\n", item->ch_name, item->ifname, item->netport);
             item->drv_ops->open_interface(&item->drv_priv_data, item->ifname, item->netport);
         }
     }
@@ -88,10 +143,19 @@ int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D, const char *path, int system
 
 int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D) {
     struct dcmbus_channel_blk_t *item = NULL, *is = NULL;
+    struct dcmbus_ring_blk_t *item_r = NULL, *is_r = NULL;
+    list_for_each_entry_safe(item_r, is_r, &D->ring_lhead, list) {
+        if (item->enable) {
+            printf("[Ring] %s Closed\n", item->name);
+            rb_deinit(&item_r->data_ring);
+        }
+        list_del(&item->list);
+        free(item);
+    }
 
     list_for_each_entry_safe(item, is, &D->channel_lhead, list) {
         if (item->enable) {
-            printf("[%s] %s Closed\n", item->ch_name, item->ifname);
+            printf("[Channel] %s %s Closed\n", item->name, item->ifname);
             item->drv_ops->close_interface(&item->drv_priv_data);
         }
         list_del(&item->list);
@@ -144,7 +208,7 @@ empty:
 }
 
 
-int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *ch_name, int raw_size) {
+int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *name, int raw_size) {
     struct timeval tv;
     int rc = 0;
     struct dcmbus_channel_blk_t *item = NULL, *is = NULL;
@@ -153,7 +217,7 @@ int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *ch_name, int r
     tv.tv_sec = 0;
     tv.tv_usec = 100;
     list_for_each_entry_safe(item, is, &D->channel_lhead, list) {
-        if (item->enable && strcmp(item->ch_name, ch_name) == 0) {
+        if (item->enable && strcmp(item->name, name) == 0) {
             drv_ops = item->drv_ops;
             switch (item->type) {
                 case DCMBUS_SOCKET_CAN:
@@ -185,8 +249,63 @@ int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *ch_name, int r
     return rc;
 }
 
+#if 0
+int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t* D, const char *name, const char *name) {
+    // int rc = 0;
+    // uint8_t *tx_buffer = NULL;
+    // struct ringbuffer_cell_t *txcell = NULL;
+    // struct ringbuffer_t *whichring = NULL;
+    // struct icf_ctrl_queue *ctrlqueue = C->ctrlqueue[qidx];
+    // struct icf_ctrl_port *ctrlport = C->ctrlqueue[qidx]->port;
+    // struct icf_driver_ops *drv_ops = ctrlport->drv_priv_ops;
+    // uint32_t out_frame_size;
+    // uint32_t offset = 0;
+    // whichring = &ctrlqueue->data_ring;
+    // txcell = (uint8_t *)rb_pop(whichring);
+    // if (txcell) {
+    //     out_frame_size = txcell->frame_full_size;
+    //     if (ctrlport->drv_priv_data == NULL) {
+    //         icf_free_mem(&txcell->l2frame);
+    //         icf_free_mem(&txcell);
+    //         return ICF_STATUS_SUCCESS;
+    //     }
+    //     // if (drv_ops->get_header_size) {
+    //     //     out_frame_size += drv_ops->get_header_size(ctrlport->drv_priv_data);
+    //     // }
+    //     tx_buffer = icf_alloc_mem(out_frame_size);
 
-int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *ch_name, void *payload, uint32_t size) {
+    //     // if (drv_ops->get_header_size(ctrlport->drv_priv_data)) {
+    //     //     drv_ops->header_set(ctrlport->drv_priv_data, (uint8_t *) txcell->l2frame, txcell->frame_full_size);
+    //     //     offset += drv_ops->header_copy(ctrlport->drv_priv_data, tx_buffer);
+    //     // }
+    //     memcpy(tx_buffer + offset, (uint8_t *) txcell->l2frame, txcell->frame_full_size);
+    //     icf_free_mem(&txcell->l2frame);
+    //     icf_free_mem(&txcell);
+    //     drv_ops->send_data(ctrlport->drv_priv_data, tx_buffer, out_frame_size);
+    //     debug_hex_dump("icf_tx_ctrl_job", tx_buffer, out_frame_size);
+    //     icf_free_mem(&tx_buffer);
+    // }
+    // return ICF_STATUS_SUCCESS;
+    return 0;
+}
+
+int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t* D, const char *name, void *payload, uint32_t size) {
+//     struct icf_ctrl_queue *ctrlqueue = C->ctrlqueue[qidx];
+//     struct ringbuffer_cell_t *rxcell = NULL;
+//     rxcell = (struct ringbuffer_cell_t *)rb_pop(&ctrlqueue->data_ring);
+//     if (rxcell == NULL)
+//         goto empty;
+//     memcpy(payload, rxcell->l2frame, size);
+//     icf_free_mem(&rxcell->l2frame);
+//     icf_free_mem(&rxcell);
+//     debug_hex_dump("icf_rx_dequeue", payload, size);
+//     return 1;
+// empty:
+     return 0;
+}
+#endif
+
+int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *name, void *payload, uint32_t size) {
     uint8_t *tx_buffer = NULL;
     uint32_t frame_full_size;
     uint32_t offset = 0;
@@ -198,7 +317,7 @@ int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *ch_name, void *payl
     //     frame_full_size += drv_ops->get_header_size(ctrlport->drv_priv_data);
     // }
     list_for_each_entry_safe(item, is, &D->channel_lhead, list) {
-        if (item->enable && strcmp(item->ch_name, ch_name) == 0) {
+        if (item->enable && strcmp(item->name, name) == 0) {
             drv_ops = item->drv_ops;
             tx_buffer = dcmbus_alloc_mem(frame_full_size);
             memcpy(tx_buffer + offset, (uint8_t *) payload, size);
@@ -217,3 +336,4 @@ int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *ch_name, void *payl
 
     return 0;
 }
+
