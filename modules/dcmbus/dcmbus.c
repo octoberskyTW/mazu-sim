@@ -4,7 +4,7 @@
 static struct channel_config g_channel_config[8];
 static struct ring_config g_ring_config[16];
 static struct bind_config g_bind_config[32];
-static struct channel_type_enum_t chan_type_enum_tbl[]= {
+static struct channel_type_enum_t chan_type_enum_tbl[] = {
     {DCMBUS_SOCKET_ETH, "socket_eth"},
     {DCMBUS_SOCKET_CAN, "socket_can"},
     {DCMBUS_DEV_RS422,  "dev_rs422"}
@@ -64,14 +64,16 @@ static int dcmbus_load_channel_conf(const char *path) {
 static int dcmbus_load_bind_conf(const char *path) {
     int numEntries,idx;
     char specifier[] = BIND_SPECIFIER;
+
     memset(g_bind_config, 0, sizeof(g_bind_config));
     read_config(g_bind_config, &numEntries, path, specifier);
     printf("Load Bind Entries: %d \n", numEntries);
-    printf("%16s %16s\n", BIND_FIELDS_NAME);
+    printf("%16s %16s %16s\n", BIND_FIELDS_NAME);
     for (idx = 0; idx < numEntries; ++idx) {
         fprintf(stdout, BIND_PRINTF_FORMAT,
+                        g_bind_config[idx].ring,
                         g_bind_config[idx].channel,
-                        g_bind_config[idx].ring);
+                        g_bind_config[idx].direction);
     }
     return numEntries;
 }
@@ -87,35 +89,73 @@ static int dcmbus_get_channel_type_enum(const char *type_name) {
     return rc;
 }
 
-static int dcmbus_bind_operation(struct list_head *in_head, int num_binds, uint8_t is_ring, const char *name) {
+static int dcmbus_bind_ring(struct list_head *in_head,
+                            int num_binds,
+                            const char *ch_name,
+                            const char *dir) {
     int idx;
-    struct dcmbus_bind_entry_t *item = NULL, *is_b = NULL;
-    char *target_str = NULL;
+    struct dcmbus_bind_entry_t *bind_item = NULL, *is_b = NULL;
 
     INIT_LIST_HEAD(in_head);
     for(idx = 0; idx < num_binds; ++idx) {
-        target_str = (char *)(is_ring ? &g_bind_config[idx].ring : &g_bind_config[idx].channel);
-        if(strcmp(target_str, name) == 0) {
-            item = (struct dcmbus_bind_entry_t *) malloc(sizeof(*item));
-            if(!item)
+        if((strcmp(g_bind_config[idx].channel, ch_name) == 0) && strcmp(g_bind_config[idx].direction, dir)) {
+            bind_item = (struct dcmbus_bind_entry_t *) malloc(sizeof(*bind_item));
+            if(!bind_item)
                 goto error_bind;
-            list_add_tail(&item->list, in_head);
+            strcpy(bind_item->name.ring, g_bind_config[idx].ring);
+            if (strcmp(dir, "TX") == 0) {
+                bind_item->dir = DCMBUS_DIR_TX;
+            } else {
+                bind_item->dir = DCMBUS_DIR_RX;
+            }
+            list_add_tail(&bind_item->list, in_head);
         }
     }
     return 0;
 error_bind:
-    list_for_each_entry_safe(item, is_b, in_head, list) {
-        list_del(&item->list);
-        dcmbus_free_mem((void **)&item);
+    list_for_each_entry_safe(bind_item, is_b, in_head, list) {
+        list_del(&bind_item->list);
+        dcmbus_free_mem((void **)&bind_item);
+    }
+    return -1;
+}
+
+static int dcmbus_bind_channel(struct list_head *in_head,
+                               int num_binds,
+                              const char *rg_name,
+                              const char *dir) {
+    int idx;
+    struct dcmbus_bind_entry_t *bind_item = NULL, *is_b = NULL;
+
+    INIT_LIST_HEAD(in_head);
+    for(idx = 0; idx < num_binds; ++idx) {
+        if((strcmp(g_bind_config[idx].ring, rg_name) == 0) && strcmp(g_bind_config[idx].direction, dir)) {
+            bind_item = (struct dcmbus_bind_entry_t *) malloc(sizeof(*bind_item));
+            if(!bind_item)
+                goto error_bind;
+            strcpy(bind_item->name.channel, g_bind_config[idx].channel);
+            if (strcmp(dir, "TX") == 0) {
+                bind_item->dir = DCMBUS_DIR_TX;
+            } else {
+                bind_item->dir = DCMBUS_DIR_RX;
+            }
+            list_add_tail(&bind_item->list, in_head);
+        }
+    }
+    return 0;
+error_bind:
+    list_for_each_entry_safe(bind_item, is_b, in_head, list) {
+        list_del(&bind_item->list);
+        dcmbus_free_mem((void **)&bind_item);
     }
     return -1;
 }
 
 static int dcmbus_bind_deinit(struct list_head *in_head) {
-    struct dcmbus_bind_entry_t *item = NULL, *is_b = NULL;
-    list_for_each_entry_safe(item, is_b, in_head, list) {
-        list_del(&item->list);
-        dcmbus_free_mem((void **)&item);
+    struct dcmbus_bind_entry_t *bind_item = NULL, *is_b = NULL;
+    list_for_each_entry_safe(bind_item, is_b, in_head, list) {
+        list_del(&bind_item->list);
+        dcmbus_free_mem((void **)&bind_item);
     }
     return 0;
 }
@@ -135,7 +175,8 @@ static int dcmbus_channel_create(struct dcmbus_ctrlblk_t* D,
     item->type = dcmbus_get_channel_type_enum(conf->type);
     item->blocking = conf->blocking;
     /*Bind operation*/
-    dcmbus_bind_operation(&item->bind_lhead, D->num_binds, 0, item->ch_name);
+    dcmbus_bind_ring(&item->txbind_lhead, D->num_binds, item->ch_name, "TX");
+    dcmbus_bind_ring(&item->rxbind_lhead, D->num_binds, item->ch_name, "RX");
 
     list_add_tail(&item->list, &(D->channel_lhead));
     return 0;
@@ -153,7 +194,8 @@ static int dcmbus_ring_create(struct dcmbus_ctrlblk_t* D, struct ring_config* co
     strncpy(item->rg_name, conf->rg_name, 16);
     item->enable = conf->enable;
     item->ring_size = conf->ring_size;
-    dcmbus_bind_operation(&item->bind_lhead, D->num_binds, 1, item->rg_name);
+    dcmbus_bind_channel(&item->txbind_lhead, D->num_binds, item->rg_name, "TX");
+    dcmbus_bind_channel(&item->rxbind_lhead, D->num_binds, item->rg_name, "RX");
     list_add_tail(&item->list, &(D->ring_lhead));
     return 0;
 error_malloc:
@@ -217,7 +259,8 @@ int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D) {
             printf("[Ring] %s Closed\n", item_r->rg_name);
             rb_deinit(&item_r->data_ring);
         }
-        dcmbus_bind_deinit(&item_r->bind_lhead);
+        dcmbus_bind_deinit(&item_r->txbind_lhead);
+        dcmbus_bind_deinit(&item_r->rxbind_lhead);
         list_del(&item_r->list);
         free(item_r);
     }
@@ -227,7 +270,8 @@ int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D) {
             printf("[Channel] %s %s Closed\n", item->ch_name, item->ifname);
             item->drv_ops->close_interface(&item->drv_priv_data);
         }
-        dcmbus_bind_deinit(&item->bind_lhead);
+        dcmbus_bind_deinit(&item->txbind_lhead);
+        dcmbus_bind_deinit(&item->rxbind_lhead);
         list_del(&item->list);
         free(item);
     }
@@ -254,6 +298,7 @@ static int dcmbus_l2frame_recv(struct dcmbus_channel_blk_t *item, int buff_size)
     if (drv_ops->recv_data(item->drv_priv_data, (uint8_t *)rxcell->l2frame, rxcell->frame_full_size) < 0)
         goto empty;
     debug_hex_dump("dcmbus_l2frame_recv", (uint8_t *)rxcell->l2frame, rxcell->frame_full_size);
+
     // qidx = icf_dispatch_rx_frame(C->system_type, rxcell->l2frame, ctrlport->hw_port_idx);
     // if (qidx == EGSE_EMPTY_SW_QIDX)
     //     goto empty;

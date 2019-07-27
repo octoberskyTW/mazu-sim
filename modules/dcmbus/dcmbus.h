@@ -20,6 +20,14 @@ struct channel_type_enum_t {
     char type_name[16];
 };
 
+
+typedef enum _ENUM_DCMBUS_DIR_TYPE {
+    DCMBUS_DIR_TX = 0x1,
+    DCMBUS_DIR_RX = 0x2,
+    DCMBUS_DIR_NONE
+}ENUM_DCMBUS_DIR_TYPE;
+
+
 #define CHANNEL_SPECIFIER     "STRING:16 NUMBER:1 STRING:4 STRING:16 STRING:16 NUMBER:4 NUMBER:4 NUMBER:1 NUMBER:4"
 #define CHANNEL_FIELDS_NAME   "ch_name", "enable", "direction", "type", "ifname", "netport", "driver_idx", "blocking", "options"
 #define CHANNEL_PRINTF_FORMAT "%16s %16d %16s %16s %16s %16d %16d %16d %16d\n"
@@ -48,13 +56,15 @@ struct ring_config {
 }__attribute__ ((packed));
 
 
-#define BIND_SPECIFIER     "STRING:16 STRING:16"
-#define BIND_FIELDS_NAME   "CHANNEL", "RING"
-#define BIND_PRINTF_FORMAT "%16s %16s\n"
+#define BIND_SPECIFIER     "STRING:16 STRING:16 STRING:4"
+#define BIND_FIELDS_NAME   "RING", "CHANNEL", "Direction"
+#define BIND_PRINTF_FORMAT "%16s %16s %16s\n"
 
 struct bind_config {
-    char channel[16];
     char ring[16];
+    char channel[16];
+    char direction[4]; //TX, RX
+
 }__attribute__ ((packed));
 
 struct dcmbus_header_t {
@@ -64,8 +74,11 @@ struct dcmbus_header_t {
 
 struct dcmbus_bind_entry_t {
     struct list_head list;
-    char channel[16];
-    char ring[16];
+    int dir;
+    union {
+        char channel[16];
+        char ring[16];
+    }name;
 };
 
 struct dcmbus_channel_blk_t {
@@ -78,7 +91,8 @@ struct dcmbus_channel_blk_t {
     int netport;
     struct dcmbus_driver_ops *drv_ops;
     void *drv_priv_data;
-    struct list_head bind_lhead;
+    struct list_head txbind_lhead;
+    struct list_head rxbind_lhead;
 
 };
 
@@ -88,7 +102,8 @@ struct dcmbus_ring_blk_t {
     char rg_name[16];
     int ring_size;
     struct ringbuffer_t data_ring;
-    struct list_head bind_lhead;
+    struct list_head txbind_lhead;
+    struct list_head rxbind_lhead;
 };
 
 struct dcmbus_ctrlblk_t {
@@ -114,8 +129,6 @@ int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *name, void *payload
 #ifdef __cplusplus
 }
 #endif
-
-
 
 
 #endif  //  __DCMBUS_H__
