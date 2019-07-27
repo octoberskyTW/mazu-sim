@@ -47,7 +47,7 @@ class SDTSimObject : public Trick::SimObject {
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg" , 0);
+            ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
             P1 (1, "scheduled") trick_heartbeat();
             P1 (1, "scheduled") say_hello();
             P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 4);
