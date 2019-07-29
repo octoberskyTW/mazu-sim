@@ -41,8 +41,14 @@ class SDTSimObject : public Trick::SimObject {
             snprintf(currentTime, sizeof(currentTime), "%s.%03d", date_buf, milli);
             fprintf(stderr, "[%s] sim_time = %f\n", currentTime, exec_get_sim_time());
             fprintf(stderr, "TRICK_HOME: %s\n", get_trick_env(name));
-            get_exe_path();
+            //get_exe_path();
         };
+
+        void data_recv(void) {
+            uint32_t data = 0;
+            dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &data);
+            fprintf(stderr, "Server dequeue: data = 0x%08x \n", data);
+        }
 
         SDTSimObject()
         {
@@ -51,6 +57,7 @@ class SDTSimObject : public Trick::SimObject {
             P1 (1, "scheduled") trick_heartbeat();
             P1 (1, "scheduled") say_hello();
             P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 4);
+            P1 (1, "scheduled") data_recv();
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;

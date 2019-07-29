@@ -13,6 +13,7 @@ int rb_init(struct ringbuffer_t *rb, size_t size) {
         goto exit;
     }
     rb->p_data = (void **)calloc(size, sizeof(void *));
+    fprintf(stdout, "[rb_init] rb: 0x%08x, rb->p_data 0x%08x\n", rb, rb->p_data);
     if (!rb->p_data) {
         rc = RB_ERROR;
         fprintf(stderr, "[%s:%d] Memory Allocate Fail\n", __FUNCTION__, __LINE__);

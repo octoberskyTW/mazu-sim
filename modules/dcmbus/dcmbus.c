@@ -89,67 +89,61 @@ static int dcmbus_get_channel_type_enum(const char *type_name) {
     return rc;
 }
 
-static int dcmbus_bind_ring(struct list_head *in_head,
-                            int num_binds,
-                            const char *ch_name,
-                            const char *dir) {
+static int dcmbus_bind_ring(struct dcmbus_ctrlblk_t* D, 
+                            struct dcmbus_channel_blk_t *ch_obj) {
     int idx;
-    struct dcmbus_bind_entry_t *bind_item = NULL, *is_b = NULL;
+    struct dcmbus_bind_entry_t  *bind_item = NULL,  *is_b = NULL;
+    struct dcmbus_ring_blk_t    *rg_iter   =  NULL, *is_rg = NULL;
+    INIT_LIST_HEAD(&ch_obj->txbind_lhead);
+    INIT_LIST_HEAD(&ch_obj->rxbind_lhead);
+    for(idx = 0; idx < D->num_binds; ++idx) {
+        if(strcmp(g_bind_config[idx].channel, ch_obj->ch_name) == 0) {
 
-    INIT_LIST_HEAD(in_head);
-    for(idx = 0; idx < num_binds; ++idx) {
-        if((strcmp(g_bind_config[idx].channel, ch_name) == 0) && strcmp(g_bind_config[idx].direction, dir)) {
             bind_item = (struct dcmbus_bind_entry_t *) malloc(sizeof(*bind_item));
-            if(!bind_item)
+            memset(bind_item, 0, sizeof(*bind_item));
+            if(!bind_item) {
+                fprintf(stderr, "%s:%d: ERROR Binding allocate memory fail.\n", __func__, __LINE__);
                 goto error_bind;
-            strcpy(bind_item->name.ring, g_bind_config[idx].ring);
-            if (strcmp(dir, "TX") == 0) {
+            }
+            strcpy(bind_item->ring, g_bind_config[idx].ring);
+            strcpy(bind_item->channel, g_bind_config[idx].channel);
+
+            if (strcmp(g_bind_config[idx].direction, "TX") == 0) {
                 bind_item->dir = DCMBUS_DIR_TX;
+                list_for_each_entry_safe(rg_iter, is_rg, &D->ring_lhead, list) {
+                    if((strcmp(bind_item->ring, rg_iter->rg_name) == 0) && (rg_iter->dir == DCMBUS_DIR_TX)) {
+                        bind_item->p_data_ring = &rg_iter->data_ring;
+                        fprintf(stderr, "Channel %s and TX Ring %s bind at 0x%p.\n", bind_item->channel, bind_item->ring, (void *)bind_item->p_data_ring);
+                        list_add_tail(&bind_item->list, &ch_obj->txbind_lhead);
+                    }
+                }
             } else {
                 bind_item->dir = DCMBUS_DIR_RX;
+                list_for_each_entry_safe(rg_iter, is_rg, &D->ring_lhead, list) {
+                    if((strcmp(bind_item->ring, rg_iter->rg_name) == 0) && (rg_iter->dir == DCMBUS_DIR_RX))  {
+                        bind_item->p_data_ring = &rg_iter->data_ring;
+                        fprintf(stderr, "Channel %s and RX Ring %s bind at 0x%p.\n", bind_item->channel, bind_item->ring, (void *)bind_item->p_data_ring);
+                        list_add_tail(&bind_item->list, &ch_obj->rxbind_lhead);
+                    }
+                }
             }
-            list_add_tail(&bind_item->list, in_head);
+            
         }
-    }
+        /*If ring not exists, need do error handling*/
+    }// for loop
     return 0;
 error_bind:
-    list_for_each_entry_safe(bind_item, is_b, in_head, list) {
+    list_for_each_entry_safe(bind_item, is_b, &ch_obj->rxbind_lhead, list) {
+        list_del(&bind_item->list);
+        dcmbus_free_mem((void **)&bind_item);
+    }
+    list_for_each_entry_safe(bind_item, is_b, &ch_obj->txbind_lhead, list) {
         list_del(&bind_item->list);
         dcmbus_free_mem((void **)&bind_item);
     }
     return -1;
 }
 
-static int dcmbus_bind_channel(struct list_head *in_head,
-                               int num_binds,
-                              const char *rg_name,
-                              const char *dir) {
-    int idx;
-    struct dcmbus_bind_entry_t *bind_item = NULL, *is_b = NULL;
-
-    INIT_LIST_HEAD(in_head);
-    for(idx = 0; idx < num_binds; ++idx) {
-        if((strcmp(g_bind_config[idx].ring, rg_name) == 0) && strcmp(g_bind_config[idx].direction, dir)) {
-            bind_item = (struct dcmbus_bind_entry_t *) malloc(sizeof(*bind_item));
-            if(!bind_item)
-                goto error_bind;
-            strcpy(bind_item->name.channel, g_bind_config[idx].channel);
-            if (strcmp(dir, "TX") == 0) {
-                bind_item->dir = DCMBUS_DIR_TX;
-            } else {
-                bind_item->dir = DCMBUS_DIR_RX;
-            }
-            list_add_tail(&bind_item->list, in_head);
-        }
-    }
-    return 0;
-error_bind:
-    list_for_each_entry_safe(bind_item, is_b, in_head, list) {
-        list_del(&bind_item->list);
-        dcmbus_free_mem((void **)&bind_item);
-    }
-    return -1;
-}
 
 static int dcmbus_bind_deinit(struct list_head *in_head) {
     struct dcmbus_bind_entry_t *bind_item = NULL, *is_b = NULL;
@@ -168,15 +162,14 @@ static int dcmbus_channel_create(struct dcmbus_ctrlblk_t* D,
         goto error_malloc;
     memset(item, 0, sizeof(*item));
     item->drv_ops = dcmbus_drivers[conf->driver_idx];
-    strncpy(item->ch_name, conf->ch_name, 16);
+    strcpy(item->ch_name, conf->ch_name);
     strncpy(item->ifname, conf->ifname, 16);
     item->netport = conf->netport;
     item->enable = conf->enable;
     item->type = dcmbus_get_channel_type_enum(conf->type);
     item->blocking = conf->blocking;
     /*Bind operation*/
-    dcmbus_bind_ring(&item->txbind_lhead, D->num_binds, item->ch_name, "TX");
-    dcmbus_bind_ring(&item->rxbind_lhead, D->num_binds, item->ch_name, "RX");
+    dcmbus_bind_ring(D, item);
 
     list_add_tail(&item->list, &(D->channel_lhead));
     return 0;
@@ -191,11 +184,14 @@ static int dcmbus_ring_create(struct dcmbus_ctrlblk_t* D, struct ring_config* co
     if(!item)
         goto error_malloc;
     memset(item, 0, sizeof(*item));
-    strncpy(item->rg_name, conf->rg_name, 16);
+    strcpy(item->rg_name, conf->rg_name);
     item->enable = conf->enable;
     item->ring_size = conf->ring_size;
-    dcmbus_bind_channel(&item->txbind_lhead, D->num_binds, item->rg_name, "TX");
-    dcmbus_bind_channel(&item->rxbind_lhead, D->num_binds, item->rg_name, "RX");
+    if (strcmp(conf->direction, "TX") == 0)
+        item->dir = DCMBUS_DIR_TX;
+    else
+        item->dir = DCMBUS_DIR_RX;
+
     list_add_tail(&item->list, &(D->ring_lhead));
     return 0;
 error_malloc:
@@ -259,8 +255,6 @@ int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D) {
             printf("[Ring] %s Closed\n", item_r->rg_name);
             rb_deinit(&item_r->data_ring);
         }
-        dcmbus_bind_deinit(&item_r->txbind_lhead);
-        dcmbus_bind_deinit(&item_r->rxbind_lhead);
         list_del(&item_r->list);
         free(item_r);
     }
@@ -282,6 +276,7 @@ int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D) {
 static int dcmbus_l2frame_recv(struct dcmbus_channel_blk_t *item, int buff_size) {
     struct dcmbus_header_t *rxcell = NULL;
     struct dcmbus_driver_ops *drv_ops = item->drv_ops;
+    struct dcmbus_bind_entry_t *bind_item = NULL, *is_b = NULL;
     int rc = 0;
 
     rxcell = dcmbus_alloc_mem(sizeof(struct dcmbus_header_t));
@@ -298,12 +293,10 @@ static int dcmbus_l2frame_recv(struct dcmbus_channel_blk_t *item, int buff_size)
     if (drv_ops->recv_data(item->drv_priv_data, (uint8_t *)rxcell->l2frame, rxcell->frame_full_size) < 0)
         goto empty;
     debug_hex_dump("dcmbus_l2frame_recv", (uint8_t *)rxcell->l2frame, rxcell->frame_full_size);
-
-    // qidx = icf_dispatch_rx_frame(C->system_type, rxcell->l2frame, ctrlport->hw_port_idx);
-    // if (qidx == EGSE_EMPTY_SW_QIDX)
-    //     goto empty;
-    // ctrlqueue = C->ctrlqueue[qidx];
-    // rb_push(&ctrlqueue->data_ring, rxcell);
+    
+    list_for_each_entry_safe(bind_item, is_b, &item->rxbind_lhead, list) {
+        rb_push(bind_item->p_data_ring, rxcell);
+    }
     return rc;
 empty:
     dcmbus_free_mem(&rxcell->l2frame);
@@ -332,9 +325,9 @@ int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *name, int raw_
                     if (rc < 0)
                         fprintf(stderr, "select error: %d\n", rc);
                     if (drv_ops->fd_isset(item->drv_priv_data)) {
+                        debug_print("[%lf] RX Received !!\n", get_curr_time());
                         if (dcmbus_l2frame_recv(item, raw_size) < 0)
                             break;
-                        debug_print("[%lf] RX Received !!\n", get_curr_time());
                     }
                     break;
                 case DCMBUS_SOCKET_ETH:
@@ -349,8 +342,30 @@ int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *name, int raw_
         }
         
     }
-
     return rc;
+}
+
+int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload) {
+    struct dcmbus_ring_blk_t *iter = NULL, *is = NULL;
+    struct dcmbus_header_t *rxcell = NULL;
+    int size = 0;
+    list_for_each_entry_safe(iter, is, &D->ring_lhead, list) {
+        if (strcmp(iter->rg_name, rg_name) == 0) {
+            rb_pop(&iter->data_ring, (void **)&rxcell);
+            break;
+        }
+    }
+
+    if (rxcell == NULL)
+        goto empty;
+    size = rxcell->frame_full_size;
+    memcpy(payload, rxcell->l2frame, size);
+    dcmbus_free_mem(&rxcell->l2frame);
+    dcmbus_free_mem((void **)&rxcell);
+    debug_hex_dump("dcmbus_ring_dequeue", payload, size);
+    return size;
+empty:
+    return 0;
 }
 
 #if 0

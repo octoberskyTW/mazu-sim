@@ -75,10 +75,9 @@ struct dcmbus_header_t {
 struct dcmbus_bind_entry_t {
     struct list_head list;
     int dir;
-    union {
-        char channel[16];
-        char ring[16];
-    }name;
+    char channel[16];
+    char ring[16];
+    struct ringbuffer_t *p_data_ring;
 };
 
 struct dcmbus_channel_blk_t {
@@ -101,9 +100,8 @@ struct dcmbus_ring_blk_t {
     uint8_t enable;
     char rg_name[16];
     int ring_size;
+    int dir;
     struct ringbuffer_t data_ring;
-    struct list_head txbind_lhead;
-    struct list_head rxbind_lhead;
 };
 
 struct dcmbus_ctrlblk_t {
@@ -126,6 +124,8 @@ int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D,
 int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D);
 int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *name, int raw_size);
 int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *name, void *payload, uint32_t size);
+
+int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload);
 #ifdef __cplusplus
 }
 #endif

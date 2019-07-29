@@ -18,7 +18,7 @@ class SDTSimObject : public Trick::SimObject {
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
         double send_delay = 0.005;
-        int data = 5566;
+        uint32_t data = 0x55667788;
         void get_exe_path(void) {
             char path[500] = {0};
             int dest_len = 500;
