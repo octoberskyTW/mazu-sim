@@ -43,12 +43,21 @@ class SDTSimObject : public Trick::SimObject {
             fprintf(stderr, "[Client %s] sim_time = %f\n", currentTime, exec_get_sim_time());
         };
 
+        void tx_collect(void) {
+            int say_hi = 0xaaaa5555;
+            dcmbus_ring_enqueue(&dcmbus_obj, "fsw_actuators", &say_hi, 4);
+        };
+
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
             ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
             P1 (1, "scheduled") trick_heartbeat();
+            P1 (1, "scheduled") tx_collect();
             P1 (1, "scheduled") dcmbus_tx_direct(&dcmbus_obj, "fsw-egse", &data, 4);
+            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+
+
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;

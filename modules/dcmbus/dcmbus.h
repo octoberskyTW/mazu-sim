@@ -123,9 +123,11 @@ int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D,
                         int system_type);
 int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D);
 int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *name, int raw_size);
+int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t* D, const char *ch_name);
 int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *name, void *payload, uint32_t size);
 
 int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload);
+int dcmbus_ring_enqueue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload, uint32_t size);
 #ifdef __cplusplus
 }
 #endif

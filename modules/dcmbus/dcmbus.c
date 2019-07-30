@@ -281,7 +281,7 @@ static int dcmbus_l2frame_recv(struct dcmbus_channel_blk_t *item, int buff_size)
 
     rxcell = dcmbus_alloc_mem(sizeof(struct dcmbus_header_t));
     if (rxcell == NULL) {
-        fprintf(stderr, "[%s:%d] dcmbus cell allocate fail!!\n", __func__, __LINE__);
+        fprintf(stderr, "[%s:%d] dcmbus rxcell allocate fail!!\n", __func__, __LINE__);
         goto empty;
     }
     rxcell->frame_full_size = buff_size;
@@ -345,6 +345,43 @@ int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *name, int raw_
     return rc;
 }
 
+int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t* D, const char *ch_name) {
+    struct dcmbus_channel_blk_t *iter = NULL, *is = NULL;
+    struct dcmbus_bind_entry_t *bind_iter = NULL, *is_b = NULL;
+    struct dcmbus_driver_ops *drv_ops = NULL;
+    struct dcmbus_header_t *txcell = NULL;
+    uint8_t *tx_buffer = NULL;
+    list_for_each_entry_safe(iter, is, &D->channel_lhead, list) {
+        drv_ops = iter->drv_ops;
+        if (iter->enable && strcmp(iter->ch_name, ch_name) == 0) {
+            list_for_each_entry_safe(bind_iter, is_b, &iter->txbind_lhead, list) {
+                rb_pop(bind_iter->p_data_ring, (void **)&txcell);
+                if (txcell) {
+                    if (iter->drv_priv_data == NULL) {
+                        fprintf(stderr, "iter->drv_priv_data: NULL !!! Fix it.\n");
+                        dcmbus_free_mem(&txcell->l2frame);
+                        dcmbus_free_mem((void **)&txcell);
+                        continue;
+                    }
+                    tx_buffer = dcmbus_alloc_mem(txcell->frame_full_size);
+                    if (!tx_buffer) {
+                        fprintf(stderr, " %s: Tx buffer allocate fail.\n", __func__);
+                        continue;
+                    }
+                    memcpy(tx_buffer, (uint8_t *) txcell->l2frame, txcell->frame_full_size);
+                    int out_frame_size = txcell->frame_full_size;
+                    dcmbus_free_mem(&txcell->l2frame);
+                    dcmbus_free_mem((void **)&txcell);
+                    drv_ops->send_data(iter->drv_priv_data, tx_buffer, out_frame_size);
+                    debug_hex_dump("dcmbus_channel_tx_job", tx_buffer, out_frame_size);
+                    dcmbus_free_mem((void **)&tx_buffer);
+                }
+            }// bind ring loop
+        }
+    }
+    return 0;
+}
+
 int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload) {
     struct dcmbus_ring_blk_t *iter = NULL, *is = NULL;
     struct dcmbus_header_t *rxcell = NULL;
@@ -368,61 +405,31 @@ empty:
     return 0;
 }
 
-#if 0
-int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t* D, const char *name, const char *name) {
-    // int rc = 0;
-    // uint8_t *tx_buffer = NULL;
-    // struct ringbuffer_cell_t *txcell = NULL;
-    // struct ringbuffer_t *whichring = NULL;
-    // struct icf_ctrl_queue *ctrlqueue = C->ctrlqueue[qidx];
-    // struct icf_ctrl_port *ctrlport = C->ctrlqueue[qidx]->port;
-    // struct icf_driver_ops *drv_ops = ctrlport->drv_priv_ops;
-    // uint32_t out_frame_size;
-    // uint32_t offset = 0;
-    // whichring = &ctrlqueue->data_ring;
-    // txcell = (uint8_t *)rb_pop(whichring);
-    // if (txcell) {
-    //     out_frame_size = txcell->frame_full_size;
-    //     if (ctrlport->drv_priv_data == NULL) {
-    //         icf_free_mem(&txcell->l2frame);
-    //         icf_free_mem(&txcell);
-    //         return ICF_STATUS_SUCCESS;
-    //     }
-    //     // if (drv_ops->get_header_size) {
-    //     //     out_frame_size += drv_ops->get_header_size(ctrlport->drv_priv_data);
-    //     // }
-    //     tx_buffer = icf_alloc_mem(out_frame_size);
 
-    //     // if (drv_ops->get_header_size(ctrlport->drv_priv_data)) {
-    //     //     drv_ops->header_set(ctrlport->drv_priv_data, (uint8_t *) txcell->l2frame, txcell->frame_full_size);
-    //     //     offset += drv_ops->header_copy(ctrlport->drv_priv_data, tx_buffer);
-    //     // }
-    //     memcpy(tx_buffer + offset, (uint8_t *) txcell->l2frame, txcell->frame_full_size);
-    //     icf_free_mem(&txcell->l2frame);
-    //     icf_free_mem(&txcell);
-    //     drv_ops->send_data(ctrlport->drv_priv_data, tx_buffer, out_frame_size);
-    //     debug_hex_dump("icf_tx_ctrl_job", tx_buffer, out_frame_size);
-    //     icf_free_mem(&tx_buffer);
-    // }
-    // return ICF_STATUS_SUCCESS;
+int dcmbus_ring_enqueue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload, uint32_t size) {
+    struct dcmbus_ring_blk_t *iter = NULL, *is = NULL;
+    struct dcmbus_header_t *txcell = NULL;
+    txcell = dcmbus_alloc_mem(sizeof(struct dcmbus_header_t));
+    if (txcell == NULL) {
+        fprintf(stderr, "[%s:%d] dcmbus txcell allocate fail!!\n", __func__, __LINE__);
+        goto empty;
+    }
+    txcell->frame_full_size = size;
+    txcell->l2frame = dcmbus_alloc_mem(txcell->frame_full_size);
+    if (txcell->l2frame == NULL) {
+        fprintf(stderr, "[%s:%d] dcmbus txcell->l2frame allocate fail!!\n", __func__, __LINE__);
+        goto empty;
+    }
+
+    memcpy(txcell->l2frame, (uint8_t *) payload, size);
+    list_for_each_entry_safe(iter, is, &D->ring_lhead, list) {
+        if (strcmp(iter->rg_name, rg_name) == 0) {
+            rb_push(&iter->data_ring, txcell);
+        }
+    }
+empty:
     return 0;
 }
-
-int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t* D, const char *name, void *payload, uint32_t size) {
-//     struct icf_ctrl_queue *ctrlqueue = C->ctrlqueue[qidx];
-//     struct ringbuffer_cell_t *rxcell = NULL;
-//     rxcell = (struct ringbuffer_cell_t *)rb_pop(&ctrlqueue->data_ring);
-//     if (rxcell == NULL)
-//         goto empty;
-//     memcpy(payload, rxcell->l2frame, size);
-//     icf_free_mem(&rxcell->l2frame);
-//     icf_free_mem(&rxcell);
-//     debug_hex_dump("icf_rx_dequeue", payload, size);
-//     return 1;
-// empty:
-     return 0;
-}
-#endif
 
 int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *name, void *payload, uint32_t size) {
     uint8_t *tx_buffer = NULL;
