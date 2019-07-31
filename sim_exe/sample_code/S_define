@@ -19,6 +19,8 @@ class SDTSimObject : public Trick::SimObject {
         double int_step = 0.05;
         double send_delay = 0.005;
         void get_exe_path(void) {
+            char name[] = "TRICK_HOME";
+            // fprintf(stderr, "TRICK_HOME: %s\n", get_trick_env(name));
             char path[500] = {0};
             int dest_len = 500;
             if (readlink ("/proc/self/exe", path, dest_len) != -1)
@@ -28,36 +30,47 @@ class SDTSimObject : public Trick::SimObject {
                 printf("path=%s\n", path);
             }
         };
-        void trick_heartbeat(void) {
+
+        void timestamp(char *currentTime) {
             char date_buf[80];
-            char currentTime[84] = "";
             static struct timespec ts;
             uint32_t milli;
-            char name[] = "TRICK_HOME";
             clock_gettime(CLOCK_MONOTONIC, &ts);
             ts.tv_sec = time(NULL);
             milli = ts.tv_nsec / 1000000;
             strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
-            snprintf(currentTime, sizeof(currentTime), "%s.%03d", date_buf, milli);
-            fprintf(stderr, "[%s] sim_time = %f\n", currentTime, exec_get_sim_time());
-            fprintf(stderr, "TRICK_HOME: %s\n", get_trick_env(name));
-            //get_exe_path();
+            snprintf(currentTime, 84, "%s.%03d", date_buf, milli);
+            //fprintf(stderr, "[%s] sim_time = %f\n", currentTime, exec_get_sim_time());
         };
 
-        void data_recv(void) {
-            uint32_t data = 0;
-            dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &data);
-            fprintf(stderr, "Server dequeue: data = 0x%08x \n", data);
+        void heart_beat(void) {
+            char currentTime[84] = "";
+            timestamp(currentTime);
+            fprintf(stderr, "[%s] Server sim_time = %f\n", currentTime, exec_get_sim_time());
+        };
+
+        void sever_loopback(void) {
+            char currentTime[84] = "";
+            uint64_t data = 0;
+            int size;
+            timestamp(currentTime);
+            size = dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &data);
+            if((size == sizeof(data)) && (data == 0xaa55aa5555aa55aa)) {
+                fprintf(stdout, "[%s] Server: Received\n",currentTime);
+                dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &data, sizeof(data));
+                return;
+            }
+            fprintf(stdout, "[%s] Server: Not Receive yet\n",currentTime);
         }
 
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
-            P1 (1, "scheduled") trick_heartbeat();
-            P1 (1, "scheduled") say_hello();
-            P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 4);
-            P1 (1, "scheduled") data_recv();
+            ("initialization")  dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
+            P1 (1, "scheduled") heart_beat();
+            P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
+            P1 (1, "scheduled") sever_loopback();
+            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;

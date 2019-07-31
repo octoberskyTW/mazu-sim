@@ -1,7 +1,7 @@
 #ifndef __DCMBUS_UTILITY_H_
 #define __DCMBUS_UTILITY_H_
 #include "linux_common.h"
-#define DCMBUS_DEBUG_ENABLE 1
+#define DCMBUS_DEBUG_ENABLE 0
 /* Must can devide by 8*/
 #define BILLION             1000000000L
 #define FTRACE_TIME_STAMP(id) do { syscall(id);} while (0)

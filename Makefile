@@ -22,13 +22,14 @@ trick-build: modules_build
 modules_build:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module-build $(SIM_MODULES_PATH)
 
-run-sample_code:
+conf_ready: 
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_channel.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_channel.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_ring.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_ring.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_bind.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_bind.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_ring.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_ring.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_channel.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_channel.cfg
-	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_bind.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_bind.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_bind.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_bind.cfg	
+run-sample_code: conf_ready
 	./run_sim.sh $(TOP_DIR)
 
 clean:
