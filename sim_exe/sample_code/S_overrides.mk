@@ -1,9 +1,9 @@
-
+SHELL=/bin/bash
 TOP_HOME = $(shell TOP_HOME=Unable_To_Find_Top_Dir; \
 				CUR_DIR=$$(pwd); \
 				while [ "$$CUR_DIR" != "/" ]; \
 				do { \
-					if [ -a $$CUR_DIR/.git ]; then \
+					if [ -a $$CUR_DIR/BOBI ]; then \
 					TOP_HOME=$$CUR_DIR; \
 					fi; \
 				    CUR_DIR=$$(dirname $$CUR_DIR); } \

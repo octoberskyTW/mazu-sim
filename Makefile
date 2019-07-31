@@ -3,7 +3,7 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				CUR_DIR=$$(pwd); \
 				while [ "$$CUR_DIR" != "/" ]; \
 				do { \
-					if [ -a $$CUR_DIR/.git ]; then \
+					if [ -a $$CUR_DIR/BOBI ]; then \
 					TOP_DIR=$$CUR_DIR; \
 					fi; \
 				    CUR_DIR=$$(dirname $$CUR_DIR); } \
