@@ -1,3 +1,4 @@
+
 SHELL=/bin/bash
 TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				CUR_DIR=$$(pwd); \
@@ -12,11 +13,16 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 
 $(info TOP_DIR = $(TOP_DIR))
 
+GIT_HOOK := .git/hooks/applied
+$(GIT_HOOK): scripts/install-git-hooks
+	@$<
+	@echo
+
 include $(TOP_DIR)/modules-path.mk
 include $(TOP_DIR)/sim_exe-path.mk
 
-all: trick-build
-
+all: trick-build $(GIT_HOOK)
+.DEFAULT_GOAL := all
 trick-build: modules_build
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick-build $(SIM_EXE_TRICK_PATH)
 modules_build:
