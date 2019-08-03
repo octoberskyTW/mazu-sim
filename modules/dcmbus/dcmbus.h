@@ -1,19 +1,19 @@
-#ifndef __DCMBUS_H__ 
+#ifndef __DCMBUS_H__
 #define __DCMBUS_H__
 
-#include "linux_common.h"
+#include "config_util.h"
 #include "dcmbus_driver_intf.h"
+#include "linux_common.h"
 #include "list.h"
 #include "ringbuffer.h"
-#include "config_util.h"
 
 typedef enum _ENUM_DCMBUS_CHANNEL_TYPE {
-    DCMBUS_EMPTY      = 0,
+    DCMBUS_EMPTY = 0,
     DCMBUS_SOCKET_ETH = 0x1,
-    DCMBUS_SOCKET_CAN= 0x2,
+    DCMBUS_SOCKET_CAN = 0x2,
     DCMBUS_DEV_RS422 = 0x3,
     DCMBUS_NULL_CHANNEL_TYPE
-}ENUM_DCMBUS_CHANNEL_TYPE;
+} ENUM_DCMBUS_CHANNEL_TYPE;
 
 struct channel_type_enum_t {
     int enumval;
@@ -25,47 +25,51 @@ typedef enum _ENUM_DCMBUS_DIR_TYPE {
     DCMBUS_DIR_TX = 0x1,
     DCMBUS_DIR_RX = 0x2,
     DCMBUS_DIR_NONE
-}ENUM_DCMBUS_DIR_TYPE;
+} ENUM_DCMBUS_DIR_TYPE;
 
 
-#define CHANNEL_SPECIFIER     "STRING:16 NUMBER:1 STRING:4 STRING:16 STRING:16 NUMBER:4 NUMBER:4 NUMBER:1 NUMBER:4"
-#define CHANNEL_FIELDS_NAME   "ch_name", "enable", "direction", "type", "ifname", "netport", "driver_idx", "blocking", "options"
+#define CHANNEL_SPECIFIER                                                \
+    "STRING:16 NUMBER:1 STRING:4 STRING:16 STRING:16 NUMBER:4 NUMBER:4 " \
+    "NUMBER:1 NUMBER:4"
+#define CHANNEL_FIELDS_NAME                                        \
+    "ch_name", "enable", "direction", "type", "ifname", "netport", \
+        "driver_idx", "blocking", "options"
 #define CHANNEL_PRINTF_FORMAT "%16s %16d %16s %16s %16s %16d %16d %16d %16d\n"
 
 struct channel_config {
     char ch_name[16];
     uint8_t enable;
-    char direction[4]; //TX, RX, TRX
-    char type[16];     //socket, devfile
+    char direction[4];  // TX, RX, TRX
+    char type[16];      // socket, devfile
     char ifname[16];
     int netport;
     int driver_idx;
     uint8_t blocking;
     uint32_t options;
-}__attribute__ ((packed));
+} __attribute__((packed));
 
-#define RING_SPECIFIER     "STRING:16 NUMBER:1 STRING:4 NUMBER:4"
-#define RING_FIELDS_NAME   "rg_name", "enable", "direction", "ring_size"
+#define RING_SPECIFIER "STRING:16 NUMBER:1 STRING:4 NUMBER:4"
+#define RING_FIELDS_NAME "rg_name", "enable", "direction", "ring_size"
 #define RING_PRINTF_FORMAT "%16s %16d %16s %16d\n"
 
 struct ring_config {
     char rg_name[16];
     uint8_t enable;
-    char direction[4]; //TX, RX
+    char direction[4];  // TX, RX
     int ring_size;
-}__attribute__ ((packed));
+} __attribute__((packed));
 
 
-#define BIND_SPECIFIER     "STRING:16 STRING:16 STRING:4"
-#define BIND_FIELDS_NAME   "RING", "CHANNEL", "Direction"
+#define BIND_SPECIFIER "STRING:16 STRING:16 STRING:4"
+#define BIND_FIELDS_NAME "RING", "CHANNEL", "Direction"
 #define BIND_PRINTF_FORMAT "%16s %16s %16s\n"
 
 struct bind_config {
     char ring[16];
     char channel[16];
-    char direction[4]; //TX, RX
+    char direction[4];  // TX, RX
 
-}__attribute__ ((packed));
+} __attribute__((packed));
 
 struct dcmbus_header_t {
     uint32_t frame_full_size;
@@ -92,7 +96,6 @@ struct dcmbus_channel_blk_t {
     void *drv_priv_data;
     struct list_head txbind_lhead;
     struct list_head rxbind_lhead;
-
 };
 
 struct dcmbus_ring_blk_t {
@@ -109,25 +112,27 @@ struct dcmbus_ctrlblk_t {
     int num_rings;
     int num_channels;
     int num_binds;
-    struct list_head  channel_lhead;
-    struct list_head  ring_lhead;
+    struct list_head channel_lhead;
+    struct list_head ring_lhead;
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t* D,
-                        const char *path_ring,
-                        const char *path_chan,
-                        const char *path_bind,
+int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t *D, const char *path_ring,
+                        const char *path_chan, const char *path_bind,
                         int system_type);
-int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t* D);
-int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t* D, const char *name, int raw_size);
-int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t* D, const char *ch_name);
-int dcmbus_tx_direct(struct dcmbus_ctrlblk_t* D, const char *name, void *payload, uint32_t size);
+int dcmbus_ctrlblk_deinit(struct dcmbus_ctrlblk_t *D);
+int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t *D, const char *name,
+                          int raw_size);
+int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t *D, const char *ch_name);
+int dcmbus_tx_direct(struct dcmbus_ctrlblk_t *D, const char *name,
+                     void *payload, uint32_t size);
 
-int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload);
-int dcmbus_ring_enqueue(struct dcmbus_ctrlblk_t* D, const char *rg_name, void *payload, uint32_t size);
+int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t *D, const char *rg_name,
+                        void *payload);
+int dcmbus_ring_enqueue(struct dcmbus_ctrlblk_t *D, const char *rg_name,
+                        void *payload, uint32_t size);
 #ifdef __cplusplus
 }
 #endif

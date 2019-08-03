@@ -1,13 +1,13 @@
-#ifndef __RINGBUFFER_H__ 
+#ifndef __RINGBUFFER_H__
 #define __RINGBUFFER_H__
 
-#include <stdint.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
+#include <pthread.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 struct ringbuffer_t {
     uint32_t head;
     uint32_t tail;
@@ -17,10 +17,7 @@ struct ringbuffer_t {
     void **p_data;
 };
 
-enum {
-    RB_ERROR = -1,
-    RB_SUCCESS = 0
-};
+enum { RB_ERROR = -1, RB_SUCCESS = 0 };
 
 #ifdef __cplusplus
 extern "C" {
