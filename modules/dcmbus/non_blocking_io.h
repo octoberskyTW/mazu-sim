@@ -21,7 +21,8 @@ struct non_blocking_io_info_t {
     int close_conn;
     struct timeval timeout;
     fd_set master_set;
-    fd_set working_set;
+    fd_set tx_working_set;
+    fd_set rx_working_set;
 };
 
 #endif  // __NON_BLOCKING_IO_H__

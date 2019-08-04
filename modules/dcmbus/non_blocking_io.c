@@ -66,7 +66,7 @@ static int non_blocking_tcp_sock_server(struct non_blocking_io_info_t *dev_info,
     FD_SET(dev_info->server_fd, &dev_info->master_set);
     dev_info->client_addr_len = sizeof(dev_info->client_addr);
     dev_info->timeout.tv_sec = 0;
-    dev_info->timeout.tv_usec = 100;
+    dev_info->timeout.tv_usec = 0;
     dev_info->end_server = FALSE;
 
     return 0;
@@ -225,9 +225,8 @@ int non_blocking_data_recv(void *priv_data,
     if (dev_info->end_server) {
         return rc;
     }
-    memcpy(&dev_info->working_set, &dev_info->master_set,
-           sizeof(dev_info->master_set));
-    rc = select(dev_info->max_sd + 1, &dev_info->working_set, NULL, NULL,
+    memcpy(&dev_info->rx_working_set, &dev_info->master_set, sizeof(dev_info->master_set));
+    rc = select(dev_info->max_sd + 1, &dev_info->rx_working_set, NULL, NULL,
                 &dev_info->timeout);
 
     if (rc < 0) {
@@ -236,7 +235,7 @@ int non_blocking_data_recv(void *priv_data,
     }
     dev_info->desc_ready = rc;
     for (ii = 0; ii <= dev_info->max_sd && dev_info->desc_ready > 0; ++ii) {
-        if (FD_ISSET(ii, &dev_info->working_set)) {
+        if (FD_ISSET(ii, &dev_info->rx_working_set)) {
             dev_info->desc_ready -= 1;
             if (ii == dev_info->server_fd) {
                 printf("  Listening socket is readable\n");
@@ -262,8 +261,7 @@ int non_blocking_data_recv(void *priv_data,
                 printf("  Descriptor %d is readable\n", ii);
                 dev_info->close_conn = FALSE;
                 while (offset < buff_size) {
-                    if ((rdlen = recv(ii, rx_buff + offset, buff_size - offset,
-                                      0)) < 0) {
+                    if ((rdlen = recv(ii, rx_buff + offset, buff_size - offset, 0)) < 0) {
                         if (errno == EAGAIN || errno == EWOULDBLOCK) {
                             rdlen = 0;
                         } else {
@@ -287,7 +285,7 @@ int non_blocking_data_recv(void *priv_data,
                     }
                 }
             } /* End of existing connection is readable */
-        }     /* End of if (FD_ISSET(i, &working_set)) */
+        }     /* End of if (FD_ISSET(i, &rx_working_set)) */
     }         /* End of loop through selectable descriptors */
     return offset;
 }
@@ -298,25 +296,80 @@ int non_blocking_data_send(void *priv_data,
 {
     uint32_t offset = 0;
     int32_t wdlen = 0;
+    int rc = 0, ii;
     struct non_blocking_io_info_t *dev_info = priv_data;
-    while (offset < frame_len) {
-        if ((wdlen = send(dev_info->client_fd, payload + offset,
-                          frame_len - offset, 0)) < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                wdlen = 0;
-            } else {
-                fprintf(stderr, "%s: %s\n", __func__, strerror(errno));
-                return -1;
-            }
-        }
-        offset += wdlen;
+
+    if (dev_info->end_server) {
+        return rc;
     }
+    memcpy(&dev_info->tx_working_set, &dev_info->master_set, sizeof(dev_info->master_set));
+    rc = select(dev_info->max_sd + 1, NULL, &dev_info->tx_working_set, NULL,
+                &dev_info->timeout);
+
+    if (rc < 0) {
+        fprintf(stderr, "select() failed: %d\n", rc);
+        return rc;
+    }
+    dev_info->desc_ready = rc;
+    for (ii = 0; ii <= dev_info->max_sd && dev_info->desc_ready > 0; ++ii) {
+        if (FD_ISSET(ii, &dev_info->tx_working_set)) {
+            dev_info->desc_ready -= 1;
+            if (ii == dev_info->server_fd) {
+                printf("  Listening socket is writeable\n");
+                do {
+                    dev_info->new_sd = accept(dev_info->server_fd, NULL, NULL);
+                    if (dev_info->new_sd < 0) {
+                        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                            break;
+                        } else {
+                            fprintf(stderr, "  accept() failed  %s\n",
+                                    strerror(errno));
+                            dev_info->end_server = TRUE;
+                            break;
+                        }
+                    }
+                    printf("  New incoming connection - %d\n",
+                           dev_info->new_sd);
+                    FD_SET(dev_info->new_sd, &dev_info->master_set);
+                    if (dev_info->new_sd > dev_info->max_sd)
+                        dev_info->max_sd = dev_info->new_sd;
+                } while (dev_info->new_sd != -1);
+            } else {
+                printf("  Descriptor %d is writeable\n", ii);
+                dev_info->close_conn = FALSE;
+                while (offset < frame_len) {
+                    if ((wdlen = send(ii, payload + offset, frame_len - offset, 0)) < 0) {
+                        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                            wdlen = 0;
+                        } else {
+                            fprintf(stderr, "%s: %s\n", __func__,
+                                    strerror(errno));
+                            dev_info->close_conn = TRUE;
+                            break;
+                        }
+                    } else if (wdlen == 0) {
+                        break;
+                    }
+                    offset += wdlen;
+                }
+                if (dev_info->close_conn) {
+                    close(ii);
+                    FD_CLR(ii, &dev_info->master_set);
+                    if (ii == dev_info->max_sd) {
+                        while (FD_ISSET(dev_info->max_sd,
+                                        &dev_info->master_set) == FALSE)
+                            dev_info->max_sd -= 1;
+                    }
+                }
+            } /* End of existing connection is readable */
+        }     /* End of if (FD_ISSET(i, &tx_working_set)) */
+    }         /* End of loop through selectable descriptors */
     return offset;
 }
 
 struct dcmbus_driver_ops dcmbus_driver_non_blocking_tcp_ops = {
     .open_interface = non_blocking_tcp_init,
     .recv_data = non_blocking_data_recv,
-    .send_data = NULL,
+    .send_data = non_blocking_data_send,
     .close_interface = non_blocking_deinit,
 };

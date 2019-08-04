@@ -48,7 +48,8 @@ class SDTSimObject : public Trick::SimObject {
 
         void fsw_trigger(void) {
             uint64_t say_hi = 0xaa55aa5555aa55aa;
-            dcmbus_tx_direct(&dcmbus_obj, "fsw-egse", &say_hi, 8);
+            //  dcmbus_tx_direct(&dcmbus_obj, "fsw-egse", &say_hi, 8);
+            dcmbus_ring_enqueue(&dcmbus_obj, "fsw_actuators", &say_hi, sizeof(say_hi));
         };
 
         void client_loopback(void) {
@@ -71,9 +72,11 @@ class SDTSimObject : public Trick::SimObject {
             ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
             ("initialization") fsw_trigger();
             P1 (1, "scheduled") heart_beat();
+            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
             P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
             P1 (1, "scheduled") client_loopback();
-            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+            
+            
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;

@@ -1,5 +1,5 @@
 ---
-BasedOnStyle: Chromium
+BasedOnStyle: Google
 Language: Cpp
 MaxEmptyLinesToKeep: 3
 IndentCaseLabels: false
@@ -15,5 +15,6 @@ IndentWidth: 4
 BreakBeforeBraces: Linux
 AccessModifierOffset: -4
 Cpp11BracedListStyle: false
+ColumnLimit: 0
 ...
 
