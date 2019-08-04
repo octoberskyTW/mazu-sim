@@ -6,7 +6,7 @@ It is ported from [Modeling INS/GPS/Star-Tracker in 6 DoF: Simulating NGC of a T
 The aim is to provide to verify flight software, and delivery accuracy hardware-in-the-loop and flight testing.
 
 # Getting Started
-## 0. Clone the Repo and sub repo
+## 0. Clone the Repo
 ```
 $ git clone https://github.com/octoberskyTW/mazu-sim
 ```
