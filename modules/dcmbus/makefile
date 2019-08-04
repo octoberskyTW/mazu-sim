@@ -22,7 +22,8 @@ LDFLAGS =
 C_SOURCES += $(TOP_DIR)/modules/dcmbus/dcmbus.c \
              $(TOP_DIR)/modules/dcmbus/ethernet.c \
              $(TOP_DIR)/modules/dcmbus/dcmbus_driver_intf.c \
-             $(TOP_DIR)/modules/dcmbus/dcmbus_util.c
+             $(TOP_DIR)/modules/dcmbus/dcmbus_util.c \
+             $(TOP_DIR)/modules/dcmbus/non_blocking_io.c
 
 
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))

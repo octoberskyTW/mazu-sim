@@ -30,11 +30,15 @@ static struct channel_config g_channel_config[8];
 static struct ring_config g_ring_config[16];
 static struct bind_config g_bind_config[32];
 static struct channel_type_enum_t chan_type_enum_tbl[] = {
-    {DCMBUS_SOCKET_ETH, "socket_eth"},
-    {DCMBUS_SOCKET_CAN, "socket_can"},
-    {DCMBUS_DEV_RS422, "dev_rs422"}};
+    { DCMBUS_SOCKET_ETH, "socket_eth" },
+    { DCMBUS_SOCKET_CAN, "socket_can" },
+    { DCMBUS_DEV_RS422, "dev_rs422" }
+};
 
-static void *dcmbus_alloc_mem(size_t size) { return calloc(1, size); }
+static void *dcmbus_alloc_mem(size_t size)
+{
+    return calloc(1, size);
+}
 
 static void dcmbus_free_mem(void **ptr)
 {
@@ -235,8 +239,10 @@ error_malloc:
     return -1;
 }
 
-int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t *D, const char *path_ring,
-                        const char *path_chan, const char *path_bind,
+int dcmbus_ctrlblk_init(struct dcmbus_ctrlblk_t *D,
+                        const char *path_ring,
+                        const char *path_chan,
+                        const char *path_bind,
                         int system_type)
 {
     int idx, rc = 0;
@@ -353,7 +359,8 @@ empty:
     return rc;
 }
 
-int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t *D, const char *name,
+int dcmbus_channel_rx_job(struct dcmbus_ctrlblk_t *D,
+                          const char *name,
                           int raw_size)
 {
     struct timeval tv;
@@ -444,7 +451,8 @@ int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t *D, const char *ch_name)
     return 0;
 }
 
-int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t *D, const char *rg_name,
+int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t *D,
+                        const char *rg_name,
                         void *payload)
 {
     struct dcmbus_ring_blk_t *iter = NULL, *is = NULL;
@@ -470,8 +478,10 @@ empty:
     return 0;
 }
 
-int dcmbus_ring_enqueue(struct dcmbus_ctrlblk_t *D, const char *rg_name,
-                        void *payload, uint32_t size)
+int dcmbus_ring_enqueue(struct dcmbus_ctrlblk_t *D,
+                        const char *rg_name,
+                        void *payload,
+                        uint32_t size)
 {
     struct dcmbus_ring_blk_t *iter = NULL, *is = NULL;
     struct dcmbus_header_t *txcell = NULL;
@@ -500,8 +510,10 @@ empty:
     return 0;
 }
 
-int dcmbus_tx_direct(struct dcmbus_ctrlblk_t *D, const char *name,
-                     void *payload, uint32_t size)
+int dcmbus_tx_direct(struct dcmbus_ctrlblk_t *D,
+                     const char *name,
+                     void *payload,
+                     uint32_t size)
 {
     uint8_t *tx_buffer = NULL;
     uint32_t frame_full_size;
@@ -520,7 +532,7 @@ int dcmbus_tx_direct(struct dcmbus_ctrlblk_t *D, const char *name,
             tx_buffer = dcmbus_alloc_mem(frame_full_size);
             memcpy(tx_buffer + offset, (uint8_t *) payload, size);
             drv_ops->send_data(item->drv_priv_data, tx_buffer, frame_full_size);
-            debug_hex_dump("icf_tx_direct", tx_buffer, frame_full_size);
+            debug_hex_dump("dcmbus_tx_direct", tx_buffer, frame_full_size);
             dcmbus_free_mem((void **) &tx_buffer);
             break;
         }

@@ -3,6 +3,8 @@
 #include "linux_common.h"
 #define DCMBUS_DEBUG_ENABLE 0
 /* Must can devide by 8*/
+#define TRUE 1
+#define FALSE 0
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 #define BILLION 1000000000L
 #define FTRACE_TIME_STAMP(id) \
