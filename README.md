@@ -1,7 +1,7 @@
 # mazu-sim
 Mazu simulation(mazu-sim) is 6DoF Rocket Simulation Platform.
 
-It is ported from [Modeling INS/GPS/Star-Tracker in 6 DoF: Simulating NGC of a Three-Stage Rocket Booster in CADAC++](https://www.amazon.com/Modeling-INS-GPS-Star-Tracker-DoF/dp/1518899315)
+It base on [Modeling INS/GPS/Star-Tracker in 6 DoF: Simulating NGC of a Three-Stage Rocket Booster in CADAC++](https://www.amazon.com/Modeling-INS-GPS-Star-Tracker-DoF/dp/1518899315)
 
 The aim is to provide to verify flight software, and delivery accuracy hardware-in-the-loop and flight testing.
 
