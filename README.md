@@ -31,13 +31,23 @@ $ pip install cpplint
    $ sudo make install
    ```
  - Armadillo Matrix Library-9.100.6
-   - [Official Github Armadillo](http://arma.sourceforge.net/)
+   - [Official Armadillo](http://arma.sourceforge.net/)
    ```
    $ ./configure
    $ make
    $ sudo make install
    ``` 
-
+- Google Test
+  - Official Github [google test](https://github.com/google/googletest)
+  ```bash
+  sudo apt-get install libgtest-dev
+  sudo apt-get install cmake # install cmake
+  cd /usr/src/gtest
+  sudo cmake CMakeLists.txt
+  sudo make
+  # copy or symlink libgtest.a and libgtest_main.a to your /usr/lib folder
+  sudo cp *.a /usr/lib
+  ```
 ## 3. Build and Run a sample code
 ```
 $ make
