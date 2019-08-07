@@ -1,3 +1,7 @@
+<p align=center>
+<img src="https://raw.githubusercontent.com/octoberskyTW/mazu-sim/master/Mazu-sim_logo.jpg" alt="Mazu Logo" height=400px>
+</p>
+
 # mazu-sim
 Mazu simulation(mazu-sim) is 6DoF Rocket Simulation Platform.
 
