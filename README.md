@@ -52,6 +52,15 @@ $ pip install cpplint
   # copy or symlink libgtest.a and libgtest_main.a to your /usr/lib folder
   sudo cp *.a /usr/lib
   ```
+- Redis-Server
+  - Download Source: https://redis.io/download
+  ```bash
+    $ wget http://download.redis.io/releases/redis-5.0.5.tar.gz
+    $ tar xzf redis-5.0.5.tar.gz
+    $ cd redis-5.0.5
+    $ make
+    $ sudo make install
+  ```
 ## 3. Build and Run a sample code
 ```
 $ make
