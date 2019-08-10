@@ -12,7 +12,7 @@ The aim is to provide to verify flight software, and delivery accuracy hardware-
 # Getting Started
 ## 0. Clone the Repo
 ```
-$ git clone https://github.com/octoberskyTW/mazu-sim
+$ git clone --recursive https://github.com/octoberskyTW/mazu-sim
 ```
 ## 1. Dependencies
  - GCC 5.4 up
