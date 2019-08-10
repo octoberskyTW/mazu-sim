@@ -1,3 +1,6 @@
 [submodule "third-party/hiredis"]
 	path = third-party/hiredis
 	url = git@github.com:redis/hiredis.git
+[submodule "third-party/trick"]
+	path = third-party/trick
+	url = git@github.com:nasa/trick.git
