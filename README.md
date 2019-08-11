@@ -66,3 +66,15 @@ $ pip install cpplint
 $ make
 $ make run-sample_code
 ```
+
+# Build and run the specific project
+    - Tutorial project: sample_code
+        ```
+        $ make project=sample_code
+        $ make run-sample_code
+        ```
+    - ARRC Rocket project: egse_dm
+        ```
+        $ make project=egse_dm
+        $ make run-egse_dm
+        ```

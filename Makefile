@@ -18,29 +18,45 @@ $(GIT_HOOK): scripts/install-git-hooks
 	@$<
 	@echo
 
+project ?= all
+
 include $(TOP_DIR)/modules-path.mk
 include $(TOP_DIR)/sim_exe-path.mk
 
-all: trick-build $(GIT_HOOK)
+all: trick_build $(GIT_HOOK)
 .DEFAULT_GOAL := all
-trick-build: modules_build
-	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick-build $(SIM_EXE_TRICK_PATH)
+trick_build: modules_build
+	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick_build $(SIM_EXE_TRICK_PATH)
 modules_build:
-	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module-build $(SIM_MODULES_PATH)
+	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_build $(SIM_MODULES_PATH)
 
-conf_ready: 
+sample_code_cfg:
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_channel.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_channel.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_ring.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_ring.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_bind.cfg $(TOP_DIR)/sim_exe/sample_code/dcm_bind.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_ring.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_ring.cfg
 	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_channel.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_channel.cfg
-	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_bind.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_bind.cfg	
-run-sample_code: conf_ready
-	./run_sim.sh $(TOP_DIR)
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_bind.cfg $(TOP_DIR)/sim_exe/sample_client/dcm_client_bind.cfg
+
+run-sample_code: sample_code_cfg
+	./run_sim.sh $(TOP_DIR) sample_code
+
+egse_dm_cfg: 
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_channel.cfg $(TOP_DIR)/sim_exe/egse_dm/dcm_channel.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_ring.cfg $(TOP_DIR)/sim_exe/egse_dm/dcm_ring.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_bind.cfg $(TOP_DIR)/sim_exe/egse_dm/dcm_bind.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_ring.cfg $(TOP_DIR)/sim_exe/fsw_gnc/dcm_client_ring.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_channel.cfg $(TOP_DIR)/sim_exe/fsw_gnc/dcm_client_channel.cfg
+	ln -sf $(TOP_DIR)/conf/dcmbus/dcm_client_bind.cfg $(TOP_DIR)/sim_exe/fsw_gnc/dcm_client_bind.cfg
+
+run-egse_dm: egse_dm_cfg
+	./run_sim.sh $(TOP_DIR) egse_dm
 
 clean:
 	rm -f $(TOP_DIR)/sim_exe/sample_code/*.cfg
 	rm -f $(TOP_DIR)/sim_exe/sample_client/*.cfg
-	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module-clean $(SIM_MODULES_PATH)
-	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick-clean $(SIM_EXE_TRICK_PATH)
+	rm -f $(TOP_DIR)/sim_exe/egse_dm/*.cfg
+	rm -f $(TOP_DIR)/sim_exe/fsw_gnc/*.cfg
+	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_clean $(SIM_MODULES_PATH)
+	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick_clean $(SIM_EXE_TRICK_PATH)
 	

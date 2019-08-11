@@ -54,16 +54,16 @@ do
     echo "Compiling $var"
     target_dir=$var
     case $build_system_mode in
-        trick-build)
+        trick_build)
             do_local_trick_cp $var
             ;;
-        trick-clean)
+        trick_clean)
             do_local_trick_cp_clean $var $top_dir
             ;;
-        module-build)
+        module_build)
             do_local_make $var
             ;;
-        module-clean)
+        module_clean)
             do_local_clean $var
             ;;
 
