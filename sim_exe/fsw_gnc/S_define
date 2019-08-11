@@ -8,8 +8,8 @@ LIBRARY DEPENDENCIES:
 *************************************************************/
 
 #include "sim_objects/default_trick_sys.sm"
-##include "hello.h"
 ##include "dcmbus.h"
+##include "misc_utils.h"
 ##include <libgen.h>
 
 class SDTSimObject : public Trick::SimObject {
@@ -17,28 +17,7 @@ class SDTSimObject : public Trick::SimObject {
     public:
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
-        double send_delay = 0.005;
         uint32_t data = 0x55667788;
-        void get_exe_path(void) {
-            char path[500] = {0};
-            int dest_len = 500;
-            if (readlink ("/proc/self/exe", path, dest_len) != -1)
-            {
-                dirname(path);
-                strcat(path, "/");
-                printf("path=%s\n", path);
-            }
-        };
-        void timestamp(char *currentTime) {
-            char date_buf[80];
-            static struct timespec ts;
-            uint32_t milli;
-            clock_gettime(CLOCK_MONOTONIC, &ts);
-            ts.tv_sec = time(NULL);
-            milli = ts.tv_nsec / 1000000;
-            strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
-            snprintf(currentTime, 84, "%s.%03d", date_buf, milli);
-        };
 
         void heart_beat(void) {
             char currentTime[84] = "";

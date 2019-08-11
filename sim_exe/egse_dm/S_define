@@ -8,40 +8,15 @@ LIBRARY DEPENDENCIES:
 *************************************************************/
 
 #include "sim_objects/default_trick_sys.sm"
-##include "hello.h"
 ##include "dcmbus.h"
+##include "misc_utils.h"
 ##include <libgen.h>
 
-class SDTSimObject : public Trick::SimObject {
+class Rocket_SimObject : public Trick::SimObject {
 
     public:
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
-        double send_delay = 0.005;
-        void get_exe_path(void) {
-            char name[] = "TRICK_HOME";
-            // fprintf(stderr, "TRICK_HOME: %s\n", get_trick_env(name));
-            char path[500] = {0};
-            int dest_len = 500;
-            if (readlink ("/proc/self/exe", path, dest_len) != -1)
-            {
-                dirname(path);
-                strcat(path, "/");
-                printf("path=%s\n", path);
-            }
-        };
-
-        void timestamp(char *currentTime) {
-            char date_buf[80];
-            static struct timespec ts;
-            uint32_t milli;
-            clock_gettime(CLOCK_MONOTONIC, &ts);
-            ts.tv_sec = time(NULL);
-            milli = ts.tv_nsec / 1000000;
-            strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
-            snprintf(currentTime, 84, "%s.%03d", date_buf, milli);
-            //fprintf(stderr, "[%s] sim_time = %f\n", currentTime, exec_get_sim_time());
-        };
 
         void heart_beat(void) {
             char currentTime[84] = "";
@@ -63,7 +38,7 @@ class SDTSimObject : public Trick::SimObject {
             fprintf(stdout, "[%s] Server: Not Receive yet\n",currentTime);
         }
 
-        SDTSimObject()
+        Rocket_SimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
             ("initialization")  dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
@@ -75,4 +50,4 @@ class SDTSimObject : public Trick::SimObject {
         }
 } ;
 
-SDTSimObject dyn ;
+Rocket_SimObject dyn ;
