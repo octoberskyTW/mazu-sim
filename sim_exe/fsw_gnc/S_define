@@ -12,12 +12,11 @@ LIBRARY DEPENDENCIES:
 ##include "misc_utils.h"
 ##include <libgen.h>
 
-class SDTSimObject : public Trick::SimObject {
+class FlightSoftware_SimObject : public Trick::SimObject {
 
     public:
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
-        uint32_t data = 0x55667788;
 
         void heart_beat(void) {
             char currentTime[84] = "";
@@ -45,7 +44,7 @@ class SDTSimObject : public Trick::SimObject {
             fprintf(stdout, "[%s] Client: Not Receive yet\n",currentTime);
         }
 
-        SDTSimObject()
+        FlightSoftware_SimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
             ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
@@ -60,4 +59,4 @@ class SDTSimObject : public Trick::SimObject {
         }
 } ;
 
-SDTSimObject dyn ;
+FlightSoftware_SimObject fsw;
