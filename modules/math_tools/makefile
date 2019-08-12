@@ -12,8 +12,8 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 #TARGET=libhello.so
 TARGET=libmath_tools.a
 # FLAGS
-CXXFLAGS = -Wall -g -MD -save-temps -fPIC
-CXXFLAGS += -I.
+CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
+CXXFLAGS += -I. -larmadillo
 LDFLAGS =
 
 # Source code

@@ -38,12 +38,7 @@ double const GW_CLONG =
     0;                           ///< Greenwich celestial longitude at start of simulation - rad
 double const RGAS = 287.053;     ///< ideal gas constant - J/(K*kg)=N*m/(K*kg)
 double const KBOLTZ = 1.38e-23;  ///< Boltzmann's constant - Ws/K
-// numerical constants
-double const PI = 3.1415926536;  ///< circumference of unit diameter circle
-double const EPS = 1.e-10;       ///< machine precision error (type double)
-double const SMALL = 1e-7;       ///< small real number
-int const ILARGE = 9999;         ///< large integer number
-double const LARGE = 1e10;       ///< large real number (type double)
+
 /**@}*/
 
 /// conversion factors
