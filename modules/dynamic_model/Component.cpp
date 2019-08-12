@@ -318,7 +318,7 @@ void RCS_Thruster::calculate_Q(double input, arma::mat33 TBI,
     Q(5) = dot(trans(TBI) * Thruster_T,
                -trans(TBI) * cross_matrix(RHO) * RCS_BETA_6);
 }
-
+/* TBI  =  Transform matrix from Inertia to Body coordinate */
 void RCS_Thruster::calculate_Torque_Q(double input, arma::mat33 TBI,
                                       enum EngType type_in)
 {
