@@ -62,4 +62,6 @@ arma::mat33 TMZ(double ang);
 #define GRAB_VEC3(x) [&]() { return arma::vec3(x); }
 #define GRAB_MAT33(x) [&]() { return arma::mat33((const double *)(&x)); }
 
+int sign(const double &variable);
+
 #endif  // __MATRIX_TOOL_HH__
