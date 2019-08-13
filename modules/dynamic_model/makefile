@@ -19,7 +19,8 @@ CXXFLAGS += -I$(module_math_tools)
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/Component.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/component.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/signal_process.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)

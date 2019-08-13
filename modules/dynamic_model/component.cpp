@@ -1,4 +1,4 @@
-#include "Component.hh"
+#include "component.hh"
 
 void ACT_1st::Actuate(double input_command, double int_step)
 {
