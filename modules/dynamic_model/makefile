@@ -23,6 +23,8 @@ CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/component.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/signal_process.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/vehicle_var.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/vehicle.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_util.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_management.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
