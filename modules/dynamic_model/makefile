@@ -21,6 +21,8 @@ LDFLAGS =
 # Source code
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/component.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/signal_process.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/vehicle_var.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/vehicle.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
