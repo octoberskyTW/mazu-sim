@@ -14,16 +14,24 @@ TARGET=libmath_tools.a
 # FLAGS
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
 CXXFLAGS += -I. -larmadillo
+CFLAGS = -g -MD -save-temps -fPIC -std=c99 -pedantic -W -D _GNU_SOURCE
+CFLAGS += -I.
 LDFLAGS =
 
 # Source code
 CPP_SOURCES += $(TOP_DIR)/modules/math_tools/matrix_tool.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/math_tools/integrate.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/math_tools/stochastic.cpp
+C_SOURCES += $(TOP_DIR)/modules/math_tools/nrutil.c
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
+OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
 
-all: $(TARGET) $(CPP_SOURCES)
+all: $(TARGET) $(CPP_SOURCES) $(C_SOURCES)
 
-%.o: %.cpp %.h
+%.o: %.cpp %.hh
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(TARGET): $(OBJECTS)
 #	$(CC) $(LDFLAGS) -o $@ $<

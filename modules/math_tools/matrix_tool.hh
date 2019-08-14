@@ -43,24 +43,24 @@ arma::mat33 TMX(double ang);
 arma::mat33 TMY(double ang);
 arma::mat33 TMZ(double ang);
 
-#define STORE_MAT33(dest, src) \
-    do { \
-        auto cpy = src; \
-        trans(cpy); \
-        double *in = cpy.memptr(); \
+#define STORE_MAT33(dest, src)          \
+    do {                                \
+        auto cpy = src;                 \
+        trans(cpy);                     \
+        double *in = cpy.memptr();      \
         memcpy(dest, in, sizeof(dest)); \
     } while (0);
 
 
-#define STORE_VEC(dest, src) \
-    do { \
-        double *in = src.memptr(); \
+#define STORE_VEC(dest, src)            \
+    do {                                \
+        double *in = src.memptr();      \
         memcpy(dest, in, sizeof(dest)); \
     } while (0);
 
 #define GRAB_VAR(x) [&]() { return x; }
 #define GRAB_VEC3(x) [&]() { return arma::vec3(x); }
-#define GRAB_MAT33(x) [&]() { return arma::mat33((const double *)(&x)); }
+#define GRAB_MAT33(x) [&]() { return arma::mat33((const double *) (&x)); }
 
 int sign(const double &variable);
 
