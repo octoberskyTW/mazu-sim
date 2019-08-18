@@ -78,3 +78,9 @@ $ make run-sample_code
   $ make project=egse_dm
   $ make run-egse_dm
   ```
+# Doxygen
+```
+sudo apt-get install graphviz doxygen
+doxygen Doxyfile
+```
+open the docs/index.html in browser
