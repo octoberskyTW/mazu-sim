@@ -1,5 +1,4 @@
 #include "time_management.hh"
-// #include "sim_services/include/simtime.h"
 
 time_management::time_management() { last_time = 0; }
 
