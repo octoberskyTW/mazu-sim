@@ -12,7 +12,7 @@ PROGRAMMERS:
 #include <functional>
 #include "aux.hh"
 #include "datadeck.hh"
-#include "global_constants.hh"
+#include "cadac_constants.hh"
 #include "module.hh"
 #include "vehicle.hh"
 

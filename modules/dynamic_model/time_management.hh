@@ -13,7 +13,7 @@ PROGRAMMERS:
 #include <iomanip>
 #include <iostream>
 #include "aux.hh"
-#include "global_constants.hh"
+#include "cadac_constants.hh"
 #include "time_util.hh"
 
 class time_management

@@ -11,23 +11,18 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				echo $$TOP_DIR)
 include $(TOP_DIR)/modules-path_var.mk
 #TARGET=libhello.so
-TARGET=libdynamic_model.a
+TARGET=libcadac.a
 # FLAGS
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
 CXXFLAGS += -I. -larmadillo
-CXXFLAGS += -I$(module_math_tools) \
-            -I$(module_cadac)
+CXXFLAGS += -I$(module_math_tools)
+CXXFLAGS += -I$(module_cadac)
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/component.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/signal_process.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/vehicle_var.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/vehicle.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_util.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_management.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/propulsion.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/tvc.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/cadac/datadeck.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/cadac/cadac_util.cpp
+
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)

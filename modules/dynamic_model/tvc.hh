@@ -14,7 +14,7 @@ LIBRARY DEPENDENCY:
 #include "module.hh"
 #include "vehicle.hh"
 #include "aux.hh"
-#include "global_constants.hh"
+#include "cadac_constants.hh"
 #include "signal_process.hh"
 
 class TVC : public Dynamics {

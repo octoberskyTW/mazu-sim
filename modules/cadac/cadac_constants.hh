@@ -4,8 +4,8 @@
  * \brief Defines all global constant parameters for HYPER simulation
  */
 
-#ifndef __GLOBAL_CONSTANTS_H__
-#define __GLOBAL_CONSTANTS_H__
+#ifndef __CADAC_CONSTANTS_HH__
+#define __CADAC_CONSTANTS_HH__
 
 #ifndef TRUE
 #define TRUE 1
@@ -96,4 +96,4 @@ const double WGS84_ECCENTRICITY = 0.0818191908426;
 /****************************************************************/
 const double TVC_DSP_RESOLUTION = 0.01;
 const int TVC_ROTATION_LIMIT_CNT = 800;
-#endif  //  __GLOBAL_CONSTANTS_H__
+#endif  //  __CADAC_CONSTANTS_HH__
