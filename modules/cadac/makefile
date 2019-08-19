@@ -14,15 +14,22 @@ include $(TOP_DIR)/modules-path_var.mk
 TARGET=libcadac.a
 # FLAGS
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
-CXXFLAGS += -I. -larmadillo
+CXXFLAGS += -I. -larmadillo -I./env
 CXXFLAGS += -I$(module_math_tools)
 CXXFLAGS += -I$(module_cadac)
 LDFLAGS =
 
 # Source code
 CPP_SOURCES += $(TOP_DIR)/modules/cadac/datadeck.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/cadac/cadac_util.cpp
-
+CPP_SOURCES += $(TOP_DIR)/modules/cadac/cadac_util.cpp \
+			   $(TOP_DIR)/modules/cadac/schmitt_trigger.cpp \
+			   $(TOP_DIR)/modules/cadac/env/wind.cpp \
+			   $(TOP_DIR)/modules/cadac/env/wind_constant.cpp \
+			   $(TOP_DIR)/modules/cadac/env/wind_no.cpp \
+			   $(TOP_DIR)/modules/cadac/env/wind_tabular.cpp \
+			   $(TOP_DIR)/modules/cadac/env/atmosphere76.cpp \
+			   $(TOP_DIR)/modules/cadac/env/atmosphere_nasa2002.cpp \
+			   $(TOP_DIR)/modules/cadac/env/atmosphere_weatherdeck.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
