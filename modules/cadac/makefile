@@ -15,7 +15,7 @@ TARGET=libcadac.a
 # FLAGS
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
 CXXFLAGS += -I. -larmadillo -I./env
-CXXFLAGS += -I$(module_math_tools)
+CXXFLAGS += -I$(module_math_utils)
 CXXFLAGS += -I$(module_cadac)
 LDFLAGS =
 
