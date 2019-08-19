@@ -84,3 +84,7 @@ sudo apt-get install graphviz doxygen
 doxygen Doxyfile
 ```
 open the docs/index.html in browser
+
+<p align=center>
+<img src="mazu-sim_software_stack.png" alt="Software Stack" height=400px>
+</p>
