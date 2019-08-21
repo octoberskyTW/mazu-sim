@@ -7,3 +7,4 @@ module_misc_utils=$(TOP_DIR)/modules/misc_utils
 module_math_utils=$(TOP_DIR)/modules/math_utils
 module_dynamic_model=$(TOP_DIR)/modules/dynamic_model
 module_cadac=$(TOP_DIR)/modules/cadac
+module_sensor_dm=$(TOP_DIR)/modules/sensor_dm
