@@ -20,11 +20,7 @@ CXXFLAGS += -I$(module_math_utils) \
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/component.cpp \
-               $(TOP_DIR)/modules/dynamic_model/signal_process.cpp \
-               $(TOP_DIR)/modules/dynamic_model/vehicle_var.cpp \
-               $(TOP_DIR)/modules/dynamic_model/vehicle.cpp \
-               $(TOP_DIR)/modules/dynamic_model/time_util.cpp \
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_util.cpp \
                $(TOP_DIR)/modules/dynamic_model/time_management.cpp \
                $(TOP_DIR)/modules/dynamic_model/propulsion.cpp \
                $(TOP_DIR)/modules/dynamic_model/tvc.cpp \

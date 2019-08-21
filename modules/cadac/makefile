@@ -29,7 +29,11 @@ CPP_SOURCES += $(TOP_DIR)/modules/cadac/cadac_util.cpp \
 			   $(TOP_DIR)/modules/cadac/env/wind_tabular.cpp \
 			   $(TOP_DIR)/modules/cadac/env/atmosphere76.cpp \
 			   $(TOP_DIR)/modules/cadac/env/atmosphere_nasa2002.cpp \
-			   $(TOP_DIR)/modules/cadac/env/atmosphere_weatherdeck.cpp
+			   $(TOP_DIR)/modules/cadac/env/atmosphere_weatherdeck.cpp \
+			   $(TOP_DIR)/modules/cadac/component.cpp \
+               $(TOP_DIR)/modules/cadac/signal_process.cpp \
+               $(TOP_DIR)/modules/cadac/vehicle_var.cpp \
+               $(TOP_DIR)/modules/cadac/vehicle.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
