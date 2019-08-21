@@ -28,6 +28,7 @@ CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_util.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_management.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/propulsion.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/tvc.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/rocket_flight_dm.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
