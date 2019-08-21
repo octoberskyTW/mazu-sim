@@ -29,7 +29,8 @@ CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/component.cpp \
                $(TOP_DIR)/modules/dynamic_model/propulsion.cpp \
                $(TOP_DIR)/modules/dynamic_model/tvc.cpp \
                $(TOP_DIR)/modules/dynamic_model/rocket_flight_dm.cpp \
-               $(TOP_DIR)/modules/dynamic_model/rcs.cpp
+               $(TOP_DIR)/modules/dynamic_model/rcs.cpp \
+               $(TOP_DIR)/modules/dynamic_model/earth_environment.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
