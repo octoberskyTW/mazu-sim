@@ -2,8 +2,8 @@
 
 #include "matrix_tool.hh"
 
-Schmitt_Trigger::Schmitt_Trigger(double dead_zone, double hysteresis)
-    : dead_zone(dead_zone), hysteresis(hysteresis)
+Schmitt_Trigger::Schmitt_Trigger(double dead_zone_In, double hysteresis_In)
+    : dead_zone(dead_zone_In), hysteresis(hysteresis_In)
 {
     this->saved_value = 0;
 }

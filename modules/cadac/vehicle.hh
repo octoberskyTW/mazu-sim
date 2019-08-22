@@ -108,7 +108,7 @@ public:
                        double moi_pitch0, double moi_pitch1, double moi_yaw0,
                        double moi_yaw1, unsigned int num_stage);
     void Allocate_RCS(int num, std::vector<RCS_Thruster *> &RT_list);
-    void Allocate_ENG(int NumEng, std::vector<ENG *> &Eng_list);
+    void Allocate_ENG(int NumEng, std::vector<ENG *> &Eng_list_In);
     void set_payload_mass(double in);
     void set_faring_mass(double in);
     void set_stage_1();

@@ -19,7 +19,7 @@ public:
 
     virtual ~Atmosphere() {}
 
-    virtual void set_altitude(double altitude_in_meter){};
+    virtual void set_altitude(double altitude_in_meter) = 0;
 
     virtual double get_temperature_in_kelvin() { return tempk; }
     virtual double get_density() { return density; }

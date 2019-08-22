@@ -14,7 +14,7 @@ namespace cad
 class Wind_Constant : public Wind
 {
 public:
-    Wind_Constant(double dvba, double dir, double twind, double vertical_wind);
+    Wind_Constant(double dvba, double dir, double twind_In, double vertical_wind);
 
     virtual ~Wind_Constant();
 

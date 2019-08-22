@@ -237,7 +237,7 @@ void EarthEnvironment::algorithm(LaunchVehicle *VehicleIn)
     E->TEI =
         RNP();  // Calculate Rotation-Nutation-Precession (ECI to ECEF) Matrix
 
-    E->GRAVG = AccelHarmonic(D->SBII, E->TEI, D->TGI, 20, 20);
+    E->GRAVG = AccelHarmonic(D->SBII, E->TEI, 20, 20);
 
     atmosphere->set_altitude(D->alt);
 
@@ -297,8 +297,6 @@ arma::mat EarthEnvironment::RNP()
         c_epsilonAP;
     double s2_half_delta_psi, s_delta_epsilon, c_delta_epsilon;
     int index;
-    double DM_sidereal_time;
-    double DM_Julian_century;
 
     double nutation_coef[106][9] = {
         { 0, 0, 0, 0, 1, -17.1996, -0.01742, 9.2025, 0.00089 },
@@ -445,8 +443,6 @@ arma::mat EarthEnvironment::RNP()
     t = (time->get_modified_julian_date().get_jd() - 2451545.0) /
         36525.0; /* J2000.5 : Julian Day is 2451545, unit in day */
 
-    DM_Julian_century = t; /* elapsed century since J2000.5 */
-
     t2 = t * t;
     t3 = t * t * t;
 
@@ -543,7 +539,6 @@ arma::mat EarthEnvironment::RNP()
         UT1 + (24110.54841 + 8640184.812866 * t + 0.093104 * t2 - 0.0000062 * t3);
     temps_sideral = temps_sideral * DM_sec2r +
                     delta_psi * cos(epsilonA) * DM_arcsec2r; /* unit: radian */
-    DM_sidereal_time = temps_sideral;
 
     M_rotation(0, 0) = cos(temps_sideral);
     M_rotation(0, 1) = sin(temps_sideral);
@@ -580,7 +575,7 @@ arma::mat EarthEnvironment::RNP()
  *
  ********************************************************************************/
 arma::vec EarthEnvironment::AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
-                                          arma::mat33 TGI, int n_max,
+                                          int n_max,
                                           int m_max)
 {
     /* Local variables */

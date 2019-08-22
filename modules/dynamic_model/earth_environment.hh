@@ -63,7 +63,7 @@ private:
 
     /* Function declaration */
     arma::mat RNP();
-    arma::vec AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI, arma::mat33 TGI,
+    arma::vec AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
                             int n_max, int m_max);
 };
 

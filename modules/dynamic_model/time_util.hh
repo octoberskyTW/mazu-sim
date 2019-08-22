@@ -96,7 +96,7 @@ public:
     void set_sec(double in) { sec = in; }
 
     uint32_t get_day_of_year();
-    void set_day_of_year(uint32_t year, uint32_t doy);
+    void set_day_of_year(uint32_t year_in, uint32_t doy);
 
 private:
     uint32_t year;  /* *io (--) Year    */

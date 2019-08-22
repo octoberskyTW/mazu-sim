@@ -23,12 +23,12 @@ void LaunchVehicle::load_angle(double yaw, double roll, double pitch)
     DM->thtbdx = pitch;
 }
 
-void LaunchVehicle::Allocate_ENG(int NumEng, std::vector<ENG *> &Eng_list)
+void LaunchVehicle::Allocate_ENG(int NumEng, std::vector<ENG *> &Eng_list_In)
 {
     ENG **ENG_list = new ENG *[NumEng];
     for (int i = 0; i < NumEng; i++) {
         ENG_list[i] = new ENG;
-        Eng_list.push_back(ENG_list[i]);
+        Eng_list_In.push_back(ENG_list[i]);
     }
 }
 

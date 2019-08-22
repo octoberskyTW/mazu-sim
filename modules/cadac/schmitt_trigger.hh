@@ -14,7 +14,7 @@ class Schmitt_Trigger
     TRICK_INTERFACE(Schmitt_Trigger);
 
 public:
-    Schmitt_Trigger(double dead_zone, double hysteresis);
+    Schmitt_Trigger(double dead_zone_In, double hysteresis_In);
     Schmitt_Trigger(const Schmitt_Trigger &other);
 
     Schmitt_Trigger &operator=(const Schmitt_Trigger &other);

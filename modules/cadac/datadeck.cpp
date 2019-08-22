@@ -374,7 +374,6 @@ double Datadeck::interpolate(int ind10, int ind11, int ind20, int ind21, int slo
     double dx1(0), dx2(0);
     double dumx1(0), dumx2(0);
 
-    int var1_dim = get_tbl(slot)->get_var1_dim();
     int var2_dim = get_tbl(slot)->get_var2_dim();
 
     double diff1 = value1 - get_tbl(slot)->var1_values[ind10];

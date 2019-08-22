@@ -2,8 +2,8 @@
 
 #include <cstring>
 
-cad::Wind_Tabular::Wind_Tabular(char *filepath, double twind, double vertical_wind)
-    : Wind(twind, vertical_wind), weathertable(filepath)
+cad::Wind_Tabular::Wind_Tabular(char *filepath, double twind_In, double vertical_wind)
+    : Wind(twind_In, vertical_wind), weathertable(filepath)
 {
     snprintf(name, sizeof(name), "Tabular Wind");
 

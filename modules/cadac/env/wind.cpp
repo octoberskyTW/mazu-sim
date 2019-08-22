@@ -5,13 +5,13 @@
 #include "numerical_constants.hh"
 #include "wind.hh"
 
-cad::Wind::Wind(double twind, double vertical_wind)
+cad::Wind::Wind(double twind_In, double vertical_wind)
     : has_turbulance(false),
       VECTOR_INIT(VAED, 3),
       VECTOR_INIT(VAEDS, 3),
       VECTOR_INIT(VAEDSD, 3)
 {
-    this->twind = twind;
+    this->twind = twind_In;
     this->vertical_wind_speed = vertical_wind;
 
     VAED.zeros();
@@ -78,3 +78,5 @@ void cad::Wind::apply_turbulance_if_have(double int_step, double dvba, arma::mat
         VAED = VTAD + VAEDS;
     }
 }
+
+void cad::Wind::set_altitude(double altitude_in_meter) { altitude = altitude_in_meter; }

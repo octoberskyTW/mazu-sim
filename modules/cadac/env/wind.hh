@@ -18,11 +18,11 @@ class Wind
 public:
     char name[256];
 
-    Wind(double twind, double vertical_wind);
+    Wind(double twind_In, double vertical_wind);
 
     virtual ~Wind() {}
 
-    virtual void set_altitude(double altitude_in_meter) {}
+    virtual void set_altitude(double altitude_in_meter);
     virtual void propagate_VAED(double int_step);
     virtual void apply_turbulance_if_have(double int_step, double dvba, arma::mat33 TBD, double alppx, double phipx);
 
@@ -33,21 +33,21 @@ public:
     virtual arma::vec3 get_VAEDS() { return VAEDS; }
     virtual arma::vec3 get_VAEDSD() { return VAEDSD; }
 
-    virtual void enable_turbulance(double turb_length, double turb_sigma,
-                                   double taux1, double taux1d,
-                                   double taux2, double taux2d,
-                                   double tau, double gauss_value)
+    virtual void enable_turbulance(double turb_length_In, double turb_sigma_In,
+                                   double taux1_In, double taux1d_In,
+                                   double taux2_In, double taux2d_In,
+                                   double tau_In, double gauss_value_In)
     {
         has_turbulance = true;
 
-        this->turb_length = turb_length;
-        this->turb_sigma = turb_sigma;
-        this->taux1 = taux1;
-        this->taux1d = taux1d;
-        this->taux2 = taux2;
-        this->taux2d = taux2d;
-        this->tau = tau;
-        this->gauss_value = gauss_value;
+        this->turb_length = turb_length_In;
+        this->turb_sigma = turb_sigma_In;
+        this->taux1 = taux1_In;
+        this->taux1d = taux1d_In;
+        this->taux2 = taux2_In;
+        this->taux2d = taux2d_In;
+        this->tau = tau_In;
+        this->gauss_value = gauss_value_In;
     }
     virtual void disable_turbulance() { has_turbulance = false; }
 

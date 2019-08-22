@@ -15,7 +15,7 @@ namespace cad
 class Wind_Tabular : public Wind
 {
 public:
-    Wind_Tabular(char *filepath, double twind, double vertical_wind);
+    Wind_Tabular(char *filepath, double twind_In, double vertical_wind);
 
     virtual ~Wind_Tabular();
 

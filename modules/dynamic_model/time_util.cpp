@@ -142,9 +142,9 @@ time_util::UTC_TIME::UTC_TIME(GPS_TIME in)
     days_left = static_cast<int64_t>(days_since_jan1_1901 - 1461 * num_four_yrs);
     delta_yrs = days_left / 365 - days_left / 1460;
 
-    uint32_t year = static_cast<uint32_t>(years_so_far + delta_yrs);
+    uint32_t CE_year = static_cast<uint32_t>(years_so_far + delta_yrs);
     uint32_t DOY = static_cast<uint32_t>(days_left - 365 * delta_yrs + 1);
-    this->set_day_of_year(year, DOY);
+    this->set_day_of_year(CE_year, DOY);
     this->hour = static_cast<int32_t>(fmjd * 24.0);
     this->min = static_cast<int32_t>(fmjd * 1440.0 - this->hour * 60.0);
     this->sec = fmjd * 86400.0 - this->hour * 3600.0 - this->min * 60.0;
@@ -216,23 +216,23 @@ void time_util::UTC_TIME::set_day_of_year(uint32_t year_in, uint32_t doy)
 {
     unsigned int month_array[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     unsigned int month_array_leap_year[12] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-    unsigned int month = 0;
+    unsigned int CE_month = 0;
 
     /* check for leap year */
     if ((year_in % 4 == 0 && year_in % 100 != 0) || year_in % 400 == 0) {
-        while (doy > month_array_leap_year[month]) {
-            doy = doy - month_array_leap_year[month];
-            month = month + 1;
+        while (doy > month_array_leap_year[CE_month]) {
+            doy = doy - month_array_leap_year[CE_month];
+            CE_month = CE_month + 1;
         }
     } else {
-        while (doy > month_array[month]) {
-            doy = doy - month_array[month];
-            month = month + 1;
+        while (doy > month_array[CE_month]) {
+            doy = doy - month_array[CE_month];
+            CE_month = CE_month + 1;
         }
     }
 
     this->year = year_in;
-    this->month = month + 1;
+    this->month = CE_month + 1;
     this->day = doy;
 }
 

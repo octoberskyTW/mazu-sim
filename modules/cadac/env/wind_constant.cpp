@@ -2,8 +2,8 @@
 
 #include <cstring>
 
-cad::Wind_Constant::Wind_Constant(double dvba, double dir, double twind, double vertical_wind)
-    : Wind(twind, vertical_wind)
+cad::Wind_Constant::Wind_Constant(double dvba, double dir, double twind_In, double vertical_wind)
+    : Wind(twind_In, vertical_wind)
 {
     snprintf(name, sizeof(name), "Constant Wind");
 

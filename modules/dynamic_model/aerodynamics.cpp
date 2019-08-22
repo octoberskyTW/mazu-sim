@@ -29,7 +29,6 @@ void AeroDynamics::algorithm(LaunchVehicle *VehicleIn)
         double dvba = E->dvba;
         double alppx = D->alppx;
         double phipx = D->phipx;
-        double alt = D->alt;
 
         arma::vec3 WBIB = D->WBIB;
         arma::vec3 WBEB = D->WBEB;
@@ -42,7 +41,6 @@ void AeroDynamics::algorithm(LaunchVehicle *VehicleIn)
         double cphip = cos(phip);
         double sphip = sin(phip);
         double qqax = WBEB(1) * cphip - WBEB(2) * sphip;
-        double rrax = WBEB(1) * sphip + WBEB(2) * cphip;
 
         // looking up axial force coefficients
         A->ca0 = aerotable.look_up("ca0_vs_mach", vmach, 0);
@@ -50,7 +48,7 @@ void AeroDynamics::algorithm(LaunchVehicle *VehicleIn)
         A->ca0b = aerotable.look_up("ca0b_vs_mach", vmach, 0);
 
         // axial force coefficient
-        if (thrust_state = NO_THRUST)
+        if ((thrust_state = NO_THRUST))
             thrust_on = 1;
         A->ca = A->ca0 + A->caa * alppx + thrust_on * A->ca0b;
 
