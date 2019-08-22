@@ -9,30 +9,32 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				    CUR_DIR=$$(dirname $$CUR_DIR); } \
 				done;\
 				echo $$TOP_DIR)
-include $(TOP_DIR)/modules-path_var.mk
 #TARGET=libhello.so
-TARGET=libdynamic_model.a
+TARGET=libactuator_dm.a
 # FLAGS
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
 CXXFLAGS += -I. -larmadillo
+# Low Layer Module include
+include $(TOP_DIR)/modules-path_var.mk
 CXXFLAGS += -I$(module_math_utils) \
-            -I$(module_cadac) \
-            -I$(module_actuator_dm)
+            -I$(module_cadac)
+CFLAGS = -g -MD -save-temps -fPIC -std=c99 -pedantic -W -D _GNU_SOURCE
+CFLAGS += -I.
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_util.cpp \
-               $(TOP_DIR)/modules/dynamic_model/time_management.cpp \
-               $(TOP_DIR)/modules/dynamic_model/propulsion.cpp \
-               $(TOP_DIR)/modules/dynamic_model/rocket_flight_dm.cpp \
-               $(TOP_DIR)/modules/dynamic_model/earth_environment.cpp \
-               $(TOP_DIR)/modules/dynamic_model/aerodynamics.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/actuator_dm/tvc.cpp \
+			   $(TOP_DIR)/modules/actuator_dm/rcs.cpp
+C_SOURCES =
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
+OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
 
-all: $(TARGET) $(CPP_SOURCES)
+all: $(TARGET) $(CPP_SOURCES) $(C_SOURCES)
 
-%.o: %.cpp %.h
+%.o: %.cpp %.hh
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(TARGET): $(OBJECTS)
 #	$(CC) $(LDFLAGS) -o $@ $<
@@ -45,6 +47,7 @@ clean:
 	find . -name "*.so" -type f -delete
 	find . -name "*.a" -type f -delete
 	find . -name "*.o" -type f -delete
+	find . -name "*.i" -type f -delete
 	find . -name "*.ii" -type f -delete
 	find . -name "*.d" -type f -delete
 	find . -name "*.s" -type f -delete
