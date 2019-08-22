@@ -23,7 +23,9 @@ CFLAGS += -I.
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/sensor_dm/accel/accelerometer_ideal.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/sensor_dm/accel/accelerometer_ideal.cpp \
+			   $(TOP_DIR)/modules/sensor_dm/gyro/gyro_ideal.cpp \
+			   $(TOP_DIR)/modules/sensor_dm/gyro/gyro_rocket6g.cpp
 C_SOURCES =
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
