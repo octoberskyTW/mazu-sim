@@ -43,7 +43,7 @@ all: $(TARGET) $(CPP_SOURCES)
 
 $(TARGET): $(OBJECTS)
 #	$(CC) $(LDFLAGS) -o $@ $<
-	$(AR) rcs $@ $<
+	$(AR) rcs $@ $^
 
 -include $(OBJECTS:.o=.d)
 
