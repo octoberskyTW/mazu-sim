@@ -26,7 +26,7 @@ all: $(TARGET) $(C_SOURCES)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(TARGET): $(OBJECTS)
-	$(AR) rcs $@ $<
+	$(AR) rcs $@ $^
 
 -include $(OBJECTS:.o=.d)
 
