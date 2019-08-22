@@ -12,7 +12,6 @@ PROGRAMMERS:
 #include <functional>
 #include "aux.hh"
 #include "cadac_constants.hh"
-#include "module.hh"
 #include "numerical_constants.hh"
 
 #include "env/atmosphere.hh"
@@ -29,7 +28,7 @@ PROGRAMMERS:
 #include "time_management.hh"
 #include "vehicle.hh"
 
-class EarthEnvironment : public Dynamics
+class EarthEnvironment : public FH_module
 {
     TRICK_INTERFACE(EarthEnvironment);
 

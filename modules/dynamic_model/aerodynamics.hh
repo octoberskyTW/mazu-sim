@@ -13,13 +13,9 @@ PROGRAMMERS:
 #include "aux.hh"
 #include "cadac_constants.hh"
 #include "datadeck.hh"
-#include "module.hh"
 #include "numerical_constants.hh"
-#include "propulsion.hh"
 #include "vehicle.hh"
-class Propulsion;
-
-class AeroDynamics : public Dynamics
+class AeroDynamics : public FH_module
 {
     TRICK_INTERFACE(AeroDynamics);
 

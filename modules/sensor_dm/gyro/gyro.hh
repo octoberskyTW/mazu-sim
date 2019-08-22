@@ -8,11 +8,11 @@ PURPOSE:
 #include <armadillo>
 #include <aux.hh>
 #include "cadac_constants.hh"
-#include "module.hh"
 #include "numerical_constants.hh"
 #include "stochastic.hh"
+#include "vehicle.hh"
 
-class Gyro : public Sensor
+class Gyro : public FH_module
 {
     TRICK_INTERFACE(Gyro);
 

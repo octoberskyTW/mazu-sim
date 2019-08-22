@@ -13,10 +13,9 @@ PROGRAMMERS:
 #include <functional>
 #include <vector>
 #include "component.hh"
-#include "module.hh"
 #include "vehicle.hh"
 
-class RCS : public Dynamics
+class RCS : public FH_module
 {
     TRICK_INTERFACE(RCS);
 

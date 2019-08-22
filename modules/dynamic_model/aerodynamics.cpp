@@ -30,21 +30,12 @@ void AeroDynamics::algorithm(LaunchVehicle *VehicleIn)
         double alppx = D->alppx;
         double phipx = D->phipx;
         double alt = D->alt;
-        // data_exchang->hget("alppx", &alppx);
-        // data_exchang->hget("phipx", &phipx);
-        // data_exchang->hget("vmach", &vmach);
-        // data_exchang->hget("dvba", &dvba);
-        // data_exchang->hget("alt", &alt);
 
         arma::vec3 WBIB = D->WBIB;
         arma::vec3 WBEB = D->WBEB;
         arma::vec3 XCG = P->XCG;
-        // data_exchang->hget("XCG", XCG);
-        // data_exchang->hget("WBEB", WBEB);
-        // data_exchang->hget("WBIB", WBIB);
 
         enum THRUST_TYPE thrust_state = VehicleIn->Prop->thrust_state;
-        // double vmass  = grab_vmass();
 
         //  transforming body rates from body -> aeroballistic coord.
         double phip = phipx * RAD;
@@ -85,14 +76,4 @@ void AeroDynamics::algorithm(LaunchVehicle *VehicleIn)
         A->clm = A->clma * cphip;
         A->cln = -A->clma * sphip;
     }
-
-    // data_exchang->hset("refa", A->refa);
-    // data_exchang->hset("refd", A->refd);
-    // data_exchang->hset("cx", A->cx);
-    // data_exchang->hset("cy", A->cy);
-    // data_exchang->hset("cz", A->cz);
-    // data_exchang->hset("cll", A->cll);
-    // data_exchang->hset("clm", A->clm);
-    // data_exchang->hset("cln", A->cln);
-    // data_exchang->hset("XCP", A->XCP);
 }

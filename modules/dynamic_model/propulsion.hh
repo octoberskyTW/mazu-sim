@@ -13,10 +13,9 @@ PROGRAMMERS:
 #include "aux.hh"
 #include "datadeck.hh"
 #include "cadac_constants.hh"
-#include "module.hh"
 #include "vehicle.hh"
 
-class Propulsion : public Actuator
+class Propulsion : public FH_module
 {
     TRICK_INTERFACE(Propulsion);
 

@@ -11,13 +11,12 @@ LIBRARY DEPENDENCY:
 #include <tuple>
 #include <vector>
 #include "component.hh"
-#include "module.hh"
 #include "vehicle.hh"
 #include "aux.hh"
 #include "cadac_constants.hh"
 #include "signal_process.hh"
 
-class TVC : public Dynamics {
+class TVC : public FH_module {
   TRICK_INTERFACE(TVC);
 
  public:

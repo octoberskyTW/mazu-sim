@@ -12,13 +12,12 @@ PROGRAMMERS:
 #include <armadillo>
 #include "aux.hh"
 #include "cadac_constants.hh"
-#include "module.hh"
 #include "numerical_constants.hh"
 #include "time_management.hh"
 #include "vehicle.hh"
 #include "vehicle_var.hh"
 
-class Rocket_Flight_DM : public Dynamics
+class Rocket_Flight_DM : public FH_module
 {
     TRICK_INTERFACE(Rocket_Flight_DM);
 
