@@ -18,4 +18,4 @@ public:
     unsigned int k_limit; /* *o (--) sdt cycle limit */
 };
 
-#endif __SDT_HH__
+#endif // __SDT_HH__
