@@ -21,8 +21,9 @@ LDFLAGS =
 # Source code
 CPP_SOURCES += $(TOP_DIR)/modules/math_utils/matrix_tool.cpp
 CPP_SOURCES += $(TOP_DIR)/modules/math_utils/integrate.cpp
-CPP_SOURCES += $(TOP_DIR)/modules/math_utils/stochastic.cpp
-C_SOURCES += $(TOP_DIR)/modules/math_utils/nrutil.c
+CPP_SOURCES += $(TOP_DIR)/modules/math_utils/stochastic.cpp \
+               $(TOP_DIR)/modules/math_utils/nrutil.cpp
+C_SOURCES =
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
 

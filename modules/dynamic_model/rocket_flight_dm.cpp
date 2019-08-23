@@ -7,7 +7,7 @@
 #include "rocket_flight_dm.hh"
 //#include "sim_services/include/simtime.h"
 #define NRANSI
-#include "nrutil.h"
+#include "nrutil.hh"
 #define MAXITS 20000000
 #define ALF 1.0e-4
 #define EPS 1.0e-7   // 1.0e-7

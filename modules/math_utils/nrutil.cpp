@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "nrutil.h"
+#include "nrutil.hh"
 #define NR_END 1
 #define FREE_ARG char *
 
