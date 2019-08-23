@@ -17,7 +17,8 @@ CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
 CXXFLAGS += -I. -larmadillo
 CXXFLAGS += -I$(module_math_utils) \
             -I$(module_cadac) \
-            -I$(module_actuator_dm)
+            -I$(module_actuator_dm) \
+            -I$(module_sensor_dm)
 LDFLAGS =
 
 # Source code
@@ -26,7 +27,8 @@ CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_util.cpp \
                $(TOP_DIR)/modules/dynamic_model/propulsion.cpp \
                $(TOP_DIR)/modules/dynamic_model/rocket_flight_dm.cpp \
                $(TOP_DIR)/modules/dynamic_model/earth_environment.cpp \
-               $(TOP_DIR)/modules/dynamic_model/aerodynamics.cpp
+               $(TOP_DIR)/modules/dynamic_model/aerodynamics.cpp \
+               $(TOP_DIR)/modules/dynamic_model/dm_exec.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
