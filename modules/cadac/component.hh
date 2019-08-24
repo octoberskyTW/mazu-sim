@@ -25,8 +25,6 @@ class ACT {
   double ActAccOutput;  /* *o  (r/s2)  Actuator output acceleration */
 
   virtual void Actuate(double input_command, double int_step) = 0;
-  virtual void set_1st_act_var(double Ang_limit_in, double Ang_rate_limit_in,
-                               double Ang_acc_limit_in, double Tau_in) = 0;
 };  // ACT
 
 class ACT_1st : public ACT {
@@ -37,7 +35,7 @@ class ACT_1st : public ACT {
   ~ACT_1st(){};
 
   virtual void Actuate(double input_command, double int_step);
-  virtual void set_1st_act_var(double Ang_limit_in, double Ang_rate_limit_in,
+  void set_1st_act_var(double Ang_limit_in, double Ang_rate_limit_in,
                                double Ang_acc_limit_in, double Tau_in);
 
  protected:
@@ -57,8 +55,6 @@ class ACT_NO_DYN : public ACT {
   ACT_NO_DYN(){};
   ~ACT_NO_DYN(){};
   virtual void Actuate(double input_command, double int_step);
-  virtual void set_1st_act_var(double Ang_limit_in, double Ang_rate_limit_in,
-                               double Ang_acc_limit_in, double Tau_in);
 };
 
 class ENG {

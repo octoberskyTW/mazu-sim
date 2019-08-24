@@ -18,6 +18,7 @@ class Rocket_SimObject : public Trick::SimObject {
     public:
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
+        Exec sim;
 
         void heart_beat(void) {
             char currentTime[84] = "";
