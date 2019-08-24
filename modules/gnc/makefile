@@ -23,7 +23,8 @@ CFLAGS += -I.
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/gnc/control.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/gnc/control.cpp \
+			   $(TOP_DIR)/modules/gnc/guidance.cpp
 C_SOURCES =
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
