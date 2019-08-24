@@ -13,7 +13,7 @@ case $PROJECT in
         ;;
     "egse_dm")
         cd $TOP_DIR/sim_exe/egse_dm
-        ./S_main_*.exe RUN_golden/input.cpp &
+        ./S_main_*.exe RUN_golden/input_dm.cpp &
 
         cd $TOP_DIR/sim_exe/fsw_gnc
         ./S_main_*.exe RUN_golden/input.cpp

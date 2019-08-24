@@ -19,6 +19,9 @@ class Rocket_SimObject : public Trick::SimObject {
     public:
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.005;
+        uint64_t egse_flight_event_handler_bitmap = 0xFFFFFFFFFFFFFFFF;
+        uint64_t flight_event_code_record = 0;
+        double stand_still_time = 0;
         Exec Sim;
         LaunchVehicle V1;
 
@@ -45,7 +48,7 @@ class Rocket_SimObject : public Trick::SimObject {
         Rocket_SimObject() : V1 (int_step)
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            //("initialization") Sim.init(&V1);
+            ("initialization") Sim.init(&V1);
             ("initialization")  dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
             P1 (1, "scheduled") heart_beat();
             P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
