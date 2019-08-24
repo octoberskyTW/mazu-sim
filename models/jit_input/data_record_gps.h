@@ -1,5 +1,5 @@
-#ifndef EXE_XIL_COMMON_MODIFIED_DATA_GPS_H_
-#define EXE_XIL_COMMON_MODIFIED_DATA_GPS_H_
+#ifndef __DATA_RECORD_GPS_H_
+#define __DATA_RECORD_GPS_H_
 
 #include "trick/DRAscii.hh"
 #include "trick/DataRecordGroup.hh"
@@ -73,4 +73,4 @@ extern "C" void record_gps()
     drg->enable();
 }
 
-#endif  // EXE_XIL_COMMON_MODIFIED_DATA_GPS_H_
+#endif  // __DATA_RECORD_GPS_H_

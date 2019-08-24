@@ -13,6 +13,8 @@ find $TARGET_DIR -type f -name "varserver_log" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "Session.dtd" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "log_gps.csv" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "log_gps.header" -exec rm -rf {} \;
+find $TARGET_DIR -type f -name "log_ngps.csv" -exec rm -rf {} \;
+find $TARGET_DIR -type f -name "log_ngps.header" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "log_nspo.csv" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "log_nspo.header" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "log_rocket_csv.csv" -exec rm -rf {} \;
