@@ -33,8 +33,9 @@ TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus \
 						-L${TOP_HOME}/modules/math_utils -lmath_utils
 TRICK_USER_LINK_LIBS += -larmadillo 
 
-TRICK_EXCLUDE += ${TOP_HOME}/modules
-#TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
+# TRICK_EXCLUDE += ${TOP_HOME}/modules
+TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
+#TRICK_SWIG_EXCLUDE += ${TOP_HOME}/modules
 TRICK_CXXFLAGS += ${INCLUDES}
 TRICK_CFLAGS += ${INCLUDES}
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow
