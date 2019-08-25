@@ -54,7 +54,7 @@ class SDTSimObject : public Trick::SimObject {
             uint64_t data = 0;
             int size;
             timestamp(currentTime);
-            size = dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &data);
+            size = dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &data, sizeof(data));
             if((size == sizeof(data)) && (data == 0xaa55aa5555aa55aa)) {
                 fprintf(stdout, "[%s] Server: Received\n",currentTime);
                 dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &data, sizeof(data));

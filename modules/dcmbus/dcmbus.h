@@ -130,7 +130,7 @@ int dcmbus_tx_direct(struct dcmbus_ctrlblk_t *D, const char *name,
                      void *payload, uint32_t size);
 
 int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t *D, const char *rg_name,
-                        void *payload);
+                        void *payload, uint32_t size);
 int dcmbus_ring_enqueue(struct dcmbus_ctrlblk_t *D, const char *rg_name,
                         void *payload, uint32_t size);
 #ifdef __cplusplus

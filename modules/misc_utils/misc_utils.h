@@ -6,6 +6,7 @@
 extern "C" {
 #endif
 void timestamp(char *currentTime);
+void hex_dump(char *str, uint8_t *pSrcBufVA, uint32_t SrcBufLen);
 #ifdef __cplusplus
 }
 #endif

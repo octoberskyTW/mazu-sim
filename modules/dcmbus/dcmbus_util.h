@@ -97,7 +97,6 @@ extern "C" {
 #endif
 uint32_t crc32(uint32_t crc, const uint8_t *buf);
 uint32_t crc32_create(const uint8_t *buf, const uint32_t len);
-void hex_dump(char *str, uint8_t *pSrcBufVA, uint32_t SrcBufLen);
 void debug_hex_dump(char *str, uint8_t *pSrcBufVA, uint32_t SrcBufLen);
 uint32_t invert_crc32(uint32_t crc);
 uint32_t crc_checker(uint32_t rx_crc, const uint8_t *buf, uint32_t size);

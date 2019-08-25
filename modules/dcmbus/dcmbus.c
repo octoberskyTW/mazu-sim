@@ -453,11 +453,11 @@ int dcmbus_channel_tx_job(struct dcmbus_ctrlblk_t *D, const char *ch_name)
 
 int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t *D,
                         const char *rg_name,
-                        void *payload)
+                        void *payload,
+                        uint32_t size)
 {
     struct dcmbus_ring_blk_t *iter = NULL, *is = NULL;
     struct dcmbus_header_t *rxcell = NULL;
-    int size = 0;
     list_for_each_entry_safe(iter, is, &D->ring_lhead, list)
     {
         if (strcmp(iter->rg_name, rg_name) == 0) {
@@ -468,7 +468,8 @@ int dcmbus_ring_dequeue(struct dcmbus_ctrlblk_t *D,
 
     if (rxcell == NULL)
         goto empty;
-    size = rxcell->frame_full_size;
+    if (size < rxcell->frame_full_size)
+        size = rxcell->frame_full_size;
     memcpy(payload, rxcell->l2frame, size);
     dcmbus_free_mem(&rxcell->l2frame);
     dcmbus_free_mem((void **) &rxcell);
