@@ -22,9 +22,7 @@ CXXFLAGS += -I$(module_math_utils) \
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/time_util.cpp \
-               $(TOP_DIR)/modules/dynamic_model/time_management.cpp \
-               $(TOP_DIR)/modules/dynamic_model/propulsion.cpp \
+CPP_SOURCES += $(TOP_DIR)/modules/dynamic_model/propulsion.cpp \
                $(TOP_DIR)/modules/dynamic_model/rocket_flight_dm.cpp \
                $(TOP_DIR)/modules/dynamic_model/earth_environment.cpp \
                $(TOP_DIR)/modules/dynamic_model/aerodynamics.cpp \

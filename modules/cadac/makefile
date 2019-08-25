@@ -33,7 +33,9 @@ CPP_SOURCES += $(TOP_DIR)/modules/cadac/cadac_util.cpp \
 			   $(TOP_DIR)/modules/cadac/component.cpp \
                $(TOP_DIR)/modules/cadac/signal_process.cpp \
                $(TOP_DIR)/modules/cadac/vehicle_var.cpp \
-               $(TOP_DIR)/modules/cadac/vehicle.cpp
+               $(TOP_DIR)/modules/cadac/vehicle.cpp \
+			   $(TOP_DIR)/modules/cadac/time_management.cpp \
+			   $(TOP_DIR)/modules/cadac/time_util.cpp
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(TARGET) $(CPP_SOURCES)
