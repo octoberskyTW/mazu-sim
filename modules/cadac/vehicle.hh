@@ -78,7 +78,7 @@ public:
     ACT_var *ACT;
     Sensor_var *Sensor;
 
-    std::vector<struct STAGE_VAR *> Stage_var_list;
+    std::vector<STAGE_VAR *> Stage_var_list;
     std::vector<struct ENG *> Eng_list;
     std::vector<RCS_Thruster *> Thruster_list;
     std::vector<ENG *> S1_Eng_list;

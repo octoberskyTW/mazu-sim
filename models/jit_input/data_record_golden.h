@@ -4,7 +4,7 @@
 #include "trick/DRAscii.hh"
 #include "trick/DataRecordGroup.hh"
 #include "trick/data_record_proto.h"
-
+extern Rocket_SimObject dyn;
 extern "C" void record_golden()
 {
     Trick::DRAscii *drg = new Trick::DRAscii("rocket_csv");

@@ -33,9 +33,25 @@ TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus \
 						-L${TOP_HOME}/modules/math_utils -lmath_utils
 TRICK_USER_LINK_LIBS += -larmadillo 
 
+## During a simulation build, Trick generates several rounds of files to
+## support data recording, checkpointing, and Python access:
+
+## Trick generates S_source.hh from the S_define
+## ICG recursively builds a tree of all header files included from S_source.hh and
+## generates an io_*.cpp and py_*.i file for each.
+## SWIG converts all py_*.i to py_*.cpp files
+## Trick compiles all io_*.cpp and py_*.cpp files
+
 # TRICK_EXCLUDE += ${TOP_HOME}/modules
-TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
-#TRICK_SWIG_EXCLUDE += ${TOP_HOME}/modules
+## ICG will let variable could record by Trick
+## It is possible to instruct ICG to skip entire directories
+## using the environment variable TRICK_ICG_EXCLUDE.
+## Set this variable to a colon separated list of directories
+## which you wish ICG to bypass.
+## This is useful when there is code which you do not wish Trick to have any knowledge of 
+## (i.e. you don’t need any of the parameters recorded or input processable).
+# TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
+# TRICK_SWIG_EXCLUDE += ${TOP_HOME}/modules
 TRICK_CXXFLAGS += ${INCLUDES}
 TRICK_CFLAGS += ${INCLUDES}
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow

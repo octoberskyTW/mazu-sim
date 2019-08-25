@@ -58,11 +58,12 @@ void LaunchVehicle::set_no_thrust() { Prop->thrust_state = NO_THRUST; }
 
 void LaunchVehicle::Allocate_stage(unsigned int stage_num)
 {
-    struct STAGE_VAR **stage_var = new STAGE_VAR *[stage_num];
+    //struct STAGE_VAR **stage_var = new STAGE_VAR *[stage_num];
+    STAGE_VAR **STAGE_VAR_PP = new STAGE_VAR *[stage_num];
     unsigned int ii = 0;
     for (ii = 0; ii < stage_num; ii++) {
-        stage_var[ii] = new STAGE_VAR;
-        Stage_var_list.push_back(stage_var[ii]);
+        STAGE_VAR_PP[ii] = new STAGE_VAR;
+        Stage_var_list.push_back(STAGE_VAR_PP[ii]);
     }
 }
 

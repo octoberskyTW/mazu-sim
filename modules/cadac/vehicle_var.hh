@@ -30,21 +30,7 @@ enum TVC_TYPE {
     S1_TVC
 };
 
-/* Stage variable */
-struct STAGE_VAR {
-    double isp;            /* *o (--) Rocket engine's specific impluse */
-    double fmass0;         /* ** (kg) Init fuel mass */
-    double StageMass0;     /* ** (kg) Stage init mass */
-    arma::mat33 IBBB0;     /* *o (--) Initial vehicle's MOI */
-    arma::mat33 IBBB1;     /* *o (kg*m2) Final vehicle's MOI */
-    arma::vec3 XCG_0;      /* *o (m) Initial vehicle's cg */
-    arma::vec3 XCG_1;      /* *o (m) Final vehicle's cg */
-    double fmasse;         /* *o (kg) Expended fuel mass */
-    double fmassd;         /* ** (kg/s) Fuel mass expended derivative */
-    double fuel_flow_rate; /* *o (kg/s) Fuel flow rate of engine */
-    double aexit;          /* *o (m2) Engine nozzle area */
-    double timer;          /* ** (s) Stage timer */
-};
+
 
 struct ENG_VAR {
     double ENG_mass;
@@ -59,6 +45,26 @@ struct ENG_VAR {
     VECTOR(ENG_XCG, 3);
     VECTOR(ENG_XCG_0, 3);
     VECTOR(ENG_XCG_1, 3);
+};
+
+/* Stage variable */
+class STAGE_VAR 
+{
+public:
+    STAGE_VAR();
+    ~STAGE_VAR(){};
+    double isp;            /* *o (--) Rocket engine's specific impluse */
+    double fmass0;         /* ** (kg) Init fuel mass */
+    double StageMass0;     /* ** (kg) Stage init mass */
+    MATRIX(IBBB0, 3, 3);    /* *o (--) Initial vehicle's MOI */
+    MATRIX(IBBB1, 3, 3);    /* *o (kg*m2) Final vehicle's MOI */
+    VECTOR(XCG_0, 3);       /* *o (m) Initial vehicle's cg */
+    VECTOR(XCG_1, 3);       /* *o (m) Final vehicle's cg */     
+    double fmasse;         /* *o (kg) Expended fuel mass */
+    double fmassd;         /* ** (kg/s) Fuel mass expended derivative */
+    double fuel_flow_rate; /* *o (kg/s) Fuel flow rate of engine */
+    double aexit;          /* *o (m2) Engine nozzle area */
+    double timer;          /* ** (s) Stage timer */
 };
 
 class Aerodynamics_var

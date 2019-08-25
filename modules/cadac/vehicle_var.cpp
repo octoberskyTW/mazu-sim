@@ -7,6 +7,13 @@ ACT_var::ACT_var() : VECTOR_INIT(Q_RCS, 6), VECTOR_INIT(Q_TVC, 6) {}
 EarthEnvironment_var::EarthEnvironment_var()
     : VECTOR_INIT(GRAVG, 3), VECTOR_INIT(VBAB, 3), MATRIX_INIT(TEI, 3, 3), VECTOR_INIT(VAED, 3) {}
 
+STAGE_VAR::STAGE_VAR()
+    : MATRIX_INIT(IBBB0, 3, 3),
+      MATRIX_INIT(IBBB1, 3, 3),
+      VECTOR_INIT(XCG_0, 3),
+      VECTOR_INIT(XCG_1, 3) {}
+
+
 DM_var::DM_var()
     : VECTOR_INIT(SBIIP, 3),
       VECTOR_INIT(VBIIP, 3),
