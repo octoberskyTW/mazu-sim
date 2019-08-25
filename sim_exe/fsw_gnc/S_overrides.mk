@@ -24,7 +24,7 @@ TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/config_util -lconfig_util
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/misc_utils -lmisc_utils
 TRICK_USER_LINK_LIBS += -larmadillo 
 
-TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
+# TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
 TRICK_CXXFLAGS += ${INCLUDES}
 TRICK_CFLAGS += ${INCLUDES}
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow
