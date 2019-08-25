@@ -18,57 +18,6 @@ LIBRARY DEPENDENCY:
 PROGRAMMERS:
       (((Chun-Hsu Lai) () () () ))
 *******************************************************************************/
-class Data_exchang
-{
-public:
-    Data_exchang(){};
-    ~Data_exchang(){};
-
-    void hset(std::string input, int val) { int_table[input] = val; }
-    void hset(std::string input, double val) { double_table[input] = val; }
-    void hset(std::string input, arma::vec val) { vec_table[input] = val; }
-    void hset(std::string input, arma::mat val) { mat_table[input] = val; }
-
-    void hget(std::string input, int *val)
-    {
-        if (int_table.find(input) == int_table.end()) {
-            std::cerr << "Can not find " << input << " in int_table." << std::endl;
-            std::abort();
-        }
-        *val = int_table.find(input)->second;
-    }
-    void hget(std::string input, double *val)
-    {
-        if (double_table.find(input) == double_table.end()) {
-            std::cerr << "Can not find " << input << " in double_table." << std::endl;
-            std::abort();
-        }
-        *val = double_table.find(input)->second;
-    }
-    void hget(std::string input, arma::vec &val)
-    {
-        if (vec_table.find(input) == vec_table.end()) {
-            std::cerr << "Can not find " << input << " in vec_table." << std::endl;
-            std::abort();
-        }
-        val = vec_table.find(input)->second;
-    }
-    void hget(std::string input, arma::mat &val)
-    {
-        if (mat_table.find(input) == mat_table.end()) {
-            std::cerr << "Can not find " << input << " in mat_table." << std::endl;
-            std::abort();
-        }
-        val = mat_table.find(input)->second;
-    }
-
-private:
-    std::map<std::string, int> int_table;
-    std::map<std::string, double> double_table;
-    std::map<std::string, arma::vec> vec_table;
-    std::map<std::string, arma::mat> mat_table;
-};
-
 class Vehicle
 {
 protected:
