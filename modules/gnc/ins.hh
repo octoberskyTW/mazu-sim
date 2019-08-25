@@ -4,7 +4,7 @@
 PURPOSE:
       (Describe the INS Module On Board, Error equations based on Zipfel,
 Figure 10.27, space stabilized INS with GPS updates) LIBRARY DEPENDENCY:
-      ((../src/Ins.cpp))
+      ((../src/ins.cpp))
 PROGRAMMERS:
       (( (Chun-Hsu Lai) (Chung-Fan Yang) ))
 *******************************************************************************/

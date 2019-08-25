@@ -4,7 +4,7 @@
 PURPOSE:
       (Describe the GUIDANCE Module On Board)
 LIBRARY DEPENDENCY:
-      ((../src/Guidance.cpp))
+      ((../src/guidance.cpp))
 PROGRAMMERS:
       (((Chung-Fan Yang) (Chun-Hsu Lai) () () ))
 *******************************************************************************/

@@ -4,9 +4,9 @@
 PURPOSE:
       (Describe the CONTROL Module On Board)
 LIBRARY DEPENDENCY:
-      ((../src/Control.cpp))
+      ((../src/control.cpp))
 PROGRAMMERS:
-      (((Chung-Fan Yang) () () () ))
+      (((Chung-Fan Yang) (Chun-Hsu Lai) () () ))
 *******************************************************************************/
 #include <armadillo>
 #include "aux.hh"
