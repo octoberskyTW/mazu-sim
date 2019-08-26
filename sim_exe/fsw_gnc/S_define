@@ -22,7 +22,8 @@ class FlightSoftware_SimObject : public Trick::SimObject {
     public:
         double clear_gps;
         double stand_still_time = 0.0;
-        double int_step = 0.05;
+        double int_step = 1;
+        struct dcmbus_ctrlblk_t dcmbus_obj;
         
         INS ins;
         Control control;
@@ -47,7 +48,7 @@ class FlightSoftware_SimObject : public Trick::SimObject {
         RCS_SAVE_decl();
         Guidance_SAVE_decl();
 
-        void link(){
+        void link() {
             INSLinkInData(ins, dm_ins_db);
             ControlLinkInData(control, ins_ctl_db, dm_ins_db);
             RcsLinkInData(rcs_fc, ins_ctl_db, guidance_rcs_db);
@@ -60,16 +61,21 @@ class FlightSoftware_SimObject : public Trick::SimObject {
         void clear_flag(){
             this->clear_gps = 0;
         }
-        
-        
-        
-        struct dcmbus_ctrlblk_t dcmbus_obj;
-
 
         void heart_beat(void) {
             char currentTime[84] = "";
             timestamp(currentTime);
             fprintf(stderr, "[%s] Client sim_time = %f\n", currentTime, exec_get_sim_time());
+        };
+
+        void load_input() {
+            if (dcmbus_ring_dequeue(&dcmbus_obj, "fsw_ins", &dm_ins_db, sizeof(dm_ins_db)) > 0) {
+                hex_dump("fsw", (uint8_t *)&dm_ins_db, sizeof(dm_ins_db));
+            }
+        };
+
+        void downlink_packet_transfer() {
+            dcmbus_ring_enqueue(&dcmbus_obj, "fsw_actuators", &dm_ins_db, sizeof(dm_ins_db));
         };
 
         void client_loopback(void) {
@@ -87,24 +93,23 @@ class FlightSoftware_SimObject : public Trick::SimObject {
         }
 
         FlightSoftware_SimObject() : ins(), guidance(), control() {
-            ("default_data") clear_flag();
 
+        	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
+            ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
+            ("default_data") clear_flag();
             ("initialization") link();
             ("initialization") control.initialize();
             ("initialization") ins.initialize();
-
-        	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            // ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
-            // P1 (1, "scheduled") heart_beat();
-            // P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
-            // P1 (1, "scheduled") client_loopback();
-            // P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
-
+            P1 (1, "scheduled") heart_beat();
+            P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
+            P1 (1, "scheduled") client_loopback();
+            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+#if 0
             P1 (int_step, "scheduled") time->dm_time(int_step);
-            // P2 (int_step, "scheduled") icf_rx_ctrl_job(&icf_esps_ctrl, HW_PORT8, sizeof(refactor_uplink_packet_t));
-            // P2 (int_step, "scheduled") load_input(&icf_esps_ctrl);
+            P1 (int_step, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", sizeof(dm_ins_db));
+            P1 (int_step, "scheduled") load_input();
 
-            P2 (0.01, "scheduled") clear_flag();
+            P2 (int_step, "scheduled") clear_flag();
 
             P2 (int_step, "scheduled") ins.update(int_step);
             P2 (int_step, "scheduled") INS_SaveOutData(ins, dm_ins_db, ins_ctl_db);
@@ -114,8 +119,8 @@ class FlightSoftware_SimObject : public Trick::SimObject {
             P2 (int_step, "scheduled") rcs_fc.actuate();
             P2 (int_step, "scheduled") RCS_SaveOutData(rcs_fc, ctl_tvc_db);
             P2 (int_step, "scheduled") Control_SaveOutData(control, ctl_tvc_db);
-            // P2 (int_step, "scheduled") downlink_packet_transfer(&icf_esps_ctrl);
-
+            P2 (int_step, "scheduled") downlink_packet_transfer();
+#endif
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;
