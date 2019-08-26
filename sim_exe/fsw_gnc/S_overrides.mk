@@ -16,12 +16,20 @@ INCLUDES = -I${TOP_HOME}/modules/hello_world \
            -I${TOP_HOME}/modules/dcmbus \
            -I${TOP_HOME}/modules/ringbuffer \
            -I${TOP_HOME}/modules/config_util \
-           -I${TOP_HOME}/modules/misc_utils
+           -I${TOP_HOME}/modules/misc_utils \
+		   -I${TOP_HOME}/modules/gnc \
+		   -I${TOP_HOME}/modules/cadac \
+		   -I${TOP_HOME}/modules/math_utils
+		   
 TRICK_USER_LINK_LIBS = -L${TOP_HOME}/modules/hello_world -lhello
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/ringbuffer -lringbuffer
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/config_util -lconfig_util
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/misc_utils -lmisc_utils
+TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/gnc -lgnc
+TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/cadac -lcadac
+TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/math_utils -lmath_utils
+
 TRICK_USER_LINK_LIBS += -larmadillo 
 
 # TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules

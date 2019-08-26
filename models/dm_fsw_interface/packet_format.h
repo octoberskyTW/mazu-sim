@@ -33,4 +33,34 @@ typedef struct __attribute__((packed)) {
     uint64_t flight_event_code;
 } refactor_downlink_packet_t;
 
+typedef struct __attribute__((packed)) {
+    int flag_ins_clear_gps;
+
+    double ins_dvbec;
+    double ins_thtvdcx;
+    double ins_thtbdcx;
+    double ins_TBDQ[4];
+    double ins_TBD[3][3];
+    double ins_TBICI[3][3];
+    double ins_TBIC[3][3];
+    double ins_WBECB[3];
+    double ins_ABICB[3];
+    double ins_SBIIC[3];
+    double ins_VBIIC[3];
+
+    double ins_alphacx;
+    double ins_psibdcx;
+    double ins_phibdcx;
+    double ins_altc;
+    double ins_alppcx;
+    double ins_phipcx;
+
+    double accel_FSPCB[3];
+    refactor_trick_dirty_data_t trick_data;
+} refactor_ins_to_ctl_t;
+
+typedef struct __attribute__((packed)) {
+    double guidance_UTBC[3];
+} guidnace_packet_t;
+
 #endif  // __PACKET_FORMAT_H__

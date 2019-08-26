@@ -10,13 +10,61 @@ LIBRARY DEPENDENCIES:
 #include "sim_objects/default_trick_sys.sm"
 ##include "dcmbus.h"
 ##include "misc_utils.h"
+##include "control.hh"
+##include "guidance.hh"
+##include "ins.hh"
+##include "rcs_fc.hh"
+##include "../../models/dm_fsw_interface/dataflow_binding.hh"
 ##include <libgen.h>
 
 class FlightSoftware_SimObject : public Trick::SimObject {
 
     public:
-        struct dcmbus_ctrlblk_t dcmbus_obj;
+        double clear_gps;
+        double stand_still_time = 0.0;
         double int_step = 0.05;
+        
+        INS ins;
+        Control control;
+        Guidance guidance;
+        RCS_FC rcs_fc;
+
+        time_management *time = time_management::get_instance();
+        uint64_t egse_flight_event_trigger_bitmap = 0xFFFFFFFFFFFFFFFF;
+        
+        refactor_uplink_packet_t dm_ins_db;
+        refactor_ins_to_ctl_t ins_ctl_db;
+        refactor_downlink_packet_t ctl_tvc_db;
+        guidnace_packet_t guidance_rcs_db;
+
+        INS_LINK_decl();
+        CONTROL_LINK_decl();
+        RCS_LINK_decl();
+        Guidance_LINK_decl();
+
+        INS_SAVE_decl();
+        CONTROL_SAVE_decl();
+        RCS_SAVE_decl();
+        Guidance_SAVE_decl();
+
+        void link(){
+            INSLinkInData(ins, dm_ins_db);
+            ControlLinkInData(control, ins_ctl_db, dm_ins_db);
+            RcsLinkInData(rcs_fc, ins_ctl_db, guidance_rcs_db);
+            GuidanceLinkData(guidance, ins_ctl_db);
+
+            /* XXX */
+            ins.clear_gps_flag  = [this](){ this->clear_gps = 1; };
+        };
+
+        void clear_flag(){
+            this->clear_gps = 0;
+        }
+        
+        
+        
+        struct dcmbus_ctrlblk_t dcmbus_obj;
+
 
         void heart_beat(void) {
             char currentTime[84] = "";
@@ -38,14 +86,35 @@ class FlightSoftware_SimObject : public Trick::SimObject {
             fprintf(stdout, "[%s] Client: Not Receive yet\n",currentTime);
         }
 
-        FlightSoftware_SimObject()
-        {
+        FlightSoftware_SimObject() : ins(), guidance(), control() {
+            ("default_data") clear_flag();
+
+            ("initialization") link();
+            ("initialization") control.initialize();
+            ("initialization") ins.initialize();
+
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
-            ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
-            P1 (1, "scheduled") heart_beat();
-            P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
-            P1 (1, "scheduled") client_loopback();
-            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+            // ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
+            // P1 (1, "scheduled") heart_beat();
+            // P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
+            // P1 (1, "scheduled") client_loopback();
+            // P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+
+            P1 (int_step, "scheduled") time->dm_time(int_step);
+            // P2 (int_step, "scheduled") icf_rx_ctrl_job(&icf_esps_ctrl, HW_PORT8, sizeof(refactor_uplink_packet_t));
+            // P2 (int_step, "scheduled") load_input(&icf_esps_ctrl);
+
+            P2 (0.01, "scheduled") clear_flag();
+
+            P2 (int_step, "scheduled") ins.update(int_step);
+            P2 (int_step, "scheduled") INS_SaveOutData(ins, dm_ins_db, ins_ctl_db);
+            P2 (int_step, "scheduled") guidance.guidance(int_step);
+            P2 (int_step, "scheduled") GuidanceSaveOutData(guidance, guidance_rcs_db, ctl_tvc_db);
+            P2 (int_step, "scheduled") control.control(int_step);
+            P2 (int_step, "scheduled") rcs_fc.actuate();
+            P2 (int_step, "scheduled") RCS_SaveOutData(rcs_fc, ctl_tvc_db);
+            P2 (int_step, "scheduled") Control_SaveOutData(control, ctl_tvc_db);
+            // P2 (int_step, "scheduled") downlink_packet_transfer(&icf_esps_ctrl);
 
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
