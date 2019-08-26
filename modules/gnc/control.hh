@@ -47,8 +47,6 @@ class Control {
   void atmosphere_use_nasa();
   void atmosphere_use_public();
 
-  arma::vec3 euler_angle(arma::mat33 TBD);
-
   void set_ancomx(double in);
   void set_alcomx(double in);
 
