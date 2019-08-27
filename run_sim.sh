@@ -16,7 +16,7 @@ case $PROJECT in
         ./S_main_*.exe RUN_golden/input_dm.cpp &
 
         cd $TOP_DIR/sim_exe/fsw_gnc
-        ./S_main_*.exe RUN_golden/input.cpp
+        ./S_main_*.exe RUN_golden/input_gnc.cpp
         break
         ;;
     *)
