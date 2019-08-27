@@ -1,5 +1,5 @@
-#ifndef DATA_RECORD_FSW_H
-#define DATA_RECORD_FSW_H
+#ifndef __DATA_RECORD_FSW_H__
+#define __DATA_RECORD_FSW_H__
 
 #include "trick/DRAscii.hh"
 #include "trick/DataRecordGroup.hh"
@@ -39,4 +39,4 @@ extern "C" void record_gps_slave()
     drg->enable();
 }
 
-#endif  // DATA_RECORD_FSW_H
+#endif  // __DATA_RECORD_FSW_H__
