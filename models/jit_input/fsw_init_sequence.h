@@ -189,7 +189,7 @@ extern "C" int slave_init_stage1_control(FlightSoftware_SimObject *fc)
 
     fc->control.set_ancomx(S1_ANCOMX);
     fc->control.set_alcomx(S1_ALCOMX);
-    fc->control.load_aerotable("../../../tables/aero_table_slv3.txt");
+    fc->control.load_aerotable("../../tables/aero_table_slv3.txt");
     fc->control.atmosphere_use_public();
     fc->control.set_close_loop_pole(ZACLP, ZACLY);
     fc->control.set_factor(FACTWACLP, FACTWACLY);
@@ -283,6 +283,6 @@ extern "C" void flight_events_trigger_configuration(FlightSoftware_SimObject *fc
     jit_add_read(61.6 + fc->stand_still_time, "event_s1_seperation");
     jit_add_read(113.14 + fc->stand_still_time, "event_s2_seperation");
     jit_add_event("event_UECO", "UECO", 0.05);
-    exec_set_terminate_time(5.001 + fc->stand_still_time);
+    exec_set_terminate_time(185.001 + fc->stand_still_time);
 }
 #endif  //  __FSW_INIT_SEQUENCE_H__

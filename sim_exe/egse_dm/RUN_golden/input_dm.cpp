@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <exception>
+
 #include "../S_source.hh"
 #include "trick/CheckPointRestart_c_intf.hh"
 #include "trick/exec_proto.h"
@@ -10,6 +11,7 @@
 #include "../../models/jit_input/data_record_golden.h"
 #include "../../models/jit_input/data_record_gps.h"
 #include "../../models/jit_input/dm_init_sequence.h"
+
 extern "C" int run_me()
 {
     record_gps();
