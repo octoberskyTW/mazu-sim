@@ -140,108 +140,13 @@ extern "C" int event_UECO(void)
     return 0;
 }
 
-// extern "C" int event_s2_control_on(void) {
-//     fc.control.set_S2_ROLL_CONTROL();
-//     // fc.ctl_tvc_db.flight_event_code = FLIGHT_EVENT_CODE_S2_ROLL_CONTROL;
-//     fc.egse_flight_event_trigger_bitmap &= ~(0x1U << FLIGHT_EVENT_CODE_S2_ROLL_CONTROL);
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_CODE_S2_ROLL_CONTROL", fc.ctl_tvc_db.flight_event_code);
-//     return 0;
-// }
-
-// extern "C" int event_pitch_down_phase_1(void) {
-//     if (fc.ins.get_altc() >= 500.0) {
-//         if (!IS_FLIGHT_EVENT_ARRIVED(FLIGHT_EVENT_PITCH_DOWN_PHASE_I, fc.egse_flight_event_trigger_bitmap, FLIGHT_EVENT_PITCH_DOWN_PHASE_I))
-//         return 0;
-//     } else {
-//         return 0;
-//     }
-
-//     fc.egse_flight_event_trigger_bitmap &= ~(0x1U << FLIGHT_EVENT_PITCH_DOWN_PHASE_I);
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_PITCH_DOWN_PHASE_I", FLIGHT_EVENT_PITCH_DOWN_PHASE_I);
-//     fc.control.set_S2_PITCH_DOWN_I();
-//     return 0;
-// }
-
-// extern "C" int event_pitch_down_phase_2(void) {
-//     if (fc.ins.get_altc() >= 2000.0) {
-//         if (!IS_FLIGHT_EVENT_ARRIVED(FLIGHT_EVENT_PITCH_DOWN_PHASE_II, fc.egse_flight_event_trigger_bitmap, FLIGHT_EVENT_PITCH_DOWN_PHASE_II))
-//         return 0;
-//     } else {
-//         return 0;
-//     }
-
-//     fc.egse_flight_event_trigger_bitmap &= ~(0x1U << FLIGHT_EVENT_PITCH_DOWN_PHASE_II);
-//     double S2_rollcmd = S2_ROLLCMD;
-//     double S2_yawcmd = S2_YAWCMD;
-//     fc.control.set_attcmd(S2_rollcmd, -5.5, S2_yawcmd);
-//     fc.control.set_S2_PITCH_DOWN_II();
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_PITCH_DOWN_PHASE_II", FLIGHT_EVENT_PITCH_DOWN_PHASE_II);
-//     return 0;
-// }
-
-// extern "C" int event_aoac_on(void) {
-//     if (fc.ins.get_altc() >= 20000.0 && fc.ins.get_alphacx() <= 1.0) {
-//         if (!IS_FLIGHT_EVENT_ARRIVED(FLIGHT_EVENT_AOA_CONTROL, fc.egse_flight_event_trigger_bitmap, FLIGHT_EVENT_AOA_CONTROL))
-//         return 0;
-//     } else {
-//         return 0;
-//     }
-
-//     fc.egse_flight_event_trigger_bitmap &= ~(0x1U << FLIGHT_EVENT_AOA_CONTROL);
-
-//     fc.control.set_S2_AOA();
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_AOA_CONTROL", FLIGHT_EVENT_AOA_CONTROL);
-//     return 0;
-// }
-
-// extern "C" int event_control_off(void) {
-//     fc.control.set_NO_CONTROL();
-//     fc.ctl_tvc_db.flight_event_code = FLIGHT_EVENT_CODE_CONTROL_OFF;
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_CODE_CONTROL_OFF", fc.ctl_tvc_db.flight_event_code);
-//     return 0;
-// }
-
-// extern "C" int event_fairing_jettison(void) {
-//     if (fc.ins.get_altc() >= 95000.0) {
-//         if (!IS_FLIGHT_EVENT_ARRIVED(FLIGHT_EVENT_FAIRING_JETTSION, fc.egse_flight_event_trigger_bitmap, FLIGHT_EVENT_FAIRING_JETTSION))
-//         return 0;
-//     } else {
-//         return 0;
-//     }
-
-//     fc.control.set_IBBB0(FARING_MOI_ROLL_0, FARING_MOI_PITCH_0, FARING_MOI_YAW_0);
-//     fc.control.set_IBBB1(FARING_MOI_ROLL_1, FARING_MOI_PITCH_1, FARING_MOI_YAW_1);
-//     fc.control.set_controller_var(S3_MDOT, S3_FMASS0, FARING_XCG_1, FARING_XCG_0, S3_ISP, S3_MDOT * HS_time);
-
-//     fc.egse_flight_event_trigger_bitmap &= ~(0x1U << FLIGHT_EVENT_FAIRING_JETTSION);
-
-//     fc.ctl_tvc_db.flight_event_code = FLIGHT_EVENT_FAIRING_JETTSION;
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_FAIRING_JETTSION", fc.ctl_tvc_db.flight_event_code);
-//     return 0;
-// }
-
-// extern "C" int event_hot_staging(void) {
-//     fc.ctl_tvc_db.flight_event_code = FLIGHT_EVENT_CODE_HOT_STAGING;
-//     fc.egse_flight_event_trigger_bitmap &= ~(0x1U << FLIGHT_EVENT_CODE_HOT_STAGING);
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_CODE_HOT_STAGING", fc.ctl_tvc_db.flight_event_code);
-//     return 0;
-// }
-
-// extern "C" int event_s3_control_on(void) {
-//     fc.ctl_tvc_db.flight_event_code = FLIGHT_EVENT_CODE_S3_CONTROL_ON;
-//     fc.control.set_S3_AOA();
-//     fc.egse_flight_event_trigger_bitmap &= ~(0x1U << FLIGHT_EVENT_CODE_S3_CONTROL_ON);
-//     PRINT_FLIGHT_EVENT_MESSAGE("FC", exec_get_sim_time(), "FLIGHT_EVENT_CODE_S3_CONTROL_ON", fc.ctl_tvc_db.flight_event_code);
-//     return 0;
-// }
-
 extern "C" int event_s1_seperation(void)
 {
     fc.control.set_controller_var(S2_VMASS0, S2_FUEL_FLOW_RATE, S2_FMASS0, S2_XCG_1, S2_XCG_0, S2_SPI, 0.0);
     fc.control.set_IBBB0(S2_MOI_ROLL_0, S2_MOI_PITCH_0, S2_MOI_YAW_0);
     fc.control.set_IBBB1(S2_MOI_ROLL_1, S2_MOI_PITCH_1, S2_MOI_YAW_1);
-    fc.control.set_reference_point(S2_RP);
-    fc.control.set_engine_d(0.0);
+    // fc.control.set_reference_point(S2_RP);
+    // fc.control.set_engine_d(0.0);
     fc.control.set_NO_CONTROL();
     fc.guidance.set_guidance_var(LTG_STEP, NUM_STAGES, DBI_DESIRED, DVBI_DESIRED, THTVDX_DESIRED, DELAY_IGNITION, AMIN, LAMD_LIMIT, EXHAUST_VEL1, EXHAUST_VEL2, BURNOUT_EPOCH1, BURNOUT_EPOCH2, CHAR_TIME1, CHAR_TIME2);
     fc.guidance.set_ltg_guidance();
@@ -257,8 +162,8 @@ extern "C" int event_s2_seperation(void)
     fc.control.set_controller_var(S3_VMASS0, S3_FUEL_FLOW_RATE, S3_FMASS0, S3_XCG_1, S3_XCG_0, S3_SPI, 0.0);
     fc.control.set_IBBB0(S3_MOI_ROLL_0, S3_MOI_PITCH_0, S3_MOI_YAW_0);
     fc.control.set_IBBB1(S3_MOI_ROLL_1, S3_MOI_PITCH_1, S3_MOI_YAW_1);
-    fc.control.set_reference_point(S3_RP);
-    fc.control.set_engine_d(0.0);
+    // fc.control.set_reference_point(S3_RP);
+    // fc.control.set_engine_d(0.0);
     // fc.control.set_NO_CONTROL();
     // fc.guidance.set_guidance_var(LTG_STEP, NUM_STAGES, DBI_DESIRED, DVBI_DESIRED, THTVDX_DESIRED, DELAY_IGNITION
     //                             , AMIN, LAMD_LIMIT, EXHAUST_VEL1, EXHAUST_VEL2, BURNOUT_EPOCH1
@@ -271,7 +176,7 @@ extern "C" int event_s2_seperation(void)
     return 0;
 }
 
-extern "C" int slave_init_stage1_control(FlightComputer_SimObject *fc)
+extern "C" int slave_init_stage1_control(FlightSoftware_SimObject *fc)
 {
     /* Control variable Stage2 */
     fc->control.set_controller_var(S1_VMASS0, S1_FUEL_FLOW_RATE, S1_FMASS0, S1_XCG_1, S1_XCG_0, S1_SPI, 0.0);
@@ -290,11 +195,11 @@ extern "C" int slave_init_stage1_control(FlightComputer_SimObject *fc)
     fc->control.set_factor(FACTWACLP, FACTWACLY);
     fc->control.set_aero_coffe(S1_refd, S1_refa, S1_XCP);
     fc->control.set_feedforward_gain(S1_GAINP);
-    fc->control.set_reference_point(S1_RP);
+    // fc->control.set_reference_point(S1_RP);
     fc->control.set_engnum(S1_ENG_NUM);
 }
 
-extern "C" int slave_init_ins_variable(FlightComputer_SimObject *fc)
+extern "C" int slave_init_ins_variable(FlightSoftware_SimObject *fc)
 {
     fc->ins.load_location(LONX, LATX, ALT);
     fc->ins.load_angle(PSIBDX, PHIBDX, THTBDX);
@@ -306,60 +211,60 @@ extern "C" int slave_init_ins_variable(FlightComputer_SimObject *fc)
     return 0;
 }
 
-extern "C" int slave_init_gps_fc_variable(FlightComputer_SimObject *fc)
-{
-    /* GPS */
-    double pr_bias_default[4] = { 0, 0, 0, 0 };
-    double pr_noise_default[4] = { 0.25, 0.25, 0.25, 0.25 };
-    double dr_noise_default[4] = { 0.03, 0.03, 0.03, 0.03 };
-    //  User clock frequency error - m/s MARKOV  module gps
-    fc->gps.ucfreq_noise = 0.1;
-    // User clock bias error - m GAUSS  module gps
-    fc->gps.ucbias_error = 0;
-    // Pseudo-range bias - m GAUSS  module gps
-    memcpy(fc->gps.PR_BIAS, pr_bias_default, sizeof(pr_bias_default));
-    //  Pseudo-range noise - m MARKOV  module gps
-    memcpy(fc->gps.PR_NOISE, pr_noise_default, sizeof(pr_noise_default));
-    //  Delta-range noise - m/s MARKOV  module gps
-    memcpy(fc->gps.DR_NOISE, dr_noise_default, sizeof(dr_noise_default));
-    //  Factor to modifiy initial P-matrix P(1+factp)=module gps
-    double gpsr_factp = 0;
-    //  Init 1sig clock bias error of state cov matrix - m=module gps
-    double gpsr_pclockb = 3;
-    //  Init 1sig clock freq error of state cov matrix - m/s=module gps
-    double gpsr_pclockf = 1;
-    fc->gps.setup_state_covariance_matrix(gpsr_factp, gpsr_pclockb, gpsr_pclockf);
+// extern "C" int slave_init_gps_fc_variable(FlightSoftware_SimObject *fc)
+// {
+//     /* GPS */
+//     double pr_bias_default[4] = { 0, 0, 0, 0 };
+//     double pr_noise_default[4] = { 0.25, 0.25, 0.25, 0.25 };
+//     double dr_noise_default[4] = { 0.03, 0.03, 0.03, 0.03 };
+//     //  User clock frequency error - m/s MARKOV  module gps
+//     fc->gps.ucfreq_noise = 0.1;
+//     // User clock bias error - m GAUSS  module gps
+//     fc->gps.ucbias_error = 0;
+//     // Pseudo-range bias - m GAUSS  module gps
+//     memcpy(fc->gps.PR_BIAS, pr_bias_default, sizeof(pr_bias_default));
+//     //  Pseudo-range noise - m MARKOV  module gps
+//     memcpy(fc->gps.PR_NOISE, pr_noise_default, sizeof(pr_noise_default));
+//     //  Delta-range noise - m/s MARKOV  module gps
+//     memcpy(fc->gps.DR_NOISE, dr_noise_default, sizeof(dr_noise_default));
+//     //  Factor to modifiy initial P-matrix P(1+factp)=module gps
+//     double gpsr_factp = 0;
+//     //  Init 1sig clock bias error of state cov matrix - m=module gps
+//     double gpsr_pclockb = 3;
+//     //  Init 1sig clock freq error of state cov matrix - m/s=module gps
+//     double gpsr_pclockf = 1;
+//     fc->gps.setup_state_covariance_matrix(gpsr_factp, gpsr_pclockb, gpsr_pclockf);
 
-    //  Factor to modifiy the Q-matrix Q(1+factq)=module gps
-    double gpsr_factq = 0;
-    //  1sig clock bias error of process cov matrix - m=module gps
-    double gpsr_qclockb = 0.5;
-    //  1sig clock freq error of process cov matrix - m/s=module gps
-    double gpsr_qclockf = 0.1;
-    fc->gps.setup_error_covariance_matrix(gpsr_factq, gpsr_qclockb, gpsr_qclockf);
+//     //  Factor to modifiy the Q-matrix Q(1+factq)=module gps
+//     double gpsr_factq = 0;
+//     //  1sig clock bias error of process cov matrix - m=module gps
+//     double gpsr_qclockb = 0.5;
+//     //  1sig clock freq error of process cov matrix - m/s=module gps
+//     double gpsr_qclockf = 0.1;
+//     fc->gps.setup_error_covariance_matrix(gpsr_factq, gpsr_qclockb, gpsr_qclockf);
 
-    //  User clock correlation time constant - s=module gps
-    double gpsr_uctime_cor = 100;
-    fc->gps.setup_fundamental_dynamic_matrix(gpsr_uctime_cor);
+//     //  User clock correlation time constant - s=module gps
+//     double gpsr_uctime_cor = 100;
+//     fc->gps.setup_fundamental_dynamic_matrix(gpsr_uctime_cor);
 
-    //  Init 1sig pos values of state cov matrix - m=module gps
-    fc->gps.ppos = 5;
-    //  Init 1sig vel values of state cov matrix - m/s=module gps
-    fc->gps.pvel = 0.2;
-    //  1sig pos values of process cov matrix - m=module gps
-    fc->gps.qpos = 0.1;
-    //  1sig vel values of process cov matrix - m/s=module gps
-    fc->gps.qvel = 0.01;
-    //  1sig pos value of meas cov matrix - m=module gps
-    fc->gps.rpos = 1;
-    //  1sig vel value of meas cov matrix - m/s=module gps
-    fc->gps.rvel = 0.1;
-    //  Factor to modifiy the R-matrix R(1+factr)=module gps
-    fc->gps.factr = 0;
-    return 0;
-}
+//     //  Init 1sig pos values of state cov matrix - m=module gps
+//     fc->gps.ppos = 5;
+//     //  Init 1sig vel values of state cov matrix - m/s=module gps
+//     fc->gps.pvel = 0.2;
+//     //  1sig pos values of process cov matrix - m=module gps
+//     fc->gps.qpos = 0.1;
+//     //  1sig vel values of process cov matrix - m/s=module gps
+//     fc->gps.qvel = 0.01;
+//     //  1sig pos value of meas cov matrix - m=module gps
+//     fc->gps.rpos = 1;
+//     //  1sig vel value of meas cov matrix - m/s=module gps
+//     fc->gps.rvel = 0.1;
+//     //  Factor to modifiy the R-matrix R(1+factr)=module gps
+//     fc->gps.factr = 0;
+//     return 0;
+// }
 
-extern "C" int slave_init_time(FlightComputer_SimObject *fc)
+extern "C" int slave_init_time(FlightSoftware_SimObject *fc)
 {
     unsigned int Year = 2017;
     unsigned int DOY = 81;
@@ -370,7 +275,7 @@ extern "C" int slave_init_time(FlightComputer_SimObject *fc)
     return 0;
 }
 
-extern "C" void flight_events_trigger_configuration(FlightComputer_SimObject *fc)
+extern "C" void flight_events_trigger_configuration(FlightSoftware_SimObject *fc)
 {
     /* events */
     jit_add_read(0.001 + fc->stand_still_time, "event_liftoff");
@@ -378,6 +283,6 @@ extern "C" void flight_events_trigger_configuration(FlightComputer_SimObject *fc
     jit_add_read(61.6 + fc->stand_still_time, "event_s1_seperation");
     jit_add_read(113.14 + fc->stand_still_time, "event_s2_seperation");
     jit_add_event("event_UECO", "UECO", 0.05);
-    exec_set_terminate_time(185.001 + fc->stand_still_time);
+    exec_set_terminate_time(5.001 + fc->stand_still_time);
 }
 #endif  //  __FSW_INIT_SEQUENCE_H__
