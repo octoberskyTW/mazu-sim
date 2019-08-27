@@ -1,0 +1,80 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+.tags*
+
+# Folder
+RUN_golden/
+DP_Product/
+
+*.ii
+*.i
+*.s
+S_default.dat
+S_sie.resource
+S_source.hh
+S_job_execution
+S_run_summary
+
+
+sim_exe/egse_dm/build/
+sim_exe/egse_dm/makefile
+sim_exe/egse_dm/trick/
+
+sim_exe/fsw_gnc/build/
+sim_exe/fsw_gnc/makefile
+sim_exe/fsw_gnc/trick/
+
+sim_exe/sample_client/RUN_test/_init_log.csv
+sim_exe/sample_client/RUN_test/jitlib/
+sim_exe/sample_client/RUN_test/log_frame.header
+sim_exe/sample_client/RUN_test/log_frame.trk
+sim_exe/sample_client/RUN_test/log_frame_trickjobs.header
+sim_exe/sample_client/RUN_test/log_frame_trickjobs.trk
+sim_exe/sample_client/RUN_test/log_frame_userjobs_main.header
+sim_exe/sample_client/RUN_test/log_frame_userjobs_main.trk
+sim_exe/sample_client/RUN_test/log_timeline.csv
+sim_exe/sample_client/RUN_test/log_timeline_init.csv
+sim_exe/sample_client/RUN_test/send_hs
+sim_exe/sample_client/RUN_test/varserver_log
+
+sim_exe/sample_client/build/
+sim_exe/sample_client/makefile
+sim_exe/sample_client/trick/
+sim_exe/sample_code/RUN_test/_init_log.csv
+sim_exe/sample_code/RUN_test/jitlib/
+sim_exe/sample_code/RUN_test/send_hs
+sim_exe/sample_code/RUN_test/varserver_log
+
+sim_exe/sample_code/build/
+sim_exe/sample_code/makefile
+sim_exe/sample_code/trick/

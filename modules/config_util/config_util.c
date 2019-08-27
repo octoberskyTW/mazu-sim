@@ -177,9 +177,9 @@ int read_config(void *table, int *numEntries, const char *config_path,
     }
 
     if (NULL != fp) {
-        fprintf(stdout, "Reading from %s \n", config_path);
+        fprintf(stdout, "\n ====== Reading from %s ====== \n", config_path);
         rc = read_table_file(table, fp, numEntries, specifier);
-        fprintf(stdout, "%d entries from config file %s\n", *numEntries,
+        fprintf(stdout, "Total %d entries from config file %s\n", *numEntries,
                 config_path);
         fclose(fp);
     }
