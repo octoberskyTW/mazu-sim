@@ -16,7 +16,7 @@ extern "C" int run_me()
 {
     record_gps();
     record_golden();
-    real_time_enable();
+    //real_time_enable();
     exec_set_software_frame(0.005);
     //exec_set_lock_memory(1);
     //exec_set_thread_priority(0, 1);

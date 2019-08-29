@@ -331,8 +331,9 @@ static int dcmbus_l2frame_recv(struct dcmbus_channel_blk_t *item, int buff_size)
                 __LINE__);
         goto empty;
     }
-    if (drv_ops->recv_data(item->drv_priv_data, rx_buffer, buff_size) <= 0)
+    if (drv_ops->recv_data(item->drv_priv_data, rx_buffer, buff_size) <= 0) {
         goto empty;
+    }
     debug_hex_dump("dcmbus_l2frame_recv", (uint8_t *) rx_buffer, buff_size);
 
     list_for_each_entry_safe(bind_item, is_b, &item->rxbind_lhead, list)

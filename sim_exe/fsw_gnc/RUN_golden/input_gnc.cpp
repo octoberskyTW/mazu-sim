@@ -13,7 +13,7 @@
 
 extern "C" int run_me()
 {
-    real_time_enable();
+    //real_time_enable();
     exec_set_software_frame(0.005);
     //exec_set_lock_memory(1);
     // exec_set_thread_priority(0, 1);
@@ -33,7 +33,5 @@ extern "C" int run_me()
     slave_init_stage1_control(&fc);
     /* events */
     flight_events_trigger_configuration(&fc);
-
-    // exec_set_terminate_time(100.0);
     return 0;
 }

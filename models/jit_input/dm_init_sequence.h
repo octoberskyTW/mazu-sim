@@ -102,7 +102,7 @@ extern "C" int event_separation_1()
 
     dyn.V1.set_refa(S2_refa);
     dyn.V1.set_refd(S2_refd);
-    dyn.Sim.aerodynamics.load_aerotable("../../../tables/Aero_Insertion_S2.txt");
+    dyn.Sim.aerodynamics.load_aerotable("../../tables/Aero_Insertion_S2.txt");
     dyn.V1.set_XCP(S2_XCP);
     dyn.V1.set_stage_2();
     // dyn.forces.set_reference_point(-3.917);  // set reference point
@@ -121,7 +121,7 @@ extern "C" int event_separation_2()
 
     dyn.V1.set_refa(S3_refa);
     dyn.V1.set_refd(S3_refd);
-    dyn.Sim.aerodynamics.load_aerotable("../../../tables/Aero_Insertion_S3.txt");
+    dyn.Sim.aerodynamics.load_aerotable("../../tables/Aero_Insertion_S3.txt");
     dyn.V1.set_XCP(S3_XCP);
     dyn.V1.set_stage_3();
     // dyn.forces.set_reference_point(-3.917);  // set reference point

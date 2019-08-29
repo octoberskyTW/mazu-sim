@@ -18,8 +18,8 @@ class Rocket_SimObject : public Trick::SimObject {
 
     public:
         struct dcmbus_ctrlblk_t dcmbus_obj;
-        double int_step = 1;
-        double fc_int_step = 1;
+        double int_step = 0.005;
+        double fc_int_step = 0.005;
         uint64_t egse_flight_event_handler_bitmap = 0xFFFFFFFFFFFFFFFF;
         uint64_t flight_event_code_record = 0;
         double stand_still_time = 0;
@@ -48,12 +48,13 @@ class Rocket_SimObject : public Trick::SimObject {
         };
 
         void egse_uplink_packet_transfer() {
-            dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &dm_ins_db, sizeof(dm_ins_db));
+            //  hex_dump("egse TX", (uint8_t *)&dm_ins_db, sizeof(refactor_uplink_packet_t));
+            dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &dm_ins_db, sizeof(refactor_uplink_packet_t));
         };
 
         void load_input() {
-            if (dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &ctl_tvc_db, sizeof(ctl_tvc_db)) > 0) {
-                //  hex_dump("egse", (uint8_t *)&ctl_tvc_db, sizeof(ctl_tvc_db));
+            if (dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &ctl_tvc_db, sizeof(refactor_downlink_packet_t)) > 0) {
+                //  hex_dump("egse RX", (uint8_t *)&ctl_tvc_db, sizeof(ctl_tvc_db));
                 flight_event_code_record = ctl_tvc_db.flight_event_code;
             }
         }
@@ -61,18 +62,7 @@ class Rocket_SimObject : public Trick::SimObject {
             uint64_t say_hi = 0xaa55aa5555aa55aa;
             dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &say_hi, sizeof(say_hi));
         };
-        void sever_loopback(void) {
-            char currentTime[84] = "";
-            uint64_t data = 0;
-            int size;
-            timestamp(currentTime);
-            size = dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &data, sizeof(data));
-            if((size == sizeof(data)) && (data == 0xaa55aa5555aa55aa)) {
-                fprintf(stdout, "[%s] Server: Received\n",currentTime);
-                return;
-            }
-            fprintf(stdout, "[%s] Server: Not Receive yet\n",currentTime);
-        }
+
 
         Rocket_SimObject() : V1 (int_step)
         {
@@ -85,13 +75,11 @@ class Rocket_SimObject : public Trick::SimObject {
             P1 (int_step, "scheduled") Sim.exec1(&V1);
 
             P2 (fc_int_step, "scheduled") DM_SaveOutData(dm_ins_db);
-            //  P2 (fc_int_step, "scheduled") egse_uplink_packet_transfer();
-            P2 (1, "scheduled") dm_tx_test();
-            P2 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+            P2 (fc_int_step, "scheduled") egse_uplink_packet_transfer();
+            P2 (fc_int_step, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
 
-            P3 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
-            P3 (1, "scheduled") sever_loopback();
-            //  P3 (fc_int_step, "scheduled") load_input();
+            P3 (fc_int_step, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", sizeof(refactor_downlink_packet_t));
+            P3 (fc_int_step, "scheduled") load_input();
             P3 (int_step, "scheduled") Sim.exec2(&V1);
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
