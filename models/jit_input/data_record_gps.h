@@ -63,12 +63,14 @@ extern "C" void record_gps()
     drg->add_variable("dyn.V1.DM->_p_b1_be[0]");
     drg->add_variable("dyn.V1.DM->_p_b1_be[1]");
     drg->add_variable("dyn.V1.DM->_p_b1_be[2]");
-    drg->add_variable("dyn.V1.DM->_Q_Aero[0]");
-    drg->add_variable("dyn.V1.DM->_Q_Aero[1]");
-    drg->add_variable("dyn.V1.DM->_Q_Aero[2]");
-    drg->add_variable("dyn.V1.DM->_Q_Aero[3]");
-    drg->add_variable("dyn.V1.DM->_Q_Aero[4]");
-    drg->add_variable("dyn.V1.DM->_Q_Aero[5]");
+    drg->add_variable("dyn.V1.ACT->_Q_TVC[0]");
+    drg->add_variable("dyn.V1.ACT->_Q_TVC[1]");
+    drg->add_variable("dyn.V1.ACT->_Q_TVC[2]");
+    drg->add_variable("dyn.V1.ACT->_Q_TVC[3]");
+    drg->add_variable("dyn.V1.ACT->_Q_TVC[4]");
+    drg->add_variable("dyn.V1.ACT->_Q_TVC[5]");
+    drg->add_variable("dyn.V1.ACT->theta_a_cmd");
+    drg->add_variable("dyn.V1.ACT->theta_b_cmd");
     add_data_record_group(drg, Trick::DR_Buffer);
     drg->enable();
 }

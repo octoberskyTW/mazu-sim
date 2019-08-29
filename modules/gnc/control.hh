@@ -38,6 +38,7 @@ class Control {
   void set_NO_CONTROL();
   void set_acc_control();
   void set_engnum(double in);
+  void set_reference_point(double in);
 
   double get_theta_a_cmd();
   double get_theta_b_cmd();

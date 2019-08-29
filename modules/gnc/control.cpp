@@ -345,3 +345,4 @@ void Control::set_aero_coffe(double in1, double in2, double in3)
 }
 void Control::set_feedforward_gain(double in1) { gainp = in1; }
 void Control::set_engnum(double in) { eng_num = in; }
+void Control::set_reference_point(double in) { reference_point = in; }

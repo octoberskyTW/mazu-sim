@@ -145,7 +145,7 @@ extern "C" int event_s1_seperation(void)
     fc.control.set_controller_var(S2_VMASS0, S2_FUEL_FLOW_RATE, S2_FMASS0, S2_XCG_1, S2_XCG_0, S2_SPI, 0.0);
     fc.control.set_IBBB0(S2_MOI_ROLL_0, S2_MOI_PITCH_0, S2_MOI_YAW_0);
     fc.control.set_IBBB1(S2_MOI_ROLL_1, S2_MOI_PITCH_1, S2_MOI_YAW_1);
-    // fc.control.set_reference_point(S2_RP);
+    fc.control.set_reference_point(S2_RP);
     // fc.control.set_engine_d(0.0);
     fc.control.set_NO_CONTROL();
     fc.guidance.set_guidance_var(LTG_STEP, NUM_STAGES, DBI_DESIRED, DVBI_DESIRED, THTVDX_DESIRED, DELAY_IGNITION, AMIN, LAMD_LIMIT, EXHAUST_VEL1, EXHAUST_VEL2, BURNOUT_EPOCH1, BURNOUT_EPOCH2, CHAR_TIME1, CHAR_TIME2);
@@ -162,7 +162,7 @@ extern "C" int event_s2_seperation(void)
     fc.control.set_controller_var(S3_VMASS0, S3_FUEL_FLOW_RATE, S3_FMASS0, S3_XCG_1, S3_XCG_0, S3_SPI, 0.0);
     fc.control.set_IBBB0(S3_MOI_ROLL_0, S3_MOI_PITCH_0, S3_MOI_YAW_0);
     fc.control.set_IBBB1(S3_MOI_ROLL_1, S3_MOI_PITCH_1, S3_MOI_YAW_1);
-    // fc.control.set_reference_point(S3_RP);
+    fc.control.set_reference_point(S3_RP);
     // fc.control.set_engine_d(0.0);
     // fc.control.set_NO_CONTROL();
     // fc.guidance.set_guidance_var(LTG_STEP, NUM_STAGES, DBI_DESIRED, DVBI_DESIRED, THTVDX_DESIRED, DELAY_IGNITION
@@ -195,7 +195,7 @@ extern "C" int slave_init_stage1_control(FlightSoftware_SimObject *fc)
     fc->control.set_factor(FACTWACLP, FACTWACLY);
     fc->control.set_aero_coffe(S1_refd, S1_refa, S1_XCP);
     fc->control.set_feedforward_gain(S1_GAINP);
-    // fc->control.set_reference_point(S1_RP);
+    fc->control.set_reference_point(S1_RP);
     fc->control.set_engnum(S1_ENG_NUM);
 }
 
