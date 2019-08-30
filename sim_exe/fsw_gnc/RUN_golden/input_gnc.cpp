@@ -8,8 +8,8 @@
 #include "trick/framelog_proto.h"
 #include "trick/realtimesync_proto.h"
 
-#include "../../models/jit_input/data_record_fsw.h"
-#include "../../models/jit_input/fsw_init_sequence.h"
+#include "data_record_fsw.h"
+#include "fsw_init_sequence.h"
 
 extern "C" int run_me()
 {

@@ -11,7 +11,7 @@ LIBRARY DEPENDENCIES:
 ##include "dcmbus.h"
 ##include "misc_utils.h"
 ##include "dm_exec.hh"
-##include "../../models/dm_fsw_interface/dataflow_binding.hh"
+##include "dataflow_binding.hh"
 ##include <libgen.h>
 
 class Rocket_SimObject : public Trick::SimObject {

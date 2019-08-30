@@ -8,9 +8,9 @@
 #include "trick/framelog_proto.h"
 #include "trick/realtimesync_proto.h"
 
-#include "../../models/jit_input/data_record_golden.h"
-#include "../../models/jit_input/data_record_gps.h"
-#include "../../models/jit_input/dm_init_sequence.h"
+#include "data_record_golden.h"
+#include "data_record_gps.h"
+#include "dm_init_sequence.h"
 
 extern "C" int run_me()
 {
