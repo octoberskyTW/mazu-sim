@@ -9,7 +9,6 @@ case $PROJECT in
 
         cd $TOP_DIR/sim_exe/sample_client
         ./S_main_*.exe RUN_test/input.cpp
-        break
         ;;
     "egse_dm")
         cd $TOP_DIR/sim_exe/egse_dm
@@ -17,7 +16,6 @@ case $PROJECT in
 
         cd $TOP_DIR/sim_exe/fsw_gnc
         ./S_main_*.exe RUN_golden/input_gnc.cpp
-        break
         ;;
     *)
         echo "Pleas check the PROJECT name !!"
