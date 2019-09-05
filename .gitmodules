@@ -4,3 +4,6 @@
 [submodule "third-party/trick"]
 	path = third-party/trick
 	url = git@github.com:nasa/trick.git
+[submodule "third-party/googletest"]
+	path = third-party/googletest
+	url = git@github.com:google/googletest.git
