@@ -35,6 +35,7 @@ run-sample_code:
 
 run-egse_dm:
 	./run_sim.sh $(TOP_DIR) egse_dm
+	./run_sim_error_check.sh $(TOP_DIR) egse_dm
 
 clean:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_clean $(SIM_MODULES_PATH)
