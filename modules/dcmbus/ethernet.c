@@ -68,21 +68,9 @@ static int ethernet_tcp_socket_server(struct ethernet_device_info_t *dev_info,
 
     dev_info->client_addr_len = sizeof(dev_info->client_addr);
     fprintf(stderr, "Waiting for the client ...\n");
-    while (1) {
-        dev_info->client_fd = accept(
-            dev_info->server_fd, (struct sockaddr *) &(dev_info->client_addr),
-            (socklen_t *) &dev_info->client_addr_len);
-        if (dev_info->client_fd < 0) {
-            if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
-                continue;
-            } else {
-                fprintf(stderr, "[%s:%d] Accept Fail ... %s:%d. status: %s\n",
-                        __func__, __LINE__, ifname, net_port, strerror(errno));
-                goto error;
-            }
-        }
-        break;
-    }
+    dev_info->client_fd = accept(
+        dev_info->server_fd, (struct sockaddr *) &(dev_info->client_addr),
+        (socklen_t *) &dev_info->client_addr_len);
     fprintf(stderr, "Accept on ... %s:%d\n", ifname, net_port);
 
     return 0;

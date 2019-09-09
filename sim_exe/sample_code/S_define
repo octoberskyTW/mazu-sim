@@ -10,6 +10,7 @@ LIBRARY DEPENDENCIES:
 #include "sim_objects/default_trick_sys.sm"
 ##include "hello.h"
 ##include "dcmbus.h"
+##include "misc_utils.h"
 ##include <libgen.h>
 
 class SDTSimObject : public Trick::SimObject {
@@ -18,6 +19,7 @@ class SDTSimObject : public Trick::SimObject {
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
         double send_delay = 0.005;
+        uint64_t seq_num = 0;
         void get_exe_path(void) {
             char name[] = "TRICK_HOME";
             // fprintf(stderr, "TRICK_HOME: %s\n", get_trick_env(name));
@@ -31,46 +33,41 @@ class SDTSimObject : public Trick::SimObject {
             }
         };
 
-        void timestamp(char *currentTime) {
-            char date_buf[80];
-            static struct timespec ts;
-            uint32_t milli;
-            clock_gettime(CLOCK_MONOTONIC, &ts);
-            ts.tv_sec = time(NULL);
-            milli = ts.tv_nsec / 1000000;
-            strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
-            snprintf(currentTime, 84, "%s.%03d", date_buf, milli);
-            //fprintf(stderr, "[%s] sim_time = %f\n", currentTime, exec_get_sim_time());
-        };
-
         void heart_beat(void) {
             char currentTime[84] = "";
             timestamp(currentTime);
             fprintf(stderr, "[%s] Server sim_time = %f\n", currentTime, exec_get_sim_time());
         };
 
-        void sever_loopback(void) {
+        void server_enqueue(void) {
+            uint64_t data = 0;
+            data = seq_num;
+            dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &data, sizeof(data));
+        }
+
+        void server_rx_process(void) {
             char currentTime[84] = "";
             uint64_t data = 0;
             int size;
             timestamp(currentTime);
             size = dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &data, sizeof(data));
-            if((size == sizeof(data)) && (data == 0xaa55aa5555aa55aa)) {
-                fprintf(stdout, "[%s] Server: Received\n",currentTime);
-                dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &data, sizeof(data));
+            if((size == sizeof(data)) && (data == seq_num)) {
+                fprintf(stdout, "[%s] Server: Received %lu expected %lu\n", currentTime, data, seq_num);
+                seq_num++;
                 return;
             }
-            fprintf(stdout, "[%s] Server: Not Receive yet\n",currentTime);
         }
 
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
             ("initialization")  dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
+            
             P1 (1, "scheduled") heart_beat();
-            P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
-            P1 (1, "scheduled") sever_loopback();
-            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+            P2 (1, "scheduled") server_enqueue();
+            P2 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+            P3 (0.005, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
+            P3 (0.005, "scheduled") server_rx_process();
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;

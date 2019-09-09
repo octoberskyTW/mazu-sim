@@ -12,17 +12,10 @@ struct non_blocking_io_info_t {
     struct sockaddr_in server_addr;
     struct sockaddr_in client_addr;
     int client_addr_len;
-    uint32_t header_size;
     int sock_type;
-    int max_sd;
-    int new_sd;
-    int desc_ready;
-    int end_server;
-    int close_conn;
     struct timeval timeout;
-    fd_set master_set;
-    fd_set tx_working_set;
-    fd_set rx_working_set;
+    fd_set readfd_set;
+    fd_set writefd_set;
 };
 
 #endif  // __NON_BLOCKING_IO_H__

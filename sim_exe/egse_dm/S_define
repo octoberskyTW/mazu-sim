@@ -58,11 +58,6 @@ class Rocket_SimObject : public Trick::SimObject {
                 flight_event_code_record = ctl_tvc_db.flight_event_code;
             }
         }
-        void dm_tx_test(void) {
-            uint64_t say_hi = 0xaa55aa5555aa55aa;
-            dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &say_hi, sizeof(say_hi));
-        };
-
 
         Rocket_SimObject() : V1 (int_step)
         {
@@ -71,15 +66,15 @@ class Rocket_SimObject : public Trick::SimObject {
             ("initialization") Sim.init(&V1);
             ("initialization")  dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
 
-            P1 (1, "scheduled") heart_beat();
+            P1 (5, "scheduled") heart_beat();
             P1 (int_step, "scheduled") Sim.exec1(&V1);
 
             P2 (fc_int_step, "scheduled") DM_SaveOutData(dm_ins_db);
             P2 (fc_int_step, "scheduled") egse_uplink_packet_transfer();
             P2 (fc_int_step, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
 
-            P3 (fc_int_step, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", sizeof(refactor_downlink_packet_t));
-            P3 (fc_int_step, "scheduled") load_input();
+            P3 (int_step, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", sizeof(refactor_downlink_packet_t));
+            P3 (int_step, "scheduled") load_input();
             P3 (int_step, "scheduled") Sim.exec2(&V1);
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }

@@ -28,6 +28,7 @@ void timestamp(char *currentTime)
     clock_gettime(CLOCK_MONOTONIC, &ts);
     ts.tv_sec = time(NULL);
     milli = ts.tv_nsec / 1000000;
-    strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
+    //strftime(date_buf, (size_t) 20, "%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
+    strftime(date_buf, (size_t) 20, "%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
     snprintf(currentTime, 84, "%s.%03d", date_buf, milli);
 }

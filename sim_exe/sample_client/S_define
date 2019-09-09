@@ -10,6 +10,7 @@ LIBRARY DEPENDENCIES:
 #include "sim_objects/default_trick_sys.sm"
 ##include "hello.h"
 ##include "dcmbus.h"
+##include "misc_utils.h"
 ##include <libgen.h>
 
 class SDTSimObject : public Trick::SimObject {
@@ -17,8 +18,7 @@ class SDTSimObject : public Trick::SimObject {
     public:
         struct dcmbus_ctrlblk_t dcmbus_obj;
         double int_step = 0.05;
-        double send_delay = 0.005;
-        uint32_t data = 0x55667788;
+        uint64_t seq_num = 0;
         void get_exe_path(void) {
             char path[500] = {0};
             int dest_len = 500;
@@ -29,16 +29,6 @@ class SDTSimObject : public Trick::SimObject {
                 printf("path=%s\n", path);
             }
         };
-        void timestamp(char *currentTime) {
-            char date_buf[80];
-            static struct timespec ts;
-            uint32_t milli;
-            clock_gettime(CLOCK_MONOTONIC, &ts);
-            ts.tv_sec = time(NULL);
-            milli = ts.tv_nsec / 1000000;
-            strftime(date_buf, (size_t) 20, "%Y/%m/%d,%H:%M:%S", localtime(&ts.tv_sec));
-            snprintf(currentTime, 84, "%s.%03d", date_buf, milli);
-        };
 
         void heart_beat(void) {
             char currentTime[84] = "";
@@ -46,37 +36,33 @@ class SDTSimObject : public Trick::SimObject {
             fprintf(stderr, "[%s] Client sim_time = %f\n", currentTime, exec_get_sim_time());
         };
 
-        void fsw_trigger(void) {
-            uint64_t say_hi = 0xaa55aa5555aa55aa;
+        void client_enqueue(void) {
+            uint64_t say_hi = seq_num;
             //  dcmbus_tx_direct(&dcmbus_obj, "fsw-egse", &say_hi, 8);
             dcmbus_ring_enqueue(&dcmbus_obj, "fsw_actuators", &say_hi, sizeof(say_hi));
         };
 
-        void client_loopback(void) {
+        void client_rx_process(void) {
             char currentTime[84] = "";
             uint64_t data = 0;
             int size;
             timestamp(currentTime);
             size = dcmbus_ring_dequeue(&dcmbus_obj, "fsw_ins", &data, sizeof(data));
-            if((size == sizeof(data)) && (data == 0xaa55aa5555aa55aa)) {
-                fprintf(stdout, "[%s] Client: Received\n",currentTime);
-                dcmbus_ring_enqueue(&dcmbus_obj, "fsw_actuators", &data, sizeof(data));
+            if(size == sizeof(data)) {
+                fprintf(stdout, "[%s] Client: Received %lu prev_seq %lu\n", currentTime, data, seq_num);
+                seq_num = data;
                 return;
             }
-            fprintf(stdout, "[%s] Client: Not Receive yet\n",currentTime);
         }
 
         SDTSimObject()
         {
         	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
             ("initialization") dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_client_ring.cfg", "dcm_client_channel.cfg", "dcm_client_bind.cfg", 0);
-            ("initialization") fsw_trigger();
-            P1 (1, "scheduled") heart_beat();
-            P1 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
             P1 (1, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", 8);
-            P1 (1, "scheduled") client_loopback();
-            
-            
+            P1 (1, "scheduled") client_rx_process(); 
+            P2 (1, "scheduled") client_enqueue();
+            P2 (1, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
             ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
         }
 } ;
