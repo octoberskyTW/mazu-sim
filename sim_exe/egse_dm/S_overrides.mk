@@ -57,7 +57,7 @@ TRICK_USER_LINK_LIBS += -larmadillo
 ## (i.e. you don’t need any of the parameters recorded or input processable).
 # TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
 # TRICK_SWIG_EXCLUDE += ${TOP_HOME}/modules
-TRICK_CXXFLAGS += ${INCLUDES}
-TRICK_CFLAGS += ${INCLUDES}
+TRICK_CXXFLAGS += ${INCLUDES} -std=c++11
+TRICK_CFLAGS += ${INCLUDES} -std=c99
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow
 MAKEFLAGS += -j16

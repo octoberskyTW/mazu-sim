@@ -35,7 +35,7 @@ TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/math_utils -lmath_utils
 TRICK_USER_LINK_LIBS += -larmadillo 
 
 # TRICK_ICG_EXCLUDE += ${TOP_HOME}/modules
-TRICK_CXXFLAGS += ${INCLUDES}
-TRICK_CFLAGS += ${INCLUDES}
+TRICK_CXXFLAGS += ${INCLUDES} -std=c++11
+TRICK_CFLAGS += ${INCLUDES} -std=c99
 #TRICK_CFLAGS += -Wall -Wmissing-prototypes -Wextra -Wshadow
 MAKEFLAGS += -j16
