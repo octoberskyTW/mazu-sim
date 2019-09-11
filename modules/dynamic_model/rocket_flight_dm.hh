@@ -68,7 +68,6 @@ private:
 
     arma::vec build_VBEB(double _alpha0x, double _beta0x, double dvbe);
     arma::mat calculate_TBD(LaunchVehicle *VehicleIn);
-    arma::vec3 euler_angle(arma::mat33 TBD_in);
 
     void gamma_beta(DM_var *VarIn);
     void Gravity_Q(LaunchVehicle *VehicleIn);

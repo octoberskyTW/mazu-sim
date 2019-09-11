@@ -384,3 +384,55 @@ int sign(const double &variable)
 
     return sign;
 }
+
+arma::vec3 euler_angle(arma::mat33 TBD_in)
+{
+    double psibdc(0), thtbdc(0), phibdc(0);
+    double cthtbd(0);
+
+    double mroll = 0;
+
+    double tbd13 = TBD_in(0, 2);
+    double tbd11 = TBD_in(0, 0);
+    double tbd33 = TBD_in(2, 2);
+    double tbd12 = TBD_in(0, 1);
+    double tbd23 = TBD_in(1, 2);
+
+    arma::vec3 euler_ang;
+    // *geodetic Euler angles
+    // computed pitch angle: 'thtbdc'
+    // note: when |tbd13| >= 1, thtbdc = +- pi/2, but cos(thtbdc) is
+    // forced to be a small positive number to prevent division by zero
+    if (fabs(tbd13) < 1) {
+        thtbdc = asin(-tbd13);
+        cthtbd = cos(thtbdc);
+    } else {
+        thtbdc = PI / 2 * sign(-tbd13);
+        cthtbd = EPS;
+    }
+    // computed yaw angle: 'psibdc'
+    double cpsi = tbd11 / cthtbd;
+    if (fabs(cpsi) > 1)
+        cpsi = 1 * sign(cpsi);
+    psibdc = acos(cpsi) * sign(tbd12);
+
+    // computed roll angle: 'phibdc'
+    double cphi = tbd33 / cthtbd;
+    if (fabs(cphi) > 1)
+        cphi = 1 * sign(cphi);
+
+    // selecting the Euler roll angle of flight mechanics (not for thtbdc=90 or
+    // =-90deg)
+    if (mroll == 0 || mroll == 1)
+        // roll feedback for right side up
+        phibdc = acos(cphi) * sign(tbd23);
+    else if (mroll == 2)
+        // roll feedback for inverted flight
+        phibdc = acos(-cphi) * sign(-tbd23);
+
+    euler_ang(0) = phibdc;
+    euler_ang(1) = thtbdc;
+    euler_ang(2) = psibdc;
+
+    return euler_ang;
+}

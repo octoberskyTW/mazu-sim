@@ -42,6 +42,7 @@ arma::mat33 cross_matrix(arma::vec3 in);
 arma::mat33 TMX(double ang);
 arma::mat33 TMY(double ang);
 arma::mat33 TMZ(double ang);
+arma::vec3 euler_angle(arma::mat33 TBD_in);
 
 #define STORE_MAT33(dest, src)          \
     do {                                \
