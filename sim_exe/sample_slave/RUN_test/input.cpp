@@ -2,12 +2,12 @@
 #include <exception>
 #include "../S_source.hh"
 #include "trick/CheckPointRestart_c_intf.hh"
-#include "trick/external_application_c_intf.h"
-#include "trick/realtimesync_proto.h"
-#include "trick/framelog_proto.h"
 #include "trick/exec_proto.h"
-extern "C" int run_me() {
-
+#include "trick/external_application_c_intf.h"
+#include "trick/framelog_proto.h"
+#include "trick/realtimesync_proto.h"
+extern "C" int run_me()
+{
     real_time_enable();
     exec_set_software_frame(0.005);
     //exec_set_lock_memory(1);

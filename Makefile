@@ -30,12 +30,12 @@ trick_build: modules_build
 modules_build:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_build $(SIM_MODULES_PATH)
 
-run-sample_code:
-	./run_sim.sh $(TOP_DIR) sample_code
+run-sample_master:
+	./run_sim.sh $(TOP_DIR) sample_master
 
-run-egse_dm:
-	./run_sim.sh $(TOP_DIR) egse_dm
-	./run_sim_error_check.sh $(TOP_DIR) egse_dm
+run-skyline_dm:
+	./run_sim.sh $(TOP_DIR) skyline_dm
+	./run_sim_error_check.sh $(TOP_DIR) skyline_dm
 
 clean:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_clean $(SIM_MODULES_PATH)

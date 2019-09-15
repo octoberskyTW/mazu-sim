@@ -30,4 +30,6 @@ find $TARGET_DIR -type f -name "log_frame_trickjobs.trk" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "log_frame_userjobs_main.header" -exec rm -rf {} \; 
 find $TARGET_DIR -type f -name "log_timeline.csv" -exec rm -rf {} \;
 find $TARGET_DIR -type f -name "_init_log.csv" -exec rm -rf {} \;
+find $TARGET_DIR -type f -name "log_ngps_slave.csv" -exec rm -rf {} \;
+find $TARGET_DIR -type f -name "log_ngps_slave.header" -exec rm -rf {} \;
 echo "Clean Completed!"

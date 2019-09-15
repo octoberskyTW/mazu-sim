@@ -64,19 +64,19 @@ $ pip install cpplint
 ## 3. Build and Run a sample code
 ```
 $ make
-$ make run-sample_code
+$ make run-sample_master
 ```
 
 # Build and run the specific project
-- Tutorial project: sample_code
+- Tutorial project: sample_master
   ```
-  $ make project=sample_code
-  $ make run-sample_code
+  $ make project=sample_master
+  $ make run-sample_master
   ```
-- ARRC Rocket project: egse_dm
+- Rocket project: skyline_dm
   ```
-  $ make project=egse_dm
-  $ make run-egse_dm
+  $ make project=skyline_dm
+  $ make run-skyline_dm
   ```
 # Doxygen
 ```

@@ -3,18 +3,18 @@ TOP_DIR=$1
 PROJECT=$2
 
 case $PROJECT in
-    "sample_code")
-        cd $TOP_DIR/sim_exe/sample_code
+    "sample_master")
+        cd $TOP_DIR/sim_exe/sample_master
         ./S_main_*.exe RUN_test/input.cpp &
 
-        cd $TOP_DIR/sim_exe/sample_client
+        cd $TOP_DIR/sim_exe/sample_slave
         ./S_main_*.exe RUN_test/input.cpp
         ;;
-    "egse_dm")
-        cd $TOP_DIR/sim_exe/egse_dm
+    "skyline_dm")
+        cd $TOP_DIR/sim_exe/skyline_dm
         ./S_main_*.exe RUN_golden/input_dm.cpp &
 
-        cd $TOP_DIR/sim_exe/fsw_gnc
+        cd $TOP_DIR/sim_exe/skyline_gnc
         ./S_main_*.exe RUN_golden/input_gnc.cpp
         ;;
     *)

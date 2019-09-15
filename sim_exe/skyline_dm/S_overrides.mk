@@ -22,7 +22,7 @@ INCLUDES = -I${TOP_HOME}/modules/dcmbus \
            -I${TOP_HOME}/modules/cadac \
            -I${TOP_HOME}/modules/math_utils \
 		   -I${TOP_HOME}/modules/gnc \
-           -I${TOP_HOME}/models/jit_input \
+           -I${TOP_HOME}/models/skyline_input \
            -I${TOP_HOME}/models/dm_fsw_interface
 
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus \
