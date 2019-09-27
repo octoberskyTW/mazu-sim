@@ -33,12 +33,12 @@ modules_build:
 run-sample_master:
 	./run_sim.sh $(TOP_DIR) sample_master
 
-run-skyline_dm:
-	./run_sim.sh $(TOP_DIR) skyline_dm
+run-skyline:
+	./run_sim.sh $(TOP_DIR) skyline
 	./run_sim_error_check.sh $(TOP_DIR) skyline_dm
 
-run-http3a_dm:
-	./run_sim.sh $(TOP_DIR) http3a_dm
+run-http3a:
+	./run_sim.sh $(TOP_DIR) http3a
 	./run_sim_error_check.sh $(TOP_DIR) http3a_dm
 
 clean:

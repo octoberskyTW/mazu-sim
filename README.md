@@ -73,10 +73,10 @@ $ make run-sample_master
   $ make project=sample_master
   $ make run-sample_master
   ```
-- Rocket project: skyline_dm
+- Rocket project: skyline
   ```
-  $ make project=skyline_dm
-  $ make run-skyline_dm
+  $ make project=skyline
+  $ make run-skyline
   ```
 # Doxygen
 ```

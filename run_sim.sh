@@ -10,14 +10,14 @@ case $PROJECT in
         cd $TOP_DIR/sim_exe/sample_slave
         ./S_main_*.exe RUN_test/input.cpp
         ;;
-    "skyline_dm")
+    "skyline")
         cd $TOP_DIR/sim_exe/skyline_dm
         ./S_main_*.exe RUN_golden/input_dm.cpp &
 
         cd $TOP_DIR/sim_exe/skyline_gnc
         ./S_main_*.exe RUN_golden/input_gnc.cpp
         ;;
-    "http3a_dm")
+    "http3a")
         cd $TOP_DIR/sim_exe/http3a_dm
         ./S_main_*.exe RUN_golden/input_dm.cpp &
 
