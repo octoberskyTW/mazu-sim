@@ -17,6 +17,13 @@ case $PROJECT in
         cd $TOP_DIR/sim_exe/skyline_gnc
         ./S_main_*.exe RUN_golden/input_gnc.cpp
         ;;
+    "http3a_dm")
+        cd $TOP_DIR/sim_exe/http3a_dm
+        ./S_main_*.exe RUN_golden/input_dm.cpp &
+
+        cd $TOP_DIR/sim_exe/http3a_gnc
+        ./S_main_*.exe RUN_golden/input_gnc.cpp
+        ;;
     *)
         echo "Pleas check the PROJECT name !!"
         exit 1

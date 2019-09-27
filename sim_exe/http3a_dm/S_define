@@ -1,0 +1,83 @@
+/************************TRICK HEADER*************************
+PURPOSE:
+    (This S_define works with the RUN_analytic input file)
+LIBRARY DEPENDENCIES:
+    (
+
+    )
+*************************************************************/
+
+#include "sim_objects/default_trick_sys.sm"
+##include "dcmbus.h"
+##include "misc_utils.h"
+##include "dm_exec.hh"
+##include "dataflow_binding.hh"
+##include <libgen.h>
+
+class Rocket_SimObject : public Trick::SimObject {
+
+    public:
+        struct dcmbus_ctrlblk_t dcmbus_obj;
+        double int_step = 0.005;
+        double fc_int_step = 0.005;
+        uint64_t egse_flight_event_handler_bitmap = 0xFFFFFFFFFFFFFFFF;
+        uint64_t flight_event_code_record = 0;
+        double stand_still_time = 0;
+        refactor_uplink_packet_t dm_ins_db;
+        refactor_downlink_packet_t ctl_tvc_db;
+        DM_SAVE_decl();
+        Exec Sim;
+        LaunchVehicle V1;
+
+        void link(){
+            Sim.tvc.grab_theta_a_cmd       = GRAB_VAR(ctl_tvc_db.theta_a_cmd);
+            Sim.tvc.grab_theta_b_cmd       = GRAB_VAR(ctl_tvc_db.theta_b_cmd);
+            Sim.tvc.grab_theta_c_cmd       = GRAB_VAR(ctl_tvc_db.theta_c_cmd);
+            Sim.tvc.grab_theta_d_cmd       = GRAB_VAR(ctl_tvc_db.theta_d_cmd);
+
+            Sim.rcs.grab_e_roll            = GRAB_VAR(ctl_tvc_db.e_roll);
+            Sim.rcs.grab_e_pitch            = GRAB_VAR(ctl_tvc_db.e_pitch);
+            Sim.rcs.grab_e_yaw            = GRAB_VAR(ctl_tvc_db.e_yaw);
+
+            Sim.propulsion.grab_beco_flag = GRAB_VAR(ctl_tvc_db.beco_flag);
+        };
+        void heart_beat(void) {
+            char currentTime[84] = "";
+            timestamp(currentTime);
+            fprintf(stderr, "[%s] Server sim_time = %f\n", currentTime, exec_get_sim_time());
+        };
+
+        void egse_uplink_packet_transfer() {
+            //  hex_dump("egse TX", (uint8_t *)&dm_ins_db, sizeof(refactor_uplink_packet_t));
+            dcmbus_ring_enqueue(&dcmbus_obj, "dm_sensors", &dm_ins_db, sizeof(refactor_uplink_packet_t));
+        };
+
+        void load_input() {
+            if (dcmbus_ring_dequeue(&dcmbus_obj, "dm_actuators", &ctl_tvc_db, sizeof(refactor_downlink_packet_t)) > 0) {
+                //  hex_dump("egse RX", (uint8_t *)&ctl_tvc_db, sizeof(ctl_tvc_db));
+                flight_event_code_record = ctl_tvc_db.flight_event_code;
+            }
+        }
+
+        Rocket_SimObject() : V1 (int_step)
+        {
+        	/* [C<#>] [{job_tag}] [P<#>] ([<cycle_time>, [<start_time>, [<stop_time>,]]] <job_class>) <module>([args]) ; */
+            ("initialization") link();
+            ("initialization") Sim.init(&V1);
+            ("initialization")  dcmbus_ctrlblk_init (&dcmbus_obj, "dcm_ring.cfg", "dcm_channel.cfg", "dcm_bind.cfg" , 0);
+
+            P1 (5, "scheduled") heart_beat();
+            P1 (int_step, "scheduled") Sim.exec1(&V1);
+
+            P2 (fc_int_step, "scheduled") DM_SaveOutData(dm_ins_db);
+            P2 (fc_int_step, "scheduled") egse_uplink_packet_transfer();
+            P2 (fc_int_step, "scheduled") dcmbus_channel_tx_job(&dcmbus_obj, "fsw-egse");
+
+            P3 (int_step, "scheduled") dcmbus_channel_rx_job(&dcmbus_obj, "fsw-egse", sizeof(refactor_downlink_packet_t));
+            P3 (int_step, "scheduled") load_input();
+            P3 (int_step, "scheduled") Sim.exec2(&V1);
+            ("shutdown") dcmbus_ctrlblk_deinit(&dcmbus_obj);
+        }
+} ;
+
+Rocket_SimObject dyn ;
