@@ -11,8 +11,8 @@ PROGRAMMERS:
 #include <armadillo>
 #include <functional>
 #include "aux.hh"
-#include "datadeck.hh"
 #include "cadac_constants.hh"
+#include "datadeck.hh"
 #include "vehicle.hh"
 
 class Propulsion : public FH_module

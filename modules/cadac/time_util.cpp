@@ -1,5 +1,6 @@
-#include <exception>
 #include "time_util.hh"
+
+#include <exception>
 
 time_util::GPS_TIME::GPS_TIME(UTC_TIME in)
 {

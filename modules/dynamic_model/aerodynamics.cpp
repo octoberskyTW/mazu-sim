@@ -1,6 +1,7 @@
+#include "aerodynamics.hh"
 
 #include <iostream>
-#include "aerodynamics.hh"
+
 AeroDynamics::AeroDynamics() {}
 
 void AeroDynamics::load_aerotable(const char *filename)

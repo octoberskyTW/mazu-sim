@@ -49,7 +49,7 @@ Ground::Ground(unsigned int NumIn)
     TBI = build_psi_tht_phi_TM(ANGLE(2), ANGLE(1), ANGLE(0));
 }
 
-Mobilized_body::Mobilized_body(unsigned int NumIn, arma::vec PosIn, arma::vec VelIn, arma::vec AccIn, arma::vec AttIn, arma::vec ANG_VEL_In, arma::vec ANG_ACC_In, double MIn, arma::vec IIn, arma::vec F_In, arma::vec T_In)
+Mobilized_body::Mobilized_body(unsigned int NumIn, arma::vec PosIn, arma::vec VelIn, arma::vec AccIn, arma::vec TBI_QIn, arma::vec ANG_VEL_In, arma::vec ANG_ACC_In, double MIn, arma::mat IIn)
 {
     type = 1;
     num = NumIn;
@@ -57,27 +57,32 @@ Mobilized_body::Mobilized_body(unsigned int NumIn, arma::vec PosIn, arma::vec Ve
     POSITION = PosIn;
     VELOCITY = VelIn;
     ACCELERATION = AccIn;
-    ANGLE = AttIn;
+    TBI_Q = TBI_QIn;
     ANGLE_VEL = ANG_VEL_In;
     ANGLE_ACC = ANG_ACC_In;
-    FORCE = F_In;
-    APPILED_TORQUE = T_In;
+
     for (unsigned int i = 0; i < 3; i++) {
         M(i, i) = MIn;
-        M(i + 3, i + 3) = IIn(i);
+        M(i + 3, i + 3) = IIn(i, i);
     }
 
-    TBI = build_psi_tht_phi_TM(ANGLE(2), ANGLE(1), ANGLE(0));
-    TBI_Q = Matrix2Quaternion(TBI);
-    POSITION = trans(TBI) * POSITION;
-    VELOCITY = trans(TBI) * VELOCITY;
-    ACCELERATION = trans(TBI) * ACCELERATION;
-    ANGLE_VEL = trans(TBI) * ANGLE_VEL;
-    ANGLE_ACC = trans(TBI) * ANGLE_ACC;
+    TBI = Quaternion2Matrix(TBI_QIn);
+    POSITION = POSITION;
+    VELOCITY = VELOCITY;
+    ACCELERATION = ACCELERATION;
+    ANGLE_VEL = ANGLE_VEL;
+    ANGLE_ACC = ANGLE_ACC;
 }
 
-void Mobilized_body::update(arma::vec PosIn, arma::vec VelIn, arma::vec TBI_QIn, arma::vec ANG_VEL_In)
+void Mobilized_body::update(double MassIn, arma::mat IIn, arma::vec PosIn, arma::vec VelIn, arma::vec TBI_QIn, arma::vec ANG_VEL_In, arma::vec FIn, arma::vec TIn)
 {
+    for (unsigned int i = 0; i < 3; i++) {
+        M(i, i) = MassIn;
+        M(i + 3, i + 3) = IIn(i, i);
+    }
+    FORCE = FIn;
+    APPILED_TORQUE = TIn;
+
     TBI = Quaternion2Matrix(TBI_QIn);
 
     POSITION = PosIn;

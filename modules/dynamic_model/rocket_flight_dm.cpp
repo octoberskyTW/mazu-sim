@@ -1,5 +1,6 @@
 #include <iomanip>
 #include <tuple>
+
 #include "aux.hh"
 #include "cadac_util.hh"
 #include "integrate.hh"
@@ -107,6 +108,8 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
         D->alppx = calculate_alppx(D->VBAB, norm(D->VBAB));
         D->phipx = calculate_phipx(D->VBAB);
     }
+
+    D->Body_ptr = new Mobilized_body(1, D->SBIIP, D->VBIIP, D->NEXT_ACC, D->TBI_Q, D->WBIB, D->WBIBD, P->vmass, P->IBBB);
 }
 
 void Rocket_Flight_DM::set_DOF(int ndof) { DOF = ndof; }
@@ -635,6 +638,9 @@ void Rocket_Flight_DM::AeroDynamics_Q(LaunchVehicle *VehicleIn)
                    dot(QuaternionRotation(QuaternionTranspose(D->TBI_Q), D->FAPB),
                        -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
                                            cross_matrix(rhoCG) * D->beta_b1_q6));
+
+    D->F_Aero = QuaternionRotation(QuaternionTranspose(D->TBI_Q), D->FAPB);
+    D->M_Aero = D->FMAB;
 }
 
 void Rocket_Flight_DM::Gravity_Q(LaunchVehicle *VehicleIn)
@@ -652,35 +658,35 @@ void Rocket_Flight_DM::Gravity_Q(LaunchVehicle *VehicleIn)
     // data_exchang->hget("GRAVG", GRAVG);
     // data_exchang->hget("vmass", &vmass);
 
-    arma::vec3 Fg;
-    Fg = vmass * GRAVG;
+    // arma::vec3 Fg;
+    D->Fg = vmass * GRAVG;
 
     if (D->liftoff == 1) {
-        D->Q_G(0) = dot(Fg, D->gamma_b1_q1);
-        D->Q_G(1) = dot(Fg, D->gamma_b1_q2);
-        D->Q_G(2) = dot(Fg, D->gamma_b1_q3);
+        D->Q_G(0) = dot(D->Fg, D->gamma_b1_q1);
+        D->Q_G(1) = dot(D->Fg, D->gamma_b1_q2);
+        D->Q_G(2) = dot(D->Fg, D->gamma_b1_q3);
         D->Q_G(3) =
-            dot(Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
-                                        cross_matrix(D->rhoC_1) * D->beta_b1_q4));
+            dot(D->Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
+                                           cross_matrix(D->rhoC_1) * D->beta_b1_q4));
         D->Q_G(4) =
-            dot(Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
-                                        cross_matrix(D->rhoC_1) * D->beta_b1_q5));
+            dot(D->Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
+                                           cross_matrix(D->rhoC_1) * D->beta_b1_q5));
         D->Q_G(5) =
-            dot(Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
-                                        cross_matrix(D->rhoC_1) * D->beta_b1_q6));
+            dot(D->Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
+                                           cross_matrix(D->rhoC_1) * D->beta_b1_q6));
     } else {
-        D->Q_G(0) = dot(Fg, D->gamma_b1_q1);
-        D->Q_G(1) = dot(Fg, D->gamma_b1_q2);
-        D->Q_G(2) = dot(Fg, D->gamma_b1_q3);
+        D->Q_G(0) = dot(D->Fg, D->gamma_b1_q1);
+        D->Q_G(1) = dot(D->Fg, D->gamma_b1_q2);
+        D->Q_G(2) = dot(D->Fg, D->gamma_b1_q3);
         D->Q_G(3) =
-            dot(Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
-                                        cross_matrix(D->rhoC_1) * D->beta_b1_q4));
+            dot(D->Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
+                                           cross_matrix(D->rhoC_1) * D->beta_b1_q4));
         D->Q_G(4) =
-            dot(Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
-                                        cross_matrix(D->rhoC_1) * D->beta_b1_q5));
+            dot(D->Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
+                                           cross_matrix(D->rhoC_1) * D->beta_b1_q5));
         D->Q_G(5) =
-            dot(Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
-                                        cross_matrix(D->rhoC_1) * D->beta_b1_q6));
+            dot(D->Fg, -QuaternionRotation(QuaternionTranspose(D->TBI_Q),
+                                           cross_matrix(D->rhoC_1) * D->beta_b1_q6));
     }
 }
 

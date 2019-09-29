@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 #include "aux.hh"
-#include "component.hh"
 #include "cadac_constants.hh"
+#include "component.hh"
 #include "vehicle_var.hh"
 /********************************* TRICK HEADER *******************************
 PURPOSE:

@@ -2,7 +2,7 @@
 
 Aerodynamics_var::Aerodynamics_var() : VECTOR_INIT(XCP, 3) {}
 
-ACT_var::ACT_var() : VECTOR_INIT(Q_RCS, 6), VECTOR_INIT(Q_TVC, 6) {}
+ACT_var::ACT_var() : VECTOR_INIT(Q_RCS, 6), VECTOR_INIT(Q_TVC, 6), VECTOR_INIT(F_TVC, 3), VECTOR_INIT(M_TVC, 3) {}
 
 EarthEnvironment_var::EarthEnvironment_var()
     : VECTOR_INIT(GRAVG, 3), VECTOR_INIT(VBAB, 3), MATRIX_INIT(TEI, 3, 3), VECTOR_INIT(VAED, 3) {}
@@ -77,7 +77,10 @@ DM_var::DM_var()
       MATRIX_INIT(TLI, 3, 3),
       VECTOR_INIT(LT_euler, 3),
       VECTOR_INIT(TBLQ, 4),
-      VECTOR_INIT(ABID, 3) {}
+      VECTOR_INIT(ABID, 3),
+      VECTOR_INIT(Fg, 3),
+      VECTOR_INIT(F_Aero, 3),
+      VECTOR_INIT(M_Aero, 3) {}
 
 Prop_var::Prop_var() : VECTOR_INIT(XCG, 3), MATRIX_INIT(IBBB, 3, 3) {}
 

@@ -37,6 +37,8 @@ void TVC::algorithm(LaunchVehicle *VehicleIn)
         break;
     case S1_TVC:
         A->Q_TVC.zeros();
+        A->F_TVC.zeros();
+        A->M_TVC.zeros();
         VehicleIn->S1_Eng_list[0]->Act_list[0]->Actuate(A->theta_a_cmd,
                                                         int_step);  // Pitch angle
         VehicleIn->S1_Eng_list[0]->Act_list[1]->Actuate(A->theta_b_cmd,
@@ -49,12 +51,16 @@ void TVC::algorithm(LaunchVehicle *VehicleIn)
 
         for (unsigned int i = 0; i < VehicleIn->S1_Eng_list.size(); i++) {
             A->Q_TVC += VehicleIn->S1_Eng_list[i]->Q;
+            A->F_TVC += VehicleIn->S1_Eng_list[i]->F;
+            A->M_TVC += VehicleIn->S1_Eng_list[i]->M;
         }
         // data_exchang->hset("Q_TVC", A->Q_TVC);
         return;
         break;
     case S2_TVC:
         A->Q_TVC.zeros();
+        A->F_TVC.zeros();
+        A->M_TVC.zeros();
         VehicleIn->S2_Eng_list[0]->Act_list[0]->Actuate(0.0,
                                                         int_step);  // Pitch angle
         VehicleIn->S2_Eng_list[0]->Act_list[1]->Actuate(0.0,
@@ -67,12 +73,16 @@ void TVC::algorithm(LaunchVehicle *VehicleIn)
 
         for (unsigned int i = 0; i < VehicleIn->S2_Eng_list.size(); i++) {
             A->Q_TVC += VehicleIn->S2_Eng_list[i]->Q;
+            A->F_TVC += VehicleIn->S1_Eng_list[i]->F;
+            A->M_TVC += VehicleIn->S1_Eng_list[i]->M;
         }
         // data_exchang->hset("Q_TVC", A->Q_TVC);
         return;
         break;
     case S3_TVC:
         A->Q_TVC.zeros();
+        A->F_TVC.zeros();
+        A->M_TVC.zeros();
         VehicleIn->S3_Eng_list[0]->Act_list[0]->Actuate(0.0, int_step);
         VehicleIn->S3_Eng_list[0]->Act_list[1]->Actuate(0.0, int_step);
 
@@ -83,6 +93,8 @@ void TVC::algorithm(LaunchVehicle *VehicleIn)
 
         for (unsigned int i = 0; i < VehicleIn->S3_Eng_list.size(); i++) {
             A->Q_TVC += VehicleIn->S3_Eng_list[i]->Q;
+            A->F_TVC += VehicleIn->S1_Eng_list[i]->F;
+            A->M_TVC += VehicleIn->S1_Eng_list[i]->M;
         }
         // data_exchang->hset("Q_TVC", A->Q_TVC);
         return;

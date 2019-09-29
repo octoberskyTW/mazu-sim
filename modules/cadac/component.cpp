@@ -61,8 +61,8 @@ ENG::ENG()
       VECTOR_INIT(ENG_BETA_4, 3),
       VECTOR_INIT(ENG_BETA_5, 3),
       VECTOR_INIT(ENG_BETA_6, 3),
-      VECTOR_INIT(FTVC, 3),
-      VECTOR_INIT(MTVC, 3)
+      VECTOR_INIT(F, 3),
+      VECTOR_INIT(M, 3)
 {
     ENG_GAMMA_1(0) = ENG_BETA_4(0) = 1.0;
     ENG_GAMMA_1(1) = ENG_BETA_4(1) = 0.0;
@@ -207,6 +207,9 @@ void ENG::calculate_Q(double input_ang_1, double input_ang_2, double thrust_in,
                -trans(TBI) * cross_matrix(rho_en_1) * ENG_BETA_5);
     Q(5) = dot(trans(TBI) * trans(T_N_B) * THRUST,
                -trans(TBI) * cross_matrix(rho_en_1) * ENG_BETA_6);
+
+    F = trans(TBI) * trans(T_N_B) * THRUST;
+    M = cross_matrix(rho_en_1) * trans(T_N_B) * THRUST;
 }
 
 RCS_Thruster::RCS_Thruster()
