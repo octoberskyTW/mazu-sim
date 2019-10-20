@@ -97,6 +97,7 @@ class Control {
   double control_normal_accel(double ancomx_in, double int_step);
   double control_yaw_accel(double alcomx_in, double int_step);
   void aerodynamics_der();
+  void Euler_Angle_Control(double Cmd_Input, double P_Gain_1, double P_Gain_2, double Angle_Feedback, double Rate_Feedback, double &Cmd_Output);
 
   double delecx; /* *io (d)      Pitch command deflection */  // n
   double delrcx; /* *io (d)      Yaw command deflection */    // n

@@ -346,3 +346,10 @@ void Control::set_aero_coffe(double in1, double in2, double in3)
 void Control::set_feedforward_gain(double in1) { gainp = in1; }
 void Control::set_engnum(double in) { eng_num = in; }
 void Control::set_reference_point(double in) { reference_point = in; }
+
+
+void Control::Euler_Angle_Control(double Cmd_Input, double P_Gain_1, double P_Gain_2, double Angle_Feedback, double Rate_Feedback, double &Cmd_Output)
+{
+    Cmd_Output P_Gain_2 *((P_Gain_1 * (Cmd_Input - Angle_Feedback)) - Rate_Feedback);
+    return;
+}
