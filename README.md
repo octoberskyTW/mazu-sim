@@ -24,7 +24,7 @@ $ pip install cpplint
 ```
 
 ## 2. Third-Party Installation
- - NASA Trick 17.0.5
+ - NASA Trick 17.5 dev
    - Official Github [NASA/trick](https://github.com/nasa/trick)
    ```
    $ sudo apt-get install bison curl flex g++ libx11-dev libxml2-dev libxt-dev \
