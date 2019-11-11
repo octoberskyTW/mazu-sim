@@ -3,7 +3,7 @@ TOP_DIR=$1
 PROJECT=$2
 
 case $PROJECT in
-    "sample_master")
+    "sample")
         cd $TOP_DIR/sim_exe/sample_master
         ./S_main_*.exe RUN_test/input.cpp &
 
@@ -17,11 +17,11 @@ case $PROJECT in
         cd $TOP_DIR/sim_exe/skyline_gnc
         ./S_main_*.exe RUN_golden/input_gnc.cpp
         ;;
-    "http3a")
-        cd $TOP_DIR/sim_exe/http3a_dm
+    "sheipa")
+        cd $TOP_DIR/sim_exe/sheipa_dm
         ./S_main_*.exe RUN_golden/input_dm.cpp &
 
-        cd $TOP_DIR/sim_exe/http3a_gnc
+        cd $TOP_DIR/sim_exe/sheipa_gnc
         ./S_main_*.exe RUN_golden/input_gnc.cpp
         ;;
     *)

@@ -1,5 +1,5 @@
 
-ifeq ($(project), $(filter $(project), sample_master all))
+ifeq ($(project), $(filter $(project), sample all))
 SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sample_master/
 SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sample_slave/
 endif
@@ -9,8 +9,8 @@ SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/skyline_dm/
 SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/skyline_gnc/
 endif
 
-ifeq ($(project), $(filter $(project), http3a all))
-SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/http3a_dm/
-SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/http3a_gnc/
+ifeq ($(project), $(filter $(project), sheipa all))
+SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sheipa_dm/
+SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sheipa_gnc/
 endif
 $(info SIM_EXE_TRICK_PATH = $(SIM_EXE_TRICK_PATH))

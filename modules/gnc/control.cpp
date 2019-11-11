@@ -350,6 +350,6 @@ void Control::set_reference_point(double in) { reference_point = in; }
 
 void Control::Euler_Angle_Control(double Cmd_Input, double P_Gain_1, double P_Gain_2, double Angle_Feedback, double Rate_Feedback, double &Cmd_Output)
 {
-    Cmd_Output P_Gain_2 *((P_Gain_1 * (Cmd_Input - Angle_Feedback)) - Rate_Feedback);
+    Cmd_Output = P_Gain_2 * ((P_Gain_1 * (Cmd_Input - Angle_Feedback)) - Rate_Feedback);
     return;
 }

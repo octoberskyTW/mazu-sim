@@ -30,16 +30,16 @@ trick_build: modules_build
 modules_build:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_build $(SIM_MODULES_PATH)
 
-run-sample_master:
-	./run_sim.sh $(TOP_DIR) sample_master
+run-sample:
+	./run_sim.sh $(TOP_DIR) sample
 
 run-skyline:
 	./run_sim.sh $(TOP_DIR) skyline
 	./run_sim_error_check.sh $(TOP_DIR) skyline_dm
 
-run-http3a:
-	./run_sim.sh $(TOP_DIR) http3a
-	./run_sim_error_check.sh $(TOP_DIR) http3a_dm
+run-sheipa:
+	./run_sim.sh $(TOP_DIR) sheipa
+	./run_sim_error_check.sh $(TOP_DIR) sheipa_dm
 
 clean:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_clean $(SIM_MODULES_PATH)
