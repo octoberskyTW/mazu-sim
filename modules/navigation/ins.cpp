@@ -1,13 +1,4 @@
-
-
 #include "ins.h"
-
-#include <armadillo>
-#include <iomanip>
-
-#include "matrix_tool.hh"
-#include "misc_utils.h"
-
 
 
 #define ARMALIST arma::vec(ARMALIST_NUM)

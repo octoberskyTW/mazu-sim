@@ -23,7 +23,8 @@ CFLAGS += -I.
 LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/navigation/ins.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/navigation/ins.cpp \
+			   $(TOP_DIR)/modules/navigation/sensor_calibration.cpp
 C_SOURCES =
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))

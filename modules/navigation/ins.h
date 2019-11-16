@@ -1,7 +1,11 @@
 #ifndef __NAVIGATION_INS_H__
 #define __NAVIGATION_INS_H__
 
+#include <armadillo>
+#include <iomanip>
 
+#include "matrix_tool.hh"
+#include "misc_utils.h"
 
 //LaunchLat0  = [22 15 43.55]
 //LaunchLong0 = [120 53 24.55]

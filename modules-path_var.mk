@@ -10,3 +10,4 @@ module_cadac=$(TOP_DIR)/modules/cadac
 module_sensor_dm=$(TOP_DIR)/modules/sensor_dm
 module_actuator_dm=$(TOP_DIR)/modules/actuator_dm
 module_gnc=$(TOP_DIR)/modules/gnc
+module_navigation=$(TOP_DIR)/modules/navigation

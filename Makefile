@@ -24,6 +24,7 @@ include $(TOP_DIR)/modules-path.mk
 include $(TOP_DIR)/sim_exe-path.mk
 
 all: trick_build $(GIT_HOOK)
+	@echo "Build P.A.S.S"
 .DEFAULT_GOAL := all
 trick_build: modules_build
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick_build $(SIM_EXE_TRICK_PATH)
