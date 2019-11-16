@@ -10,7 +10,7 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				done;\
 				echo $$TOP_DIR)
 #TARGET=libhello.so
-TARGET=libgnc.a
+TARGET=libnavigation.a
 # FLAGS
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
 CXXFLAGS += -I. -larmadillo
