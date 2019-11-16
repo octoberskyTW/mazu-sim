@@ -31,7 +31,13 @@ $(TARGET): $(OBJECTS)
 
 -include $(OBJECTS:.o=.d)
 
-.PHONY : clean
+.PHONY : clean cmake
+
+cmake:
+	mkdir -p build
+	cd build; echo $(PWD); \
+	cmake ..
+
 clean:
 	find . -name "*.so" -type f -delete
 	find . -name "*.a" -type f -delete
