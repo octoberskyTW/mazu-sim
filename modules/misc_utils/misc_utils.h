@@ -2,6 +2,11 @@
 #ifndef __MISC_UTILS_H__
 #define __MISC_UTILS_H__
 
+#define UNUSED(expr)   \
+    do {               \
+        (void) (expr); \
+    } while (0)
+
 #ifdef __cplusplus
 extern "C" {
 #endif

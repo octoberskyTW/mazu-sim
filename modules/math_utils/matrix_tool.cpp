@@ -253,16 +253,16 @@ arma::vec4 Euler2Quaternion(double Roll, double Pitch, double Yaw)
     return Quaternion_out;
 }
 
-arma::vec4 QuaternionMultiply(arma::vec4 Q_in1, arma::vec4 Q_in2)
+int QuaternionMultiply(arma::vec4 &Q_out, arma::vec4 const &Q_in1, arma::vec4 const &Q_in2)
 {
-    arma::vec4 Q_out;
-
+    //Q_in1.print("Qin1:%5.5lf");
+    //Q_in2.print("Qin2:%5.5lf");
     Q_out(0) = Q_in1(0) * Q_in2(0) - Q_in1(1) * Q_in2(1) - Q_in1(2) * Q_in2(2) - Q_in1(3) * Q_in2(3);
     Q_out(1) = Q_in1(0) * Q_in2(1) + Q_in1(1) * Q_in2(0) + Q_in1(2) * Q_in2(3) - Q_in1(3) * Q_in2(2);
     Q_out(2) = Q_in1(0) * Q_in2(2) - Q_in1(1) * Q_in2(3) + Q_in1(2) * Q_in2(0) + Q_in1(3) * Q_in2(1);
     Q_out(3) = Q_in1(0) * Q_in2(3) + Q_in1(1) * Q_in2(2) - Q_in1(2) * Q_in2(1) + Q_in1(3) * Q_in2(0);
-
-    return Q_out;
+    //Q_out.print("Qout2:%5.5lf");
+    return 0;
 }
 
 arma::vec4 QuaternionInverse(arma::vec4 Q_in)
