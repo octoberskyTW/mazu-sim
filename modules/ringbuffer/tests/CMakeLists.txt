@@ -34,10 +34,11 @@ add_executable(runTests
 
 find_package(GTest REQUIRED)
 
-# Declare your flags: Don’t use TARGET_INCLUDE_DIRECTORIES() with a path outside your module
-target_compile_options(runTests PRIVATE -Wall -g -MD -save-temps -fPIC)
+# Compile options
+target_compile_options(runTests PRIVATE -Wall -g -MD -save-temps)
 target_compile_features(runTests PRIVATE cxx_std_17)
 
+# Declare your flags: Don’t use TARGET_INCLUDE_DIRECTORIES() with a path outside your module
 # -I/foo/bar
 target_include_directories(runTests
     ## public header for external module
