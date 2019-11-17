@@ -42,6 +42,12 @@ $(TARGET): $(OBJECTS)
 
 -include $(OBJECTS:.o=.d)
 
+test:
+	mkdir -p build
+	cd build; cmake -S $(TOP_DIR)/modules/navigation/tests/ ;\
+	make
+	./build/runTests
+
 .PHONY : clean
 clean:
 	find . -name "*.so" -type f -delete
