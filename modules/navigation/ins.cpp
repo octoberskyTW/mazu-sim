@@ -24,8 +24,6 @@ INS::INS()
 
     //this->step_time = 0.05;
     this->half_pi = M_PI / 2.0;
-
-    INS::SILdebug();
 }
 
 INS::~INS()
