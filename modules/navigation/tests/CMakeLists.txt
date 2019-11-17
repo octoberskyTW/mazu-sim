@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(runTests VERSION 1.0.0)
 
-
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/INS0_Export.csv ${CMAKE_CURRENT_SOURCE_DIR}/build/ COPYONLY)
 ######### Libary Build #########
 # Declare your module
 add_library(libnavigation STATIC

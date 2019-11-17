@@ -43,10 +43,10 @@ $(TARGET): $(OBJECTS)
 -include $(OBJECTS:.o=.d)
 
 test:
-	mkdir -p build
-	cd build; cmake -S $(TOP_DIR)/modules/navigation/tests/ ;\
-	make
-	./build/runTests
+	mkdir -p tests/build
+	cd tests/build; cmake -S $(TOP_DIR)/modules/navigation/tests/ ;\
+	make;\
+	./runTests
 
 .PHONY : clean
 clean:
@@ -57,4 +57,4 @@ clean:
 	find . -name "*.ii" -type f -delete
 	find . -name "*.d" -type f -delete
 	find . -name "*.s" -type f -delete
-	rm -rf build
+	rm -rf tests/build
