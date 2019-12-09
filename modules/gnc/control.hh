@@ -17,6 +17,28 @@ PROGRAMMERS:
 #include "cadac_constants.hh"
 #include "integrate.hh"
 
+class PID_ctrl {
+      TRICK_INTERFACE(PID_ctrl);
+public:
+      PID_ctrl(const double dt_in, const double kp_in, const double ki_in);
+      PID_ctrl(const double dt_in, const double kp_in, const double ki_in, const double kd_in);
+      void calculate(const double error, double *output);
+
+private:
+      enum PID_TYPE {
+            PI = 0,
+            PID
+      };
+      double pre_error;  // PID controller input error value
+      double integral;
+      double derivative;
+      double dt;
+      double kp;
+      double ki;
+      double kd;
+      enum PID_TYPE ctrl_type;
+};
+
 class Control {
   TRICK_INTERFACE(Control);
 
@@ -26,17 +48,12 @@ class Control {
   void initialize();
 
   void control(double int_step);
-  void set_close_loop_pole(double in1, double in2);
-  void set_factor(double in1, double in2);
-  void set_feedforward_gain(double in1);
 
-  void set_aero_coffe(double in1, double in2, double in3);
   void set_IBBB0(double in1, double in2, double in3);
   void set_IBBB1(double in1, double in2, double in3);
   void set_controller_var(double in1, double in2, double in3, double in4,
                           double in5, double in6, double in7);
   void set_NO_CONTROL();
-  void set_acc_control();
   void set_engnum(double in);
   void set_reference_point(double in);
 
@@ -44,22 +61,10 @@ class Control {
   double get_theta_b_cmd();
   double get_theta_c_cmd();
   double get_theta_d_cmd();
-  void load_aerotable(const char* filename);
-  void atmosphere_use_nasa();
-  void atmosphere_use_public();
-
-  void set_ancomx(double in);
-  void set_alcomx(double in);
 
   enum CONTROL_TYPE {
     NO_CONTROL = 0,
-    S2_PITCH_DOWN_I,
-    S2_PITCH_DOWN_II,
-    S2_ROLL_CONTROL,
-    S3_PITCH_DOWN,
-    S2_AOA,
-    S3_AOA,
-    ACC_CONTROL_ON
+    CONTROL_ON
   };
 
   std::function<int()> grab_thrust_state;
@@ -85,51 +90,16 @@ class Control {
   std::function<arma::mat33()> grab_TBIC;
   std::function<arma::vec3()> grab_WBECB;
   std::function<arma::vec3()> grab_ABICB;
-
-  double get_delecx();
-  double get_delrcx();
+  std::function<arma::vec3()> grab_VBECD;
 
   void calculate_xcg_thrust(double int_step);
 
  private:
-  cad::Atmosphere* atmosphere;
 
-  double control_normal_accel(double ancomx_in, double int_step);
-  double control_yaw_accel(double alcomx_in, double int_step);
-  void aerodynamics_der();
-  void Euler_Angle_Control(double Cmd_Input, double P_Gain_1, double P_Gain_2, double Angle_Feedback, double Rate_Feedback, double &Cmd_Output);
-
-  double delecx; /* *io (d)      Pitch command deflection */  // n
-  double delrcx; /* *io (d)      Yaw command deflection */    // n
+  void Euler_Angle_Control(const double roll_cmd, const double pitch_cmd, const double yaw_cmd);
+  void Velocity_Control(const double Vx_cmd, const double Vy_cmd, const double Vz_cmd);
 
   enum CONTROL_TYPE maut; /* *io (--)     maut=|mauty|mautp| see table */
-  int mfreeze;   /* *io (--)     =0:Unfreeze; =1:Freeze; increment for more */
-  double waclp;  /* *io (r/s)    Nat freq of accel close loop complex pole */
-  double zaclp;  /* *io (--)     Damping of accel close loop complex pole */
-  double paclp;  /* *io (--)     Close loop real pole */
-  double yyd;    /* *io (m/s2)   Yaw feed-forward derivative variable */
-  double yy;     /* *io (m/s)    Yaw feed-forward integration variable */
-  double zzd;    /* *io (m/s2)   Pitch feed-forward derivative variable */
-  double zz;     /* *io (m/s)    Pitch feed-forward integration variable */
-  double alcomx_actual; /* *io (--)     Later accel com limited by 'betalimx' */
-  double ancomx_actual; /* *io (--)     Normal accel com limited by 'alplimx' */
-  arma::vec GAINFP;  /* *io (--)     Feedback gains of pitch accel controller */
-  double _GAINFP[3]; /* *io (--)     Feedback gains of pitch accel controller */
-  double gainp;  /* *io (s2/m)   Proportional gain in pitch acceleration loop */
-  double gainl;  /* *io (--)     Gain in lateral acceleration loop */
-  double gkp;    /* *io (s)      Gain of roll rate feedback */
-  double gkphi;  /* *io (--)     Gain of roll angle feedback */
-  double isetc2; /* *io (--)     Flag to print freeze variables */
-  double wacly;  /* *io (r/s)    Nat freq of accel close loop pole, yaw */
-  double zacly;  /* *io (--)     Damping of accel close loop pole, yaw */
-  double pacly;  /* *io (--)     Close loop real pole, yaw */
-  double gainy;  /* *io (--)     Gain in lateral acceleration loop */
-  arma::vec GAINFY;  /* *io (--)     Feedback gains of yaw accel controller */
-  double _GAINFY[3]; /* *io (--)     Feedback gains of yaw accel controller */
-  double factwaclp; /* *io (--)     Factor to mod 'waclp': waclp*(1+factwacl) */
-  double factwacly; /* *io (--)     Factor to mod 'wacly': wacly*(1+factwacl) */
-  double alcomx;    /* *io (--)     Lateral (horizontal) acceleration command */
-  double ancomx;    /* *io (--)     Pitch (normal) acceleration command */
 
   double fmasse;
   double mdot;
@@ -161,56 +131,22 @@ class Control {
 
   double reference_point;
   double d;
-
-  // Aerodynamics def()
-  Datadeck aerotable;
-
-  double dla;
-  double dlde;
-  double dma;
-  double dmq;
-  double dmde;
-  double dyb;
-  double dydr;
-  double dnb;
-  double dnr;
-  double dndr;
-  double dllp;
-  double dllda;
-  double dnd;
-  double cla;
-  double clde;
-  double cyb;
-  double cydr;
-  double cllda;
-  double cllp;
-  double cma;
-  double cmde;
-  double cmq;
-  double cnb;
-  double cndr;
-  double cnr;
-  double cn0;
-  // diagnostics
-  double stmarg_yaw;
-  double stmarg_pitch;
-  double realp1;
-  double realp2;
-  double wnp;
-  double zetp;
-  double rpreal;
-  double realy1;
-  double realy2;
-  double wny;
-  double zety;
-  double ryreal;
-  double refa;
-  double refd;
-  double xcp;
-  double pdynmc;
-  double vmach;
-
   double eng_num;
+
+  PID_ctrl *Vx_PID;
+  PID_ctrl *Acclx_PID;
+  PID_ctrl *Roll_rate_PID;
+  PID_ctrl *Pitch_rate_PID;
+  PID_ctrl *Yaw_rate_PID;
+
+  double roll_kp;
+  double pitch_kp;
+  double yaw_kp;
+  double vz_kp;
+  double vy_kp;
+  arma::vec ATT_CMD;
+  double _ATT_CMD[3];
+  double throttle_cmd;
 };
 
 #endif  // __CONTROL_HH__

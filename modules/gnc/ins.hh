@@ -105,6 +105,7 @@ class INS {
   arma::mat33 get_TDCI();
   arma::vec3 get_WBECB();
   arma::vec3 get_ABICB();
+  arma::vec3 get_VBECD();
 
   /* Internal Initializers */
   void default_data();

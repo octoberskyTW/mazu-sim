@@ -19,7 +19,6 @@ void Exec::exec1(LaunchVehicle *Vehicle)
     time->dm_time(int_step);
     env.algorithm(Vehicle);
     propulsion.algorithm(Vehicle);
-    aerodynamics.algorithm(Vehicle);
     gyro->algorithm(Vehicle);
     accelerometer->algorithm(Vehicle);
     sdt->algorithm(Vehicle);
@@ -28,6 +27,5 @@ void Exec::exec1(LaunchVehicle *Vehicle)
 void Exec::exec2(LaunchVehicle *Vehicle)
 {
     tvc.algorithm(Vehicle);
-    rcs.algorithm(Vehicle);
     dynamics.algorithm(Vehicle);
 }

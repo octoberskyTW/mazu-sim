@@ -758,6 +758,7 @@ arma::mat33 INS::get_TBICI() { return TBICI; }
 arma::mat33 INS::get_TDCI() { return TDCI; }
 arma::vec3 INS::get_WBECB() { return WBECB; }
 arma::vec3 INS::get_ABICB() { return ABICB; }
+arma::vec3 INS::get_VBECD() { return VBECD; }
 
 void INS::set_gps_correction(unsigned int index) { gpsupdate = index; }
 
