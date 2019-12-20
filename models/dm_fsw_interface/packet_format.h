@@ -47,7 +47,6 @@ typedef struct __attribute__((packed)) {
     double ins_ABICB[3];
     double ins_SBIIC[3];
     double ins_VBIIC[3];
-    double ins_VBECD[3];
 
     double ins_alphacx;
     double ins_psibdcx;

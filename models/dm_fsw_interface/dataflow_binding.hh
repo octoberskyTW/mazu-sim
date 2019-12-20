@@ -59,7 +59,6 @@
     control.grab_phipcx = GRAB_VAR(ins_ctl_db.ins_phipcx);                    \
     control.grab_alppcx = GRAB_VAR(ins_ctl_db.ins_alppcx);                    \
     control.grab_ABICB = GRAB_VAR(ins_ctl_db.ins_ABICB);                      \
-    control.grab_VBECD = GRAB_VAR(ins_ctl_db.ins_VBECD);                      \
   }
 
 #define Guidance_LINK_decl()                                 \
@@ -114,7 +113,6 @@
     STORE_VEC(ins_ctl_db.ins_ABICB, ins.get_ABICB());                 \
     STORE_VEC(ins_ctl_db.ins_SBIIC, ins.get_SBIIC());                 \
     STORE_VEC(ins_ctl_db.ins_VBIIC, ins.get_VBIIC());                 \
-    STORE_VEC(ins_ctl_db.ins_VBECD, ins.get_VBECD());                 \
   }
 
 #define CONTROL_SAVE_decl()                                          \
