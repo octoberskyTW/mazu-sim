@@ -11,25 +11,27 @@ TOP_DIR=$(shell TOP_DIR=Unable_To_Find_Top_Dir; \
 				echo $$TOP_DIR)
 #TARGET=libhello.so
 TARGET=libnavigation.a
+
 # FLAGS
+LDFLAGS = -larmadillo
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
-CXXFLAGS += -I. -larmadillo
+CXXFLAGS += -I. $(LDFLAGS)
 # Low Layer Module include
 include $(TOP_DIR)/modules-path_var.mk
 CXXFLAGS += -I$(module_math_utils)
 CXXFLAGS += -I$(module_misc_utils)
 CFLAGS = -g -MD -save-temps -fPIC -std=c99 -pedantic -W -D _GNU_SOURCE
 CFLAGS += -I.
-LDFLAGS =
 
 # Source code
-CPP_SOURCES += $(TOP_DIR)/modules/navigation/ins.cpp \
-			   $(TOP_DIR)/modules/navigation/sensor_calibration.cpp
+CPP_SOURCES += $(TOP_DIR)/modules/navigation/navigation.cpp
 C_SOURCES =
 OBJECTS += $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 OBJECTS += $(patsubst %.c, %.o, $(C_SOURCES))
 
-all: $(TARGET) $(CPP_SOURCES) $(C_SOURCES)
+all: $(TARGET)
+
+$(TARGET): $(CPP_SOURCES) $(C_SOURCES)
 
 %.o: %.cpp %.h %.hh
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
@@ -57,4 +59,5 @@ clean:
 	find . -name "*.ii" -type f -delete
 	find . -name "*.d" -type f -delete
 	find . -name "*.s" -type f -delete
+	find . -name "*.bin" -type f -delete
 	rm -rf tests/build
