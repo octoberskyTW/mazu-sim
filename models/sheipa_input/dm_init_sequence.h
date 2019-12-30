@@ -14,7 +14,7 @@ const double PSIBDX = -83.0;        //  Yawing   angle of veh wrt geod coord - d
 const double ALPHA0X = 0;           // Initial angle-of-attack   - deg  module newton
 const double BETA0X = 0;            // Initial sideslip angle    - deg  module newton
 const double DVBE = 1.0;            // Vehicle geographic speed  - m/s  module newton
-const unsigned int CYCLE = 2;
+const unsigned int CYCLE = 11;
 /* S1 */
 const double S1_XCG_0 = 2.35;           //  vehicle initial xcg
 const double S1_XCG_1 = 2.35;            //  vehicle final xcg

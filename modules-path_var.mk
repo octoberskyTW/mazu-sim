@@ -11,3 +11,4 @@ module_sensor_dm=$(TOP_DIR)/modules/sensor_dm
 module_actuator_dm=$(TOP_DIR)/modules/actuator_dm
 module_gnc=$(TOP_DIR)/modules/gnc
 module_navigation=$(TOP_DIR)/modules/navigation
+model_data_flow=$(TOP_DIR)/models/dm_fsw_interface

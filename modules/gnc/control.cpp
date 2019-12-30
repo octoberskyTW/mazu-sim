@@ -4,8 +4,13 @@ Control::Control()
     : VECTOR_INIT(IBBB0, 3),
       VECTOR_INIT(IBBB1, 3),
       VECTOR_INIT(IBBB2, 3),
-      VECTOR_INIT(ATT_CMD, 3)
+      VECTOR_INIT(ATT_CMD, 3),
+      MATRIX_INIT(DecoupleMat, 3, 4),
+      VECTOR_INIT(ACT_CMD, 4)
 {
+    d = 0.225;
+    thrust = 120.0;
+    navi_data = nullptr;
 }
 
 void Control::initialize()
@@ -17,8 +22,9 @@ void Control::initialize()
     theta_d_cmd = 0.0;
 }
 
-void Control::control(double int_step)
-{
+void Control::control(double int_step, navi_egress_packet_t *navi_packet)
+{   
+    navi_data = navi_packet;
     calculate_xcg_thrust(int_step);
 
     switch (maut) {
@@ -28,6 +34,7 @@ void Control::control(double int_step)
     
     case CONTROL_ON:
         Velocity_Control(0.0, 0.0, 0.0);
+        update_commmand();
         break;
     default:
         break;
@@ -44,10 +51,8 @@ void Control::calculate_xcg_thrust(double int_step)
     vmass = vmass0 - fmasse;
 }
 
-double Control::get_theta_a_cmd() { return theta_a_cmd; }
-double Control::get_theta_b_cmd() { return theta_b_cmd; }
-double Control::get_theta_c_cmd() { return theta_c_cmd; }
-double Control::get_theta_d_cmd() { return theta_d_cmd; }
+double* Control::get_ACT_CMD() { return _ACT_CMD; }
+double Control::get_throttle_cmd() { return throttle_cmd; }
 
 void Control::set_controller_var(double in1, double in2, double in3, double in4,
                                  double in5, double in6, double in7)
@@ -78,28 +83,26 @@ void Control::set_reference_point(double in) { reference_point = in; }
 
 
 void Control::Euler_Angle_Control(const double roll_cmd, const double pitch_cmd, const double yaw_cmd) {
-    arma::vec3 WBICB = grab_computed_WBIB();
-    double thtbdcx = grab_thtbdcx();
-    double phibdcx = grab_phibdcx();
-    double psibdcx = grab_psibdcx();
+    arma::vec3 WBICB = navi_data->rkt_angular_rate;
+    arma::vec3 ATT = navi_data->rkt_attitude;
 
     // Roll ctrl
-    double error = (roll_cmd - phibdcx * RAD) * roll_kp - WBICB(0);
+    double error = (roll_cmd - ATT(0)) * roll_kp - WBICB(0);
     Roll_rate_PID->calculate(error, _ATT_CMD);
 
     // Pitch ctrl
-    error = (pitch_cmd - thtbdcx * RAD) * pitch_kp - WBICB(1);
+    error = (pitch_cmd - ATT(1)) * pitch_kp - WBICB(1);
     Pitch_rate_PID->calculate(error, (_ATT_CMD + 1));
 
     // Yaw ctrl
-    error = (yaw_cmd - psibdcx * RAD) * yaw_kp - WBICB(2);
+    error = (yaw_cmd - ATT(2)) * yaw_kp - WBICB(2);
     Yaw_rate_PID->calculate(error, (_ATT_CMD + 2));
     return;
 }
 
 void Control::Velocity_Control(const double Vx_cmd, const double Vy_cmd, const double Vz_cmd) {
-    arma::vec3 VBECD = grab_VBECD();
-    arma::vec3 FSPCB = grab_FSPCB();
+    arma::vec3 VBECD = navi_data->rkt_vel;
+    arma::vec3 FSPCB = navi_data->rkt_acc;
 
     double vy_ctrl_output = (Vy_cmd - VBECD(1)) * vy_kp;
     double vz_ctrl_output = (Vz_cmd - VBECD(2)) * vz_kp;
@@ -112,6 +115,21 @@ void Control::Velocity_Control(const double Vx_cmd, const double Vy_cmd, const d
     Acclx_PID->calculate(vx_out - FSPCB(0), &accx_out);
 
     throttle_cmd = accx_out + 0.6;
+    return;
+}
+
+void Control::update_commmand() {
+    double TVC_L = 3.322 - xcg;
+    DecoupleMat = {{(1. * d), (-1. * d), (-1. * d), (1. * d)}
+                    , {(0.), (-1. * TVC_L), (0.), (-1 * TVC_L)}
+                    , {(-1. * TVC_L), (0.), (-1. * TVC_L), (0.)}};
+
+    arma::mat tmp_mat(3, 3, arma::fill::zeros);
+    tmp_mat(0, 0) = IBBB2(0);
+    tmp_mat(1, 1) = IBBB2(1);
+    tmp_mat(2, 2) = IBBB2(2);
+
+    ACT_CMD = pinv(DecoupleMat * thrust) * (tmp_mat * ATT_CMD);
     return;
 }
 

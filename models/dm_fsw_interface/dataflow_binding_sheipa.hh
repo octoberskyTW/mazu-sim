@@ -1,11 +1,13 @@
 #ifndef __DATAFLOW_BINDING_SHEPIA_HH__
 #define __DATAFLOW_BINDING_SHEPIA_HH__
+#include <stdint.h>
 
+#include <armadillo>
 /*
  *  IMU raw packet
  *
  */
- typedef struct __attribute__((packed)) {  /* TODO for FC*/
+typedef struct { /* TODO for FC*/
     uint16_t gyroX_high[10];
     uint16_t gyroX_low[10];
     uint16_t gyroY_high[10];
@@ -24,44 +26,26 @@
  *  Navigation raw packet Input wrapper
  *  Calibration Input
  */
-typedef struct __attribute__((packed)) {
-    double gyro0[3];
-    double gyro1[3];
-    double gyro2[3];
-    double gyro3[3];
-    double gyro4[3];
-    double gyro5[3];
-    double gyro6[3];
-    double gyro7[3];
-    double gyro8[3];
-    double gyro9[3];
-    double acce0[3];
-    double acce1[3];
-    double acce2[3];
-    double acce3[3];
-    double acce4[3];
-    double acce5[3];
-    double acce6[3];
-    double acce7[3];
-    double acce8[3];
-    double acce9[3];
+typedef struct {
+    double gyro[10][3];
+    double accel[10][3];
 } navi_ingress_packet_t;
 
 /**
  * Calibration Output
  * Low pass filter input
  */
-typedef struct __attribute__((packed)) {
+typedef struct {
     arma::vec3 gyro[10];
-    arme::vec3 accel[10];
+    arma::vec3 accel[10];
 } calib_to_filter_data_t;
 
 /**
  * INS Data Input
  * Low pass filter Output
- * 
+ *
  */
-typedef struct __attribute__((packed)) {
+typedef struct {
     // calibration
     arma::vec3 body_ang_rate_last;
     arma::vec3 body_accel_last;
@@ -69,7 +53,7 @@ typedef struct __attribute__((packed)) {
     arma::vec3 body_delta_vel;
     arma::vec3 prev_body_delta_ang;
     arma::vec3 prev_body_delta_vel;
-    
+
     // INS
     double lat;
     double prev_lat;
@@ -78,6 +62,7 @@ typedef struct __attribute__((packed)) {
     double rkt_height;
     double prev_rkt_height;
     double time;
+    double temper;
 
     arma::vec3 rkt_attitude;
 
@@ -98,18 +83,31 @@ typedef struct __attribute__((packed)) {
 
     arma::mat33 C_bL1;
     arma::mat33 C_bL;
-} ins_data_t; //Low Pass filter output, INS input
+
+    //fix term
+    arma::mat33 C_Lb1;
+    arma::mat33 C_Lb;
+
+    arma::mat33 C_Le1;
+    arma::mat33 C_Le;
+    arma::vec3 rkt_accel_last;
+    arma::vec3 rkt_ang_rate_last;
+
+    // verify
+    arma::vec3 beta;
+    arma::vec3 scul;
+} ins_data_t;  //Low Pass filter output, INS input
 
 /**
  * INS output (Navigation output)
  * Control module Input
  */
-typedef struct navi_egress_packet_t __attribute__((packed)) {
-    double rkt_attitude[3];
-    double rkt_angular_rate[3]
-    double rkt_acc[3];
-    double rkt_vel[3];
-    double rkt_pos[3];
-} nav_to_ctl_t; // nav_to_ctl_t;
+typedef struct {
+    arma::vec3 rkt_attitude;
+    arma::vec3 rkt_angular_rate;
+    arma::vec3 rkt_acc;
+    arma::vec3 rkt_vel;
+    arma::vec3 rkt_pos;
+} navi_egress_packet_t;  // nav_to_ctl_t;
 
 #endif  // __DATAFLOW_BINDING_SHEPIA_HH__

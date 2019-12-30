@@ -16,6 +16,7 @@ PROGRAMMERS:
 #include "matrix_tool.hh"
 #include "cadac_constants.hh"
 #include "integrate.hh"
+#include "dataflow_binding_sheipa.hh"
 
 class PID_ctrl {
       TRICK_INTERFACE(PID_ctrl);
@@ -47,7 +48,7 @@ class Control {
 
   void initialize();
 
-  void control(double int_step);
+  void control(double int_step, navi_egress_packet_t *navi_packet);
 
   void set_IBBB0(double in1, double in2, double in3);
   void set_IBBB1(double in1, double in2, double in3);
@@ -57,40 +58,14 @@ class Control {
   void set_engnum(double in);
   void set_reference_point(double in);
 
-  double get_theta_a_cmd();
-  double get_theta_b_cmd();
-  double get_theta_c_cmd();
-  double get_theta_d_cmd();
+  double* get_ACT_CMD();
+  double get_throttle_cmd();
 
   enum CONTROL_TYPE {
     NO_CONTROL = 0,
     CONTROL_ON
   };
 
-  std::function<int()> grab_thrust_state;
-  std::function<double()> grab_dvbec;
-  std::function<double()> grab_thtvdcx;
-  std::function<double()> grab_thtbdcx;
-  std::function<double()> grab_phibdcx;
-  std::function<double()> grab_psibdcx;
-  std::function<double()> grab_alphacx;
-  std::function<double()> grab_altc;
-
-  std::function<double()> grab_qqcx;
-  std::function<double()> grab_rrcx;
-  std::function<double()> grab_phipcx;
-  std::function<double()> grab_alppcx;
-
-  std::function<arma::vec3()> grab_FSPCB;
-
-  std::function<arma::vec3()> grab_computed_WBIB;
-  std::function<arma::vec4()> grab_TBDQ;
-  std::function<arma::mat33()> grab_TBD;
-  std::function<arma::mat33()> grab_TBICI;
-  std::function<arma::mat33()> grab_TBIC;
-  std::function<arma::vec3()> grab_WBECB;
-  std::function<arma::vec3()> grab_ABICB;
-  std::function<arma::vec3()> grab_VBECD;
 
   void calculate_xcg_thrust(double int_step);
 
@@ -98,6 +73,7 @@ class Control {
 
   void Euler_Angle_Control(const double roll_cmd, const double pitch_cmd, const double yaw_cmd);
   void Velocity_Control(const double Vx_cmd, const double Vy_cmd, const double Vz_cmd);
+  void update_commmand();
 
   enum CONTROL_TYPE maut; /* *io (--)     maut=|mauty|mautp| see table */
 
@@ -147,6 +123,12 @@ class Control {
   arma::vec ATT_CMD;
   double _ATT_CMD[3];
   double throttle_cmd;
+  arma::mat DecoupleMat;
+  double _DecoupleMat[3][4];
+  arma::vec ACT_CMD;
+  double _ACT_CMD[4];
+
+  navi_egress_packet_t *navi_data;
 };
 
 #endif  // __CONTROL_HH__
