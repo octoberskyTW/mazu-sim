@@ -30,10 +30,6 @@ class TVC : public FH_module {
   std::function<double()> grab_theta_b_cmd;
   std::function<double()> grab_theta_c_cmd;
   std::function<double()> grab_theta_d_cmd;
-
- private:
-  /* Internal Initializers */
-  void default_data();
 };
 
 #endif  // __TVC_HH__

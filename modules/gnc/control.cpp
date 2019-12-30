@@ -51,7 +51,10 @@ void Control::calculate_xcg_thrust(double int_step)
     vmass = vmass0 - fmasse;
 }
 
-double* Control::get_ACT_CMD() { return _ACT_CMD; }
+double Control::get_theta_a_cmd() { return _ACT_CMD[0]; }
+double Control::get_theta_b_cmd() { return _ACT_CMD[1]; }
+double Control::get_theta_c_cmd() { return _ACT_CMD[2]; }
+double Control::get_theta_d_cmd() { return _ACT_CMD[3]; }
 double Control::get_throttle_cmd() { return throttle_cmd; }
 
 void Control::set_controller_var(double in1, double in2, double in3, double in4,

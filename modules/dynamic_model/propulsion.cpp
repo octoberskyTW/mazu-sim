@@ -57,12 +57,6 @@ void Propulsion::algorithm(LaunchVehicle *VehicleIn)
             Prop->thrust_state = NO_THRUST;
         break;
     }
-
-    // data_exchang->hset("XCG", Prop->XCG);
-    // data_exchang->hset("thrust", Prop->thrust);
-    // data_exchang->hset("vmass", Prop->vmass);
-    // data_exchang->hset("IBBB", Prop->IBBB);
-    // data_exchang->hset("XCG_0", Stage_var->XCG_0);
 }
 
 void Propulsion::propagate_delta_v(LaunchVehicle *VehicleIn)

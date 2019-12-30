@@ -58,7 +58,10 @@ class Control {
   void set_engnum(double in);
   void set_reference_point(double in);
 
-  double* get_ACT_CMD();
+  double get_theta_a_cmd();
+  double get_theta_b_cmd();
+  double get_theta_c_cmd();
+  double get_theta_d_cmd();
   double get_throttle_cmd();
 
   enum CONTROL_TYPE {
