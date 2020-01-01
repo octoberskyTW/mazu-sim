@@ -12,6 +12,7 @@ LIBRARY DEPENDENCIES:
 ##include "misc_utils.h"
 ##include "dm_exec.hh"
 ##include "dataflow_binding.hh"
+##include "packet_format.h"
 ##include <libgen.h>
 
 class Rocket_SimObject : public Trick::SimObject {
