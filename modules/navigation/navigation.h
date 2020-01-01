@@ -7,7 +7,7 @@
 #include <armadillo>
 #include <iomanip>
 
-#include "dataflow_binding_sheipa.hh"
+#include "dataflow_binding.hh"
 #include "matrix_tool.hh"
 #include "misc_utils.h"
 

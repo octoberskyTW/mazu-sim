@@ -34,12 +34,6 @@ class Rocket_SimObject : public Trick::SimObject {
             Sim.tvc.grab_theta_b_cmd       = GRAB_VAR(ctl_tvc_db.theta_b_cmd);
             Sim.tvc.grab_theta_c_cmd       = GRAB_VAR(ctl_tvc_db.theta_c_cmd);
             Sim.tvc.grab_theta_d_cmd       = GRAB_VAR(ctl_tvc_db.theta_d_cmd);
-
-            Sim.rcs.grab_e_roll            = GRAB_VAR(ctl_tvc_db.e_roll);
-            Sim.rcs.grab_e_pitch            = GRAB_VAR(ctl_tvc_db.e_pitch);
-            Sim.rcs.grab_e_yaw            = GRAB_VAR(ctl_tvc_db.e_yaw);
-
-            Sim.propulsion.grab_beco_flag = GRAB_VAR(ctl_tvc_db.beco_flag);
         };
         void heart_beat(void) {
             char currentTime[84] = "";
