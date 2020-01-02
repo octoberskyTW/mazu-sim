@@ -7,14 +7,14 @@
 extern Rocket_SimObject dyn;
 const double LONX = 120.49;  //  Vehicle longitude - deg  module newton
 const double LATX = 24.68;   //  Vehicle latitude  - deg  module newton
-const double ALT = 1.0;      //  Vehicle altitude  - m  module newton
+const double ALT = 0.0;      //  Vehicle altitude  - m  module newton
 const double PHIBDX = 0.0;   //  Rolling  angle of veh wrt geod coord - deg  module kinematics
 const double THTBDX = 90.0;  //  Pitching angle of veh wrt geod coord - deg  module kinematics
 const double PSIBDX = 0.0;   //  Yawing   angle of veh wrt geod coord - deg  module kinematics
 const double ALPHA0X = 0;    // Initial angle-of-attack   - deg  module newton
 const double BETA0X = 0;     // Initial sideslip angle    - deg  module newton
-const double DVBE = 1.0;     // Vehicle geographic speed  - m/s  module newton
-const unsigned int CYCLE = 11;
+const double DVBE = 0.0;     // Vehicle geographic speed  - m/s  module newton
+
 /* S1 */
 const double S1_XCG_0 = 2.35;            //  vehicle initial xcg
 const double S1_XCG_1 = 2.35;            //  vehicle final xcg
@@ -24,10 +24,10 @@ const double S1_MOI_PITCH_0 = 275.5836;  //  vehicle initial transverse moi
 const double S1_MOI_PITCH_1 = 232.3524;  //  vehicle final transverse moi
 const double S1_MOI_YAW_0 = 275.5382;    //  vehicle initial transverse moi
 const double S1_MOI_YAW_1 = 232.327;     //  vehicle final transverse moi
-const double S1_SPI = 279.2;             //  Specific impusle
 const double S1_vmass0 = 300.0;          //  Vehicle init mass
 const double S1_fmass0 = 240.0;          //  Vehicle init fuel mass
 const double S1_RP = -3.322;             //  reference point
+const double d = 0.225;                  // nozzle distance
 
 extern "C" int event_start()
 {
@@ -95,7 +95,7 @@ extern "C" void master_init_propulsion(Rocket_SimObject *dyn)
 {
     /******************************propulsion & mass property***************************************************************************/
     dyn->V1.Allocate_stage(3);
-    dyn->V1.set_stage_var(S1_SPI, S1_fmass0, S1_vmass0, 0.0, S1_FUEL_FLOW_RATE, S1_XCG_0, S1_XCG_1,
+    dyn->V1.set_stage_var(0.0, S1_fmass0, S1_vmass0, 0.0, S1_FUEL_FLOW_RATE, S1_XCG_0, S1_XCG_1,
                           S1_MOI_ROLL_0, S1_MOI_ROLL_1, S1_MOI_PITCH_0, S1_MOI_PITCH_1, S1_MOI_YAW_0, S1_MOI_YAW_1,
                           0);
     dyn->Sim.dynamics.set_reference_point_eq_xcg();
@@ -106,18 +106,8 @@ extern "C" void master_init_propulsion(Rocket_SimObject *dyn)
 extern "C" void master_init_sensors(Rocket_SimObject *dyn)
 {
     /**************************************************Sensor****************************************************************/
-    // Accelerometer
-    double EMISA[3];   // gauss(0, 1.1e-4)
-    double ESCALA[3];  // gauss(0, 2.e-5)
-    double EBIASA[3];  // gauss(0, 1.e-6)
-
     // Create a Ideal Accelerometer
     dyn->Sim.accelerometer = new AccelerometerIdeal();
-
-    // gyro
-    double EMISG[3];   // gauss(0, 1.1e-4)
-    double ESCALG[3];  // gauss(0, 2.e-5)
-    double EBIASG[3];  // gauss(0, 1.e-6)
 
     // Create a Ideal Gyro
     dyn->Sim.gyro = new GyroIdeal();
@@ -132,25 +122,25 @@ extern "C" void master_init_tvc(Rocket_SimObject *dyn)
     dyn->V1.Allocate_ENG(4, dyn->V1.S1_Eng_list);
 
     // Allocate S1 Engine position
-    dyn->V1.S1_Eng_list[0]->set_ENG_HINGE_POS(S1_RP, 0.0, 0.0);
+    dyn->V1.S1_Eng_list[0]->set_ENG_HINGE_POS(S1_RP, 0.0, -d);
 
     // Allocate S1 Engine gimbal direction
     dyn->V1.S1_Eng_list[0]->set_ENG_Dir(2);
 
     // Allocate S1 Engine position
-    dyn->V1.S1_Eng_list[1]->set_ENG_HINGE_POS(S1_RP, 0.0, 0.0);
+    dyn->V1.S1_Eng_list[1]->set_ENG_HINGE_POS(S1_RP, d, 0.0);
 
     // Allocate S1 Engine gimbal direction
     dyn->V1.S1_Eng_list[1]->set_ENG_Dir(1);
 
     // Allocate S1 Engine position
-    dyn->V1.S1_Eng_list[2]->set_ENG_HINGE_POS(S1_RP, 0.0, 0.0);
+    dyn->V1.S1_Eng_list[2]->set_ENG_HINGE_POS(S1_RP, 0.0, d);
 
     // Allocate S1 Engine gimbal direction
     dyn->V1.S1_Eng_list[2]->set_ENG_Dir(2);
 
     // Allocate S1 Engine position
-    dyn->V1.S1_Eng_list[3]->set_ENG_HINGE_POS(S1_RP, 0.0, 0.0);
+    dyn->V1.S1_Eng_list[3]->set_ENG_HINGE_POS(S1_RP, -d, 0.0);
 
     // Allocate S1 Engine gimbal direction
     dyn->V1.S1_Eng_list[3]->set_ENG_Dir(1);
@@ -164,6 +154,6 @@ extern "C" void flight_events_handler_configuration(Rocket_SimObject *dyn)
 {
     /* events */
     jit_add_event("event_start", "LIFTOFF", 0.005);
-    exec_set_terminate_time(65.001 + dyn->stand_still_time);
+    exec_set_terminate_time(30.001 + dyn->stand_still_time);
 }
 #endif  //  __DM_INIT_SEQUENCE_H__
