@@ -109,7 +109,7 @@ void Control::Velocity_Control(const double Vx_cmd, const double Vy_cmd, const d
 
     double vy_ctrl_output = (Vy_cmd - VBECD(1)) * vy_kp;
     double vz_ctrl_output = (Vz_cmd - VBECD(2)) * vz_kp;
-    Euler_Angle_Control(0.0, vy_ctrl_output, vz_ctrl_output);
+    Euler_Angle_Control(0.0, vz_ctrl_output, vy_ctrl_output);
 
     double vx_out(0.);
     double accx_out(0.);
@@ -117,7 +117,7 @@ void Control::Velocity_Control(const double Vx_cmd, const double Vy_cmd, const d
     Vx_PID->calculate(Vx_cmd - VBECD(0), &vx_out);
     Acclx_PID->calculate(vx_out - FSPCB(0), &accx_out);
 
-    throttle_cmd = accx_out + 0.6;
+    throttle_cmd = 4. * (accx_out + 0.6);
     return;
 }
 
