@@ -29,30 +29,24 @@ void Propulsion::algorithm(LaunchVehicle *VehicleIn)
     STAGE_VAR *Stage_var;
     Stage_var = VehicleIn->Stage_var_list[stage];
 
-    int beco_flag = grab_beco_flag();
+    double throttle_cmd = grab_throttle_cmd();
     double press = E->press;
-    // data_exchang->hget("press", &press);
-    if (beco_flag == 1) {
-        Prop->thrust_state = NO_THRUST;
-    }
-    // no thrusting
+
     switch (Prop->thrust_state) {
     case NO_THRUST:
         Prop->thrust = 0;
         break;
     case INPUT_THRUST:
-        Prop->thrust = Stage_var->isp * Stage_var->fuel_flow_rate * AGRAV +
-                       (psl - press) * Stage_var->aexit;
-        double fmassd_next = Prop->thrust / (Stage_var->isp * AGRAV);
-        Stage_var->fmasse = integrate(fmassd_next, Stage_var->fmassd,
+        Prop->thrust = throttle_cmd * 0.28235;
+        Stage_var->fmasse = integrate(throttle_cmd, Stage_var->fmassd,
                                       Stage_var->fmasse, int_step);
-        Stage_var->fmassd = fmassd_next;
+        Stage_var->fmassd = throttle_cmd;
         Prop->mass_ratio = Stage_var->fmasse / Stage_var->fmass0;
         Prop->vmass = Stage_var->StageMass0 - Stage_var->fmasse;
         Prop->fmassr = Stage_var->fmass0 - Stage_var->fmasse;
         Prop->IBBB = calculate_IBBB(VehicleIn);
         Prop->XCG = calculate_XCG(VehicleIn);
-        propagate_delta_v(VehicleIn);
+
         if (Prop->fmassr <= 0.0)
             Prop->thrust_state = NO_THRUST;
         break;

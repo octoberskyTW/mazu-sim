@@ -28,7 +28,7 @@ public:
     void load_proptable(const char *filename);
 
     // XXX: get_thrust_state
-    std::function<int()> grab_beco_flag;
+    std::function<double()> grab_throttle_cmd;
 
 private:
     /* Rocket Engine state variables */
