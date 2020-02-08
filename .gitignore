@@ -36,6 +36,8 @@
 DP_Product/
 .vscode/
 
+modules/*/build
+
 *.ii
 *.i
 *.s
