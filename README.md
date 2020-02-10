@@ -64,7 +64,7 @@ $ pip install cpplint
 ## 3. Build and Run a sample code
 ```
 $ make
-$ make run-sample_master
+$ make run-sample
 ```
 
 # Build and run the specific project
