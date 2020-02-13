@@ -16,7 +16,7 @@ target_include_directories(actuator_dm
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../math_utils>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../cadac>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../cadac/include>
 )
 
 # Declare your dependencies (in your other module)

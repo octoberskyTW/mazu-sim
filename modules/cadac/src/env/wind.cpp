@@ -1,9 +1,9 @@
 
 #include <cstdlib>
 #include "cadac_constants.hh"
+#include "env/wind.hh"
 #include "integrate.hh"
 #include "numerical_constants.hh"
-#include "wind.hh"
 
 cad::Wind::Wind(double twind_In, double vertical_wind)
     : has_turbulance(false),

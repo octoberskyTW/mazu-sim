@@ -19,7 +19,7 @@ INCLUDES = -I${TOP_HOME}/modules/dcmbus \
            -I${TOP_HOME}/modules/dynamic_model \
            -I${TOP_HOME}/modules/sensor_dm \
            -I${TOP_HOME}/modules/actuator_dm/include \
-           -I${TOP_HOME}/modules/cadac \
+           -I${TOP_HOME}/modules/cadac/include \
            -I${TOP_HOME}/modules/math_utils \
 		   -I${TOP_HOME}/modules/gnc \
            -I${TOP_HOME}/models/skyline_input \
@@ -32,7 +32,7 @@ TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/dcmbus -ldcmbus \
 						-L${TOP_HOME}/modules/dynamic_model -ldynamic_model \
 						-L${TOP_HOME}/modules/sensor_dm -lsensor_dm \
 						-L${TOP_HOME}/modules/actuator_dm/build -lactuator_dm \
-						-L${TOP_HOME}/modules/cadac -lcadac \
+						-L${TOP_HOME}/modules/cadac/build -lcadac \
 						-L${TOP_HOME}/modules/math_utils -lmath_utils \
 						-L${TOP_HOME}/modules/gnc -lgnc
 

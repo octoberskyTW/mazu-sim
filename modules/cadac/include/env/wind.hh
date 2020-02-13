@@ -7,7 +7,7 @@ LIBRARY DEPENDENCY:
       ((../../src/env/wind.cpp))
 *******************************************************************************/
 #include <armadillo>
-#include <aux.hh>
+#include "aux.hh"
 
 namespace cad
 {

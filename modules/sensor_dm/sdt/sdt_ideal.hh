@@ -1,11 +1,6 @@
 #ifndef __SDT_IDEAL_HH__
 #define __SDT_IDEAL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Sensor Data Transport module)
-LIBRARY DEPENDENCY:
-      ((../../src/SDT_ideal.cpp))
-*******************************************************************************/
+
 #include <armadillo>
 #include <functional>
 #include "sdt.hh"

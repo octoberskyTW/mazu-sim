@@ -1,13 +1,6 @@
 #ifndef __INS_HH__
 #define __INS_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the INS Module On Board, Error equations based on Zipfel,
-Figure 10.27, space stabilized INS with GPS updates) LIBRARY DEPENDENCY:
-      ((../src/ins.cpp))
-PROGRAMMERS:
-      (( (Chun-Hsu Lai) (Chung-Fan Yang) ))
-*******************************************************************************/
+
 #include <armadillo>
 #include <cassert>
 #include <fstream>

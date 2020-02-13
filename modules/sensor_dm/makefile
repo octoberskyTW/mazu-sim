@@ -17,7 +17,7 @@ CXXFLAGS += -I. -larmadillo
 # Low Layer Module include
 include $(TOP_DIR)/modules-path_var.mk
 CXXFLAGS += -I$(module_math_utils) \
-            -I$(module_cadac)
+            -I$(module_cadac)/include
 CFLAGS = -g -MD -save-temps -fPIC -std=c99 -pedantic -W -D _GNU_SOURCE
 CFLAGS += -I.
 LDFLAGS =

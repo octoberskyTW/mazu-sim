@@ -1,11 +1,5 @@
 #ifndef __GYRO_ROCKET6G_HH__
 #define __GYRO_ROCKET6G_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Non-Ideal Gyro Implementation from Rocket6G)
-LIBRARY DEPENDENCY:
-      ((../../src/gyro/gyro_rocket6g.cpp))
-*******************************************************************************/
 
 #include <armadillo>
 #include "aux.hh"

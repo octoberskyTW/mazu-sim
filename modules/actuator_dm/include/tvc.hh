@@ -1,11 +1,6 @@
 #ifndef __TVC_HH__
 #define __TVC_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the TVC Module On Board)
-LIBRARY DEPENDENCY:
-      ((../src/Tvc.cpp))
-*******************************************************************************/
+
 #include <armadillo>
 #include <functional>
 #include <tuple>

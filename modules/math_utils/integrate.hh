@@ -1,11 +1,5 @@
 #ifndef __INTEGRATE_UTIL_HH__
 #define __INTEGRATE_UTIL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Integration wapper functions)
-LIBRARY DEPENDENCY:
-      ((../src/integrate.cpp))
-*******************************************************************************/
 
 #include <armadillo>
 #include <cassert>

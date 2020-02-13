@@ -8,7 +8,7 @@ LIBRARY DEPENDENCY:
 *******************************************************************************/
 
 #include "datadeck.hh"
-#include "wind.hh"
+#include "env/wind.hh"
 
 namespace cad
 {

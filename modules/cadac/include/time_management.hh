@@ -1,13 +1,6 @@
 #ifndef __Time_management_HH__
 #define __Time_management_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the Time Management Module Variables and Algorithm)
-LIBRARY DEPENDENCY:
-      ((../src/Time_management.cpp))
-PROGRAMMERS:
-      (((Lai Jun Xu) () () () ))
-*******************************************************************************/
+
 #include <armadillo>
 #include <ctime>
 #include <iomanip>

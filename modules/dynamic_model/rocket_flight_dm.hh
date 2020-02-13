@@ -1,14 +1,6 @@
 #ifndef __ROCKET_FLIGHT_DM_HH__
 #define __ROCKET_FLIGHT_DM_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the Rocket Flgiht Dynamics Module Variables and Algorithm)
-LIBRARY DEPENDENCY:
-      ((../src/Rocket_Flight_DM.cpp)
-       (../../math/src/nrutil.cpp))
-PROGRAMMERS:
-      (((Lai Jun Xu) () () () ))
-*******************************************************************************/
+
 #include <armadillo>
 #include "aux.hh"
 #include "cadac_constants.hh"

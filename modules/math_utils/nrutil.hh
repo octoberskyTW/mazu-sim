@@ -1,11 +1,6 @@
 #ifndef __NR_UTILS_H__
 #define __NR_UTILS_H__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Math utility functions)
-LIBRARY DEPENDENCY:
-      ((../src/nrutil.c))
-*******************************************************************************/
+
 // extern "C"
 // {
 static float sqrarg;

@@ -1,11 +1,6 @@
 #ifndef __DATADECK_HH__
 #define __DATADECK_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (DATADECK class)
-LIBRARY DEPENDENCY:
-      ((../src/datadeck.cpp))
-*******************************************************************************/
+
 #include <iostream>
 #include <string>
 #include <vector>

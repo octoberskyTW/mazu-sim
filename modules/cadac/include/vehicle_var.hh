@@ -1,13 +1,5 @@
 #ifndef __VEHICLE_VAR_HH__
 #define __VEHICLE_VAR_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Vehicle variable definition)
-LIBRARY DEPENDENCY:
-      ((../src/Vehicle_var.cpp))
-PROGRAMMERS:
-      (((Chun-Hsu Lai) () () () ))
-*******************************************************************************/
 
 #include <armadillo>
 #include <vector>

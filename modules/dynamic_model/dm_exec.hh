@@ -9,12 +9,6 @@
 #include "rocket_flight_dm.hh"
 #include "sdt/sdt_ideal.hh"
 #include "tvc.hh"
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the TVC Module On Board)
-LIBRARY DEPENDENCY:
-      ((../src/exec.cpp))
-*******************************************************************************/
 
 class Exec
 {

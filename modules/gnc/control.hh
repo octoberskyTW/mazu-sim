@@ -1,13 +1,6 @@
 #ifndef __CONTROL_HH__
 #define __CONTROL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the CONTROL Module On Board)
-LIBRARY DEPENDENCY:
-      ((../src/control.cpp))
-PROGRAMMERS:
-      (((Chung-Fan Yang) (Chun-Hsu Lai) () () ))
-*******************************************************************************/
+
 #include <armadillo>
 #include "aux.hh"
 #include "datadeck.hh"

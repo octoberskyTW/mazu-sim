@@ -4,12 +4,6 @@
 #include "aux.hh"
 #include "matrix_tool.hh"
 
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the Component of vehicle)
-LIBRARY DEPENDENCY:
-      ((../src/Component.cpp))
-*******************************************************************************/
 enum EngType { X = 0,
                Y,
                Z,

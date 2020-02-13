@@ -1,13 +1,6 @@
 #ifndef __TIME_UTIL_HH__
 #define __TIME_UTIL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Helper functions related to time)
-LIBRARY DEPENDENCY:
-      ((../src/time_utility.cpp))
-PROGRAMMERS:
-      (((Lai Jun Xu) (Chung-Fan Yang) () () ))
-*******************************************************************************/
+
 #include <cmath>
 #include <ctime>
 #include <iomanip>

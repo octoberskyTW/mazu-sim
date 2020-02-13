@@ -1,11 +1,6 @@
 #ifndef __MATRIX_TOOL_HH__
 #define __MATRIX_TOOL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Matrix utility functions)
-LIBRARY DEPENDENCY:
-      ((../../src/matrix/utility.cpp))
-*******************************************************************************/
+
 #include <armadillo>
 
 /** Returns polar from cartesian coordinates.
