@@ -1,13 +1,6 @@
 #ifndef __AERODYNAMICS_HH__
 #define __AERODYNAMICS_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the AERODYNAMICS Module On Board)
-LIBRARY DEPENDENCY:
-      ((../src/Aerodynamics.cpp))
-PROGRAMMERS:
-      (((Chun-Hsu Lai) () () () ))
-*******************************************************************************/
+
 #include <armadillo>
 #include <functional>
 #include "aux.hh"

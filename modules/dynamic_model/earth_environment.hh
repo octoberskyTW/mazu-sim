@@ -1,13 +1,6 @@
 #ifndef __EARTH_ENVIRONMENT_HH__
 #define __EARTH_ENVIRONMENT_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the EarthEnvironment Module Variables and Algorithm)
-LIBRARY DEPENDENCY:
-      ((../src/EarthEnvironment.cpp))
-PROGRAMMERS:
-      (((Chun-Hsu Lai) () () () ))
-*******************************************************************************/
+
 #include <armadillo>
 #include <functional>
 #include "aux.hh"

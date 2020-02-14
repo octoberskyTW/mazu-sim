@@ -1,14 +1,6 @@
 #ifndef __RCS_HH__
 #define __RCS_HH__
 
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the RCS thruster Module)
-LIBRARY DEPENDENCY:
-      ((../src/RCS.cpp))
-PROGRAMMERS:
-      (((Chun-Hsu Lai) () () () ))
-*******************************************************************************/
 #include <armadillo>
 #include <functional>
 #include <vector>

@@ -3,7 +3,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
-#include "atmosphere_nasa2002.hh"
+#include "env/atmosphere_nasa2002.hh"
 
 
 cad::Atmosphere_nasa2002::Atmosphere_nasa2002()

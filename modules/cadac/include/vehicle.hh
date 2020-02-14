@@ -10,14 +10,7 @@
 #include "cadac_constants.hh"
 #include "component.hh"
 #include "vehicle_var.hh"
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Simulation module abstraction class and vehicle class)
-LIBRARY DEPENDENCY:
-      ((../src/Vehicle.cpp))
-PROGRAMMERS:
-      (((Chun-Hsu Lai) () () () ))
-*******************************************************************************/
+
 class Vehicle
 {
 protected:

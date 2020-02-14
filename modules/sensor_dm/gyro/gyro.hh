@@ -1,9 +1,5 @@
 #ifndef __GYRO_HH__
 #define __GYRO_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Gyro model interface definition)
-*******************************************************************************/
 
 #include <armadillo>
 #include <aux.hh>

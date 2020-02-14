@@ -1,13 +1,6 @@
 #ifndef __RCS_FC_HH__
 #define __RCS_FC_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the RCS Module On Board)
-LIBRARY DEPENDENCY:
-      ((../src/rcs_fc.cpp))
-PROGRAMMERS:
-      (( (Chun-Hsu Lai) ))
-*******************************************************************************/
+
 #include <armadillo>
 #include "aux.hh"
 #include "cadac_constants.hh"

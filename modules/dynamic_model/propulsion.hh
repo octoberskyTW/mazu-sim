@@ -1,13 +1,6 @@
 #ifndef __PROPULSION_HH__
 #define __PROPULSION_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the propulsion Module Variables and Algorithm)
-LIBRARY DEPENDENCY:
-      ((../src/Propulsion.cpp))
-PROGRAMMERS:
-      (((Chun-Hsu Lai) () () () ))
-*******************************************************************************/
+
 #include <armadillo>
 #include <functional>
 #include "aux.hh"

@@ -7,7 +7,7 @@ LIBRARY DEPENDENCY:
       ((../../src/env/atmosphere_weatherdeck.cpp))
 *******************************************************************************/
 
-#include "atmosphere.hh"
+#include "env/atmosphere.hh"
 #include "datadeck.hh"
 
 

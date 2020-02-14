@@ -1,11 +1,5 @@
 #ifndef __ACCELEROMETER_IDEAL_HH__
 #define __ACCELEROMETER_IDEAL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Ideal Accelerometer Implementation)
-LIBRARY DEPENDENCY:
-      ((../../src/accel/accelerometer_ideal.cpp))
-*******************************************************************************/
 
 #include <armadillo>
 #include "aux.hh"

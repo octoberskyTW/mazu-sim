@@ -7,7 +7,7 @@ LIBRARY DEPENDENCY:
       ((../../src/env/wind_no.cpp))
 *******************************************************************************/
 
-#include "wind.hh"
+#include "env/wind.hh"
 
 namespace cad
 {

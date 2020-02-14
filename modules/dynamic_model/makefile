@@ -16,8 +16,8 @@ TARGET=libdynamic_model.a
 CXXFLAGS = -Wall -g -MD -save-temps -fPIC --std=c++17 -Wextra -Wshadow
 CXXFLAGS += -I. -larmadillo
 CXXFLAGS += -I$(module_math_utils) \
-            -I$(module_cadac) \
-            -I$(module_actuator_dm) \
+            -I$(module_cadac)/include \
+            -I$(module_actuator_dm)/include \
             -I$(module_sensor_dm)
 LDFLAGS =
 

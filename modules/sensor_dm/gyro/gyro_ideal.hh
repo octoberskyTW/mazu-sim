@@ -1,11 +1,5 @@
 #ifndef __GYRO_IDEAL_HH__
 #define __GYRO_IDEAL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Ideal Gyro Implementation)
-LIBRARY DEPENDENCY:
-      ((../../src/gyro/gyro_ideal.cpp))
-*******************************************************************************/
 
 #include <armadillo>
 #include <aux.hh>

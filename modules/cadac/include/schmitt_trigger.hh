@@ -1,11 +1,5 @@
 #ifndef __SCHMITT_TRIGGER_HH__
 #define __SCHMITT_TRIGGER_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (A schimitt trigger implementation from rocket-sim)
-LIBRARY DEPENDENCY:
-      ((../src/schmitt_trigger.cpp))
-*******************************************************************************/
 
 #include "aux.hh"
 

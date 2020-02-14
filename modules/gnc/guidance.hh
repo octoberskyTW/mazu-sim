@@ -1,13 +1,6 @@
 #ifndef __GUIDANCE_HH__
 #define __GUIDANCE_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Describe the GUIDANCE Module On Board)
-LIBRARY DEPENDENCY:
-      ((../src/guidance.cpp))
-PROGRAMMERS:
-      (((Chung-Fan Yang) (Chun-Hsu Lai) () () ))
-*******************************************************************************/
+
 #include <armadillo>
 #include "aux.hh"
 #include "cadac_constants.hh"

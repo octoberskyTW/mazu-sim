@@ -1,11 +1,5 @@
 #ifndef __STOCHASTIC_UTIL_HH__
 #define __STOCHASTIC_UTIL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (RNG)
-LIBRARY DEPENDENCY:
-      ((../src/stochastic.cpp))
-*******************************************************************************/
 
 /**
  * \brief Generating an exponential distribution with a given mean density.

@@ -1,9 +1,6 @@
 #ifndef __ACCELEROMETER_HH__
 #define __ACCELEROMETER_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (Accelerometer model interface definition)
-*******************************************************************************/
+
 #include <armadillo>
 #include <aux.hh>
 #include "cadac_constants.hh"

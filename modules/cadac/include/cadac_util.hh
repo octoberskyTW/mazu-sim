@@ -1,11 +1,6 @@
 #ifndef __CADAC_UTIL_HH__
 #define __CADAC_UTIL_HH__
-/********************************* TRICK HEADER *******************************
-PURPOSE:
-      (CAD Utility functions from Rocket6G)
-LIBRARY DEPENDENCY:
-      ((../src/cad_utility.cpp))
-*******************************************************************************/
+
 #include <armadillo>
 #include <tuple>
 

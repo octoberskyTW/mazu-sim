@@ -18,7 +18,7 @@ INCLUDES = -I${TOP_HOME}/modules/hello_world \
            -I${TOP_HOME}/modules/config_util \
            -I${TOP_HOME}/modules/misc_utils \
 		   -I${TOP_HOME}/modules/gnc \
-		   -I${TOP_HOME}/modules/cadac \
+		   -I${TOP_HOME}/modules/cadac/include \
 		   -I${TOP_HOME}/modules/math_utils \
 		   -I${TOP_HOME}/models/skyline_input \
 		   -I${TOP_HOME}/models/dm_fsw_interface
@@ -29,7 +29,7 @@ TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/ringbuffer -lringbuffer
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/config_util -lconfig_util
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/misc_utils -lmisc_utils
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/gnc -lgnc
-TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/cadac -lcadac
+TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/cadac/build -lcadac
 TRICK_USER_LINK_LIBS += -L${TOP_HOME}/modules/math_utils -lmath_utils
 
 TRICK_USER_LINK_LIBS += -larmadillo 

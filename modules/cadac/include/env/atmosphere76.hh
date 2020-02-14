@@ -8,7 +8,7 @@ LIBRARY DEPENDENCY:
 *******************************************************************************/
 #include <cstdio>
 
-#include "atmosphere.hh"
+#include "env/atmosphere.hh"
 
 namespace cad
 {

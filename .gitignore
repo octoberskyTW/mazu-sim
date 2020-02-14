@@ -1,3 +1,47 @@
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Build
 # Prerequisites
 *.d
 
@@ -36,6 +80,8 @@
 DP_Product/
 .vscode/
 
+modules/*/build
+
 *.ii
 *.i
 *.s
@@ -46,65 +92,27 @@ S_job_execution
 S_run_summary
 
 
-sim_exe/egse_dm/build/
-sim_exe/egse_dm/makefile
-sim_exe/egse_dm/trick/
+sim_exe/*/build/
+sim_exe/*/makefile
+sim_exe/*/trick/
+sim_exe/*/result.csv
+sim_exe/*/test_result
 
-sim_exe/fsw_gnc/build/
-sim_exe/fsw_gnc/makefile
-sim_exe/fsw_gnc/trick/
-
-sim_exe/sample_client/RUN_test/_init_log.csv
-sim_exe/sample_client/RUN_test/jitlib/
-sim_exe/sample_client/RUN_test/log_frame.header
-sim_exe/sample_client/RUN_test/log_frame.trk
-sim_exe/sample_client/RUN_test/log_frame_trickjobs.header
-sim_exe/sample_client/RUN_test/log_frame_trickjobs.trk
-sim_exe/sample_client/RUN_test/log_frame_userjobs_main.header
-sim_exe/sample_client/RUN_test/log_frame_userjobs_main.trk
-sim_exe/sample_client/RUN_test/log_timeline.csv
-sim_exe/sample_client/RUN_test/log_timeline_init.csv
-sim_exe/sample_client/RUN_test/send_hs
-sim_exe/sample_client/RUN_test/varserver_log
-
-sim_exe/sample_client/build/
-sim_exe/sample_client/makefile
-sim_exe/sample_client/trick/
-sim_exe/sample_code/RUN_test/_init_log.csv
-sim_exe/sample_code/RUN_test/jitlib/
-sim_exe/sample_code/RUN_test/send_hs
-sim_exe/sample_code/RUN_test/varserver_log
-
-sim_exe/sample_code/build/
-sim_exe/sample_code/makefile
-sim_exe/sample_code/trick/
-sim_exe/egse_dm/RUN_golden/_init_log.csv
-sim_exe/egse_dm/RUN_golden/jitlib/
-sim_exe/egse_dm/RUN_golden/log_frame.header
-sim_exe/egse_dm/RUN_golden/log_frame.trk
-sim_exe/egse_dm/RUN_golden/log_frame_trickjobs.header
-sim_exe/egse_dm/RUN_golden/log_frame_trickjobs.trk
-sim_exe/egse_dm/RUN_golden/log_frame_userjobs_main.header
-sim_exe/egse_dm/RUN_golden/log_frame_userjobs_main.trk
-sim_exe/egse_dm/RUN_golden/log_ngps.csv
-sim_exe/egse_dm/RUN_golden/log_ngps.header
-sim_exe/egse_dm/RUN_golden/log_rocket_csv.csv
-sim_exe/egse_dm/RUN_golden/log_rocket_csv.header
-sim_exe/egse_dm/RUN_golden/log_timeline.csv
-sim_exe/egse_dm/RUN_golden/log_timeline_init.csv
-sim_exe/egse_dm/RUN_golden/send_hs
-sim_exe/egse_dm/RUN_golden/varserver_log
-sim_exe/fsw_gnc/RUN_golden/_init_log.csv
-sim_exe/fsw_gnc/RUN_golden/jitlib/
-sim_exe/fsw_gnc/RUN_golden/log_frame.header
-sim_exe/fsw_gnc/RUN_golden/log_frame.trk
-sim_exe/fsw_gnc/RUN_golden/log_frame_trickjobs.header
-sim_exe/fsw_gnc/RUN_golden/log_frame_trickjobs.trk
-sim_exe/fsw_gnc/RUN_golden/log_frame_userjobs_main.header
-sim_exe/fsw_gnc/RUN_golden/log_frame_userjobs_main.trk
-sim_exe/fsw_gnc/RUN_golden/log_ngps_slave.csv
-sim_exe/fsw_gnc/RUN_golden/log_ngps_slave.header
-sim_exe/fsw_gnc/RUN_golden/log_timeline.csv
-sim_exe/fsw_gnc/RUN_golden/log_timeline_init.csv
-sim_exe/fsw_gnc/RUN_golden/send_hs
-sim_exe/fsw_gnc/RUN_golden/varserver_log
+sim_exe/*/RUN_*/_init_log.csv
+sim_exe/*/RUN_*/jitlib/
+sim_exe/*/RUN_*/log_frame.header
+sim_exe/*/RUN_*/log_frame.trk
+sim_exe/*/RUN_*/log_frame_trickjobs.header
+sim_exe/*/RUN_*/log_frame_trickjobs.trk
+sim_exe/*/RUN_*/log_frame_userjobs_main.header
+sim_exe/*/RUN_*/log_frame_userjobs_main.trk
+sim_exe/*/RUN_*/log_ngps.csv
+sim_exe/*/RUN_*/log_ngps.header
+sim_exe/*/RUN_*/log_ngps_slave.csv
+sim_exe/*/RUN_*/log_ngps_slave.header
+sim_exe/*/RUN_*/log_timeline.csv
+sim_exe/*/RUN_*/log_timeline_init.csv
+sim_exe/*/RUN_*/log_rocket_csv.csv
+sim_exe/*/RUN_*/log_rocket_csv.header
+sim_exe/*/RUN_*/send_hs
+sim_exe/*/RUN_*/varserver_log
