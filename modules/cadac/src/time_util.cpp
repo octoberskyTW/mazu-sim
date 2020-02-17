@@ -20,24 +20,6 @@ time_util::GPS_TIME::GPS_TIME(UTC_TIME in)
     *this += GPS_UTC_DIFF;
 }
 
-time_util::GPS_TIME::GPS_TIME(CCSDS_CUC in)
-{
-    double integral_part, fractional_part;
-
-    integral_part = in.get_C1() * 16777216.0 + in.get_C2() * 65536.0 + in.get_C3() * 256.0 + in.get_C4();
-    fractional_part = in.get_F1() * 0.00390625 + in.get_F2() * 0.0000152587890625;
-
-    /* The difference between GPS epoch (Jan. 6 1980) and the beginning */
-    /* of the CUC time (Jan. 6 1981) is 52 weeks + 2 days (172800 secs) */
-    /* Note: 1980 is a leap year */
-    this->week = static_cast<uint32_t>(floor(integral_part / SEC_PER_WEEK)) + 52;
-    this->SOW = time_fmod(integral_part, SEC_PER_WEEK) + fractional_part + 172800.0;
-    if (this->SOW >= SEC_PER_WEEK) {
-        this->week = static_cast<uint32_t>(this->week + floor(this->SOW / SEC_PER_WEEK));
-        this->SOW = time_fmod(this->SOW, SEC_PER_WEEK);
-    }
-}
-
 time_util::GPS_TIME::GPS_TIME(Modified_julian_date in)
 {
     double imjd = floor(in.get_mjd());
@@ -235,55 +217,6 @@ void time_util::UTC_TIME::set_day_of_year(uint32_t year_in, uint32_t doy)
     this->year = year_in;
     this->month = CE_month + 1;
     this->day = doy;
-}
-
-time_util::CCSDS_CUC::CCSDS_CUC(GPS_TIME in)
-{
-    double total_sec, C1_sec, C2_sec, C3_sec;
-
-    /* GPS epoch : Jan. 6 1980 */
-    /* CUC epoch : Jan. 6 1981 */
-    /* Difference between CUC and GPS is 52 weeks and 2 days (172800 secs) */
-    if (((in.get_week() == 52.0) && (in.get_SOW() >= 172800.0)) ||
-        (in.get_week() > 52.0)) {
-        if (in.get_SOW() < 172800.0) {
-            total_sec = (in.get_week() - 53.0) * SEC_PER_WEEK + (SEC_PER_WEEK - 172800.0) + in.get_SOW();
-        } else {
-            total_sec = (in.get_week() - 52.0) * SEC_PER_WEEK + (in.get_SOW() - 172800.0);
-        }
-
-        this->C1 = (unsigned char) (total_sec / 16777216.0);
-        C1_sec = this->C1 * 16777216.0; /* 256^3 */
-
-        this->C2 = (unsigned char) ((total_sec - C1_sec) / 65536.0);
-        C2_sec = this->C2 * 65536.0; /* 256^2 */
-
-        this->C3 = (unsigned char) ((total_sec - C1_sec - C2_sec) / 256.0);
-        C3_sec = this->C3 * 256.0;
-
-        this->C4 = (unsigned char) (floor(total_sec - C1_sec - C2_sec - C3_sec));
-
-        total_sec = total_sec - C1_sec - C2_sec - C3_sec - this->C4;
-
-        this->F1 = (unsigned char) (total_sec / 0.00390625);
-        this->F2 = (unsigned char) ((total_sec - this->F1 * 0.00390625) / 0.0000152587890625);
-    } else {
-        throw std::out_of_range("CUC time is not available!");
-    }
-}
-
-time_util::CCSDS_CUC::~CCSDS_CUC() {}
-
-float time_util::CCSDS_CUC::operator-(time_util::CCSDS_CUC &in)
-{
-    float diff;
-
-    diff = static_cast<float>((this->C1 - in.C1) * 16777216.0                                                     /* 256^3 */
-                              + (this->C2 - in.C2) * 65536.0                                                      /* 256^2 */
-                              + (this->C3 - in.C3) * 256.0 + (this->C4 - in.C4) + (this->F1 - in.F1) * 0.00390625 /* 256^(-1) */
-                              + (this->F2 - in.F2) * 0.0000152587890625);                                         /*256^(-2) */
-
-    return diff;
 }
 
 time_util::Modified_julian_date::Modified_julian_date(GPS_TIME in)

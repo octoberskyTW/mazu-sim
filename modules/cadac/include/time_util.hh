@@ -9,15 +9,8 @@
 namespace time_util
 {
 /** UTC Time/Julian Day/GPS Time **/
-const double DJ00 = 2451545.0;
-const double DJC = 36525.0;
-const double DAS2R = 4.848136811095359935899141e-6;  /* Arcseconds to radians */
-const double D2PI = 6.283185307179586476925287;      /* 2Pi */
-const double DMAS2R = 4.848136811095359935899141e-9; /* Milliarcseconds to radians */
-const double TURNAS = 1296000.0;                     /* Arcseconds in a full circle */
 const double SEC_PER_DAY = 86400.0;
 const double SEC_PER_WEEK = 604800.0;
-const double TT_TAI = 32.184;
 
 /* Difference between TAI and GPS */
 const uint32_t TAI_GPS_DIFF = 19;
@@ -30,7 +23,6 @@ const double MJD_JAN11901 = 15385.0;
 
 class GPS_TIME;
 class UTC_TIME;
-class CCSDS_CUC;
 class Modified_julian_date;
 
 /* GPS Weeks and Second of Week, NO LEAP SECOND */
@@ -39,7 +31,6 @@ class GPS_TIME
 public:
     GPS_TIME(){};
     explicit GPS_TIME(UTC_TIME);
-    explicit GPS_TIME(CCSDS_CUC);
     explicit GPS_TIME(Modified_julian_date);
     explicit GPS_TIME(time_t);
     virtual ~GPS_TIME();
@@ -98,39 +89,6 @@ private:
     uint32_t hour;  /* *io (--) Hours.  */
     uint32_t min;   /* *io (--) Minutes */
     double sec;     /* *io (--) Seconds */
-};
-
-/* CCSDS Unsegmented time Code */
-class CCSDS_CUC
-{
-public:
-    CCSDS_CUC(){};
-    explicit CCSDS_CUC(GPS_TIME);
-    virtual ~CCSDS_CUC();
-
-    float operator-(CCSDS_CUC &in);
-
-    uint8_t get_C1() { return C1; }
-    uint8_t get_C2() { return C2; }
-    uint8_t get_C3() { return C3; }
-    uint8_t get_C4() { return C4; }
-    uint8_t get_F1() { return F1; }
-    uint8_t get_F2() { return F2; }
-
-    void set_C1(uint8_t in) { C1 = in; }
-    void set_C2(uint8_t in) { C2 = in; }
-    void set_C3(uint8_t in) { C3 = in; }
-    void set_C4(uint8_t in) { C4 = in; }
-    void set_F1(uint8_t in) { F1 = in; }
-    void set_F2(uint8_t in) { F2 = in; }
-
-private:
-    uint8_t C1; /* *io (--) Coarse time part 1 */
-    uint8_t C2; /* *io (--) Coarse time part 2 */
-    uint8_t C3; /* *io (--) Coarse time part 3 */
-    uint8_t C4; /* *io (--) Coarse time part 4 */
-    uint8_t F1; /* *io (--) Fine time part 1 */
-    uint8_t F2; /* *io (--) Fine time part 2 */
 };
 
 class Modified_julian_date
