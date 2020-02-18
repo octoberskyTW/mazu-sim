@@ -68,32 +68,4 @@ const double GLSB = 0.01 * (1.0 / 65536.0);
 const double ALSB = 0.01 * (1.0 / 65536.0);
 
 /************************************************************************/
-/** GPS constellation **/
-const int N_SBF = 5;
-const int MAX_SAT = 32;
-const int MAX_CHAR = 100;
-const int N_DWRD_SBF = 10;
-const int CA_SEQ_LEN = 1023;
-const int N_DWRD = (N_SBF + 1) * N_DWRD_SBF;
-const int EPHEM_ARRAY_SIZE = 13;
-const int SECONDS_IN_HOUR = 3600;
-const int MAX_CHAN = 12;
-const int SECONDS_IN_DAY = 86400;
-const double SPEED_OF_LIGHT = 2.99792458e8;
-const double LAMBDA_L1 = 0.190293672798365;
-const double POW2_M5 = 0.03125;
-const double POW2_M19 = 1.907348632812500e-6;
-const double POW2_M29 = 1.862645149230957e-9;
-const double POW2_M31 = 4.656612873077393e-10;
-const double POW2_M33 = 1.164153218269348e-10;
-const double POW2_M43 = 1.136868377216160e-13;
-const double POW2_M55 = 2.775557561562891e-17;
-const double POW2_M50 = 8.881784197001252e-016;
-const double POW2_M30 = 9.313225746154785e-010;
-const double POW2_M27 = 7.450580596923828e-009;
-const double POW2_M24 = 5.960464477539063e-008;
-const double WGS84_ECCENTRICITY = 0.0818191908426;
-/****************************************************************/
-const double TVC_DSP_RESOLUTION = 0.01;
-const int TVC_ROTATION_LIMIT_CNT = 800;
 #endif  //  __CADAC_CONSTANTS_HH__
