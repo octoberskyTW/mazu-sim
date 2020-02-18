@@ -29,7 +29,7 @@ public:
     double fc_int_step;
     double stand_still_time;
 
-    time_management *time = time_management::get_instance();
+    time_management *time = time_management::Instance();
 
     void init(LaunchVehicle *Vehicle);
     void exec1(LaunchVehicle *Vehicle);

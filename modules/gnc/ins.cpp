@@ -124,7 +124,7 @@ double INS_CS_JGM3[N_JGM3 + 1][N_JGM3 + 1] = {
 };
 
 INS::INS()
-    : time(time_management::get_instance()),
+    : time(time_management::Instance()),
       MATRIX_INIT(WEII, 3, 3),
       VECTOR_INIT(EVBI, 3),
       VECTOR_INIT(EVBID, 3),
