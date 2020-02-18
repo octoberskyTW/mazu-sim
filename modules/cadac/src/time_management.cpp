@@ -26,13 +26,6 @@ void time_management::load_start_time(unsigned int Year, unsigned int DOY,
     caldate.set_hour(Hour);
     caldate.set_min(Min);
     caldate.set_sec(Sec);
-    tm_gps_start_time_year = caldate.get_year();
-    tm_gps_start_time_month = caldate.get_month();
-    tm_gps_start_time_day = caldate.get_day();
-    tm_gps_start_time_hour = caldate.get_hour();
-    tm_gps_start_time_minute = caldate.get_min();
-    tm_gps_start_time_second =
-        caldate.get_sec() + 18;  // UTC time always behind GPS time 18 secs
     this->gpstime = time_util::GPS_TIME(caldate);
 }
 

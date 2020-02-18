@@ -2,29 +2,29 @@
 
 #include <exception>
 
-time_util::GPS_TIME::GPS_TIME(UTC_TIME in)
+time_util::GPS_TIME::GPS_TIME(UTC_TIME utc_input)
 {
     double mjd;
     double fmjd;
 
-    /* DOY -> mjd */
-    mjd = ((in.get_year() - 1901) / 4) * 1461 + ((in.get_year() - 1901) % 4) * 365 + in.get_day_of_year() - 1 + MJD_JAN11901;
-    fmjd = ((in.get_sec() / 60.0 + in.get_min()) / 60.0 + in.get_hour()) / 24.0;
+    /* day of year to mjd */
+    mjd = ((utc_input.get_year() - 1901) / 4) * 1461 + ((utc_input.get_year() - 1901) % 4) * 365 + utc_input.get_day_of_year() - 1 + MJD_JAN11901;
+    fmjd = ((utc_input.get_sec() / 60.0 + utc_input.get_min()) / 60.0 + utc_input.get_hour()) / 24.0;
 
-    /* mjd -> gps */
+    /* mjd to gps */
     this->week = static_cast<uint32_t>((mjd - MJD_JAN61980) / 7.0);
     this->SOW = ((mjd - MJD_JAN61980) - this->week * 7 + fmjd) * SEC_PER_DAY;
 
-    uint32_t GPS_UTC_DIFF = Modified_julian_date(in).tai_leap_second() - TAI_GPS_DIFF;
+    uint32_t GPS_UTC_DIFF = Modified_julian_date(utc_input).tai_leap_second() - TAI_GPS_DIFF;
 
     *this += GPS_UTC_DIFF;
 }
 
-time_util::GPS_TIME::GPS_TIME(Modified_julian_date in)
+time_util::GPS_TIME::GPS_TIME(Modified_julian_date mjd_input)
 {
-    double imjd = floor(in.get_mjd());
-    double fmjd = in.get_mjd() - floor(in.get_mjd());
-    uint32_t GPS_UTC_DIFF = in.tai_leap_second() - TAI_GPS_DIFF;
+    double imjd = floor(mjd_input.get_mjd());
+    double fmjd = mjd_input.get_mjd() - floor(mjd_input.get_mjd());
+    uint32_t GPS_UTC_DIFF = mjd_input.tai_leap_second() - TAI_GPS_DIFF;
 
     this->week = static_cast<uint32_t>((imjd - MJD_JAN61980) / 7.0);
     this->SOW = ((imjd - MJD_JAN61980) - this->week * 7 + fmjd) * SEC_PER_DAY;
@@ -32,7 +32,7 @@ time_util::GPS_TIME::GPS_TIME(Modified_julian_date in)
     *this += GPS_UTC_DIFF;
 }
 
-time_util::GPS_TIME::GPS_TIME(time_t in) : time_util::GPS_TIME(Modified_julian_date(in))
+time_util::GPS_TIME::GPS_TIME(time_t t_input) : time_util::GPS_TIME(Modified_julian_date(t_input))
 {
 }
 
@@ -40,11 +40,11 @@ time_util::GPS_TIME::~GPS_TIME()
 {
 }
 
-time_util::GPS_TIME &time_util::GPS_TIME::operator+=(double in)
+time_util::GPS_TIME &time_util::GPS_TIME::operator+=(double input)
 {
-    double temp = this->SOW + in;
+    double temp = this->SOW + input;
 
-    if (fabs(in) > SEC_PER_WEEK) {
+    if (fabs(input) > SEC_PER_WEEK) {
         throw std::logic_error("Sorry, Can't increment time by >= 1 week\n");
     }
 
@@ -61,29 +61,29 @@ time_util::GPS_TIME &time_util::GPS_TIME::operator+=(double in)
     return *this;
 }
 
-time_util::GPS_TIME &time_util::GPS_TIME::operator-=(double in)
+time_util::GPS_TIME &time_util::GPS_TIME::operator-=(double input)
 {
-    return this->operator+=(-in);
+    return this->operator+=(-input);
 }
 
-time_util::GPS_TIME time_util::GPS_TIME::operator+(double in)
+time_util::GPS_TIME time_util::GPS_TIME::operator+(double input)
 {
-    return time_util::GPS_TIME(*this) += in;
+    return time_util::GPS_TIME(*this) += input;
 }
 
-time_util::GPS_TIME time_util::GPS_TIME::operator-(double in)
+time_util::GPS_TIME time_util::GPS_TIME::operator-(double input)
 {
-    return time_util::GPS_TIME(*this) -= in;
+    return time_util::GPS_TIME(*this) -= input;
 }
 
-time_util::GPS_TIME &time_util::GPS_TIME::operator-=(time_util::GPS_TIME &in)
+time_util::GPS_TIME &time_util::GPS_TIME::operator-=(time_util::GPS_TIME &input)
 {
     /* substracts the week number */
-    this->week -= in.week;
+    this->week -= input.week;
 
     /* substracts the number of elapsed second since the begining of the */
     /* current week and the number of 1/256th of second since last second */
-    this->SOW -= in.SOW;
+    this->SOW -= input.SOW;
 
     /* updates the week number if the number of elapsed second since the */
     /* beginning of the current week is less than 0 */
@@ -105,7 +105,7 @@ time_t time_util::GPS_TIME::to_unix()
     return Modified_julian_date(*this).to_unix();
 }
 
-time_util::UTC_TIME::UTC_TIME(GPS_TIME in)
+time_util::UTC_TIME::UTC_TIME(GPS_TIME gps_input)
 {
     double mjd, fmjd, days_since_jan1_1901;
     int delta_yrs, num_four_yrs, years_so_far, days_left;
@@ -113,11 +113,11 @@ time_util::UTC_TIME::UTC_TIME(GPS_TIME in)
     /* Convert GPS time to MJD */
     // XXX: Fraction of error between mjd and fmjd calculated here and Modified Julian Date Class
     //      Which is correct?
-    Modified_julian_date mjd_in(in);
+    Modified_julian_date mjd_in(gps_input);
     int32_t UTC_GPS_DIFF = TAI_GPS_DIFF - mjd_in.tai_leap_second();
-    in += UTC_GPS_DIFF;
-    mjd = in.get_week() * 7.0 + floor(in.get_SOW() / SEC_PER_DAY) + MJD_JAN61980;
-    fmjd = time_fmod(in.get_SOW(), SEC_PER_DAY) / SEC_PER_DAY;
+    gps_input += UTC_GPS_DIFF;
+    mjd = gps_input.get_week() * 7.0 + floor(gps_input.get_SOW() / SEC_PER_DAY) + MJD_JAN61980;
+    fmjd = time_fmod(gps_input.get_SOW(), SEC_PER_DAY) / SEC_PER_DAY;
 
     days_since_jan1_1901 = mjd - MJD_JAN11901;
     num_four_yrs = static_cast<int32_t>(days_since_jan1_1901 / 1461); /* 4 years = 1461 days */
@@ -125,9 +125,9 @@ time_util::UTC_TIME::UTC_TIME(GPS_TIME in)
     days_left = static_cast<int64_t>(days_since_jan1_1901 - 1461 * num_four_yrs);
     delta_yrs = days_left / 365 - days_left / 1460;
 
-    uint32_t CE_year = static_cast<uint32_t>(years_so_far + delta_yrs);
+    uint32_t CommonEraYear = static_cast<uint32_t>(years_so_far + delta_yrs);
     uint32_t DOY = static_cast<uint32_t>(days_left - 365 * delta_yrs + 1);
-    this->set_day_of_year(CE_year, DOY);
+    this->set_day_of_year(CommonEraYear, DOY);
     this->hour = static_cast<int32_t>(fmjd * 24.0);
     this->min = static_cast<int32_t>(fmjd * 1440.0 - this->hour * 60.0);
     this->sec = fmjd * 86400.0 - this->hour * 3600.0 - this->min * 60.0;
@@ -135,20 +135,20 @@ time_util::UTC_TIME::UTC_TIME(GPS_TIME in)
 
 /* Create a CalDate using MJD. From Montenbruck C++ code. */
 /* Astronomy on the Personal Computer (Springer, ISBN: 0387577009) */
-time_util::UTC_TIME::UTC_TIME(Modified_julian_date in)
+time_util::UTC_TIME::UTC_TIME(Modified_julian_date mjd_input)
 {
-    double mjd = in.get_mjd();
+    double mjd = mjd_input.get_mjd();
 
-    uint64_t a, b, c, d, e, f, temp;
+    uint64_t jd0, b, c, d, e, f, temp;
     double Hours, x;
 
-    a = static_cast<int64_t>(mjd + 2400001.0);
+    jd0 = static_cast<int64_t>(mjd + 2400001.0);
 
-    if (a < 2299161) {
-        c = a + 1524;
-    } else {
-        b = static_cast<int64_t>((a - 1867216.25) / 36524.25);
-        c = a + b - (b / 4) + 1525;
+    if (jd0 < 2299161) {
+        c = jd0 + 1524; /* Julian calendar */
+    } else { /* Gregorian calendar */
+        b = static_cast<int64_t>((jd0 - 1867216.25) / 36524.25);
+        c = jd0 + b - (b / 4) + 1525;
     }
 
     d = static_cast<int64_t>((c - 122.1) / 365.25);
@@ -161,15 +161,15 @@ time_util::UTC_TIME::UTC_TIME(Modified_julian_date in)
     temp = static_cast<int64_t>(f / 14);
     this->month = static_cast<int32_t>(f - 1 - 12 * temp);
 
-    temp = static_cast<int64_t>((7 + this->get_month()) / 10);
+    temp = static_cast<int64_t>((7 + this->month) / 10);
     this->year = static_cast<int32_t>(d - 4715 - temp);
 
     Hours = 24.0 * (mjd - floor(mjd));
     this->hour = static_cast<int32_t>(Hours);
 
-    x = (Hours - this->get_hour()) * 60.0;
+    x = (Hours - this->hour) * 60.0;
     this->min = static_cast<int32_t>(x);
-    this->sec = (x - this->get_min()) * 60.0;
+    this->sec = (x - this->min) * 60.0;
 }
 
 time_util::UTC_TIME::~UTC_TIME()
@@ -199,83 +199,64 @@ void time_util::UTC_TIME::set_day_of_year(uint32_t year_in, uint32_t doy)
 {
     unsigned int month_array[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     unsigned int month_array_leap_year[12] = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-    unsigned int CE_month = 0;
+    unsigned int CommonEraMonth = 0;
 
     /* check for leap year */
     if ((year_in % 4 == 0 && year_in % 100 != 0) || year_in % 400 == 0) {
-        while (doy > month_array_leap_year[CE_month]) {
-            doy = doy - month_array_leap_year[CE_month];
-            CE_month = CE_month + 1;
+        while (doy > month_array_leap_year[CommonEraMonth]) {
+            doy = doy - month_array_leap_year[CommonEraMonth];
+            CommonEraMonth = CommonEraMonth + 1;
         }
     } else {
-        while (doy > month_array[CE_month]) {
-            doy = doy - month_array[CE_month];
-            CE_month = CE_month + 1;
+        while (doy > month_array[CommonEraMonth]) {
+            doy = doy - month_array[CommonEraMonth];
+            CommonEraMonth = CommonEraMonth + 1;
         }
     }
 
     this->year = year_in;
-    this->month = CE_month + 1;
+    this->month = CommonEraMonth + 1;
     this->day = doy;
 }
 
-time_util::Modified_julian_date::Modified_julian_date(GPS_TIME in)
+time_util::Modified_julian_date::Modified_julian_date(GPS_TIME gps_input)
 {
-    this->modified_julian_date = in.get_week() * 7.0 + in.get_SOW() / SEC_PER_DAY + MJD_JAN61980; /* 44244 */
+    this->modified_julian_date = gps_input.get_week() * 7.0 + gps_input.get_SOW() / SEC_PER_DAY + MJD_JAN61980; /* 44244 */
 
     int32_t UTC_GPS_DIFF = TAI_GPS_DIFF - this->tai_leap_second();
 
-    in += UTC_GPS_DIFF;
+    gps_input += UTC_GPS_DIFF;
 
-    this->modified_julian_date = in.get_week() * 7.0 + in.get_SOW() / SEC_PER_DAY + MJD_JAN61980; /* 44244 */
+    this->modified_julian_date = gps_input.get_week() * 7.0 + gps_input.get_SOW() / SEC_PER_DAY + MJD_JAN61980; /* 44244 */
 }
 
-time_util::Modified_julian_date::Modified_julian_date(UTC_TIME in)
+time_util::Modified_julian_date::Modified_julian_date(UTC_TIME utc_input)
 {
     int MjdMidnight;
     double FracOfDay, mjd;
     int b, temp;
 
     /*double jd;*/
-    if (in.get_month() <= 2) {
-        in.set_month(in.get_month() + 12);
-        in.set_year(in.get_year() - 1);
+    if (utc_input.get_month() <= 2) {
+        utc_input.set_month(utc_input.get_month() + 12);
+        utc_input.set_year(utc_input.get_year() - 1);
     }
 
-    if ((10000 * in.get_year() + 100 * in.get_month() + in.get_day()) <= 15821004) {
+    if ((10000 * utc_input.get_year() + 100 * utc_input.get_month() + utc_input.get_day()) <= 15821004) {
         /* For a date in the Julian calendar , up to 1582 October 4 */
-        b = -2 + static_cast<int32_t>((in.get_year() + 4716) / 4) - 1179;
+        b = -2 + static_cast<int32_t>((utc_input.get_year() + 4716) / 4) - 1179;
     } else {
         /* Gregorian calendar is used from 1582 October 15 onwards */
-        b = static_cast<int32_t>(in.get_year() / 400) - static_cast<int32_t>(in.get_year() / 100) + static_cast<int32_t>(in.get_year() / 4);
+        b = static_cast<int32_t>(utc_input.get_year() / 400) - static_cast<int32_t>(utc_input.get_year() / 100) + static_cast<int32_t>(utc_input.get_year() / 4);
     }
 
-    temp = static_cast<int32_t>(30.6001 * (in.get_month() + 1));
+    temp = static_cast<int32_t>(30.6001 * (utc_input.get_month() + 1));
 
-    MjdMidnight = 365 * in.get_year() - 679004 + b + temp + in.get_day();
-    /*FracOfDay   = (in.get_hour() + in.get_min()/60.0 + in.get_sec()/3600.0) / 24.0; */
-    FracOfDay = (in.get_hour() * 3600 + in.get_min() * 60.0 + in.get_sec()) / SEC_PER_DAY;
+    MjdMidnight = 365 * utc_input.get_year() - 679004 + b + temp + utc_input.get_day();
+    /*FracOfDay   = (utc_input.get_hour() + utc_input.get_min()/60.0 + utc_input.get_sec()/3600.0) / 24.0; */
+    FracOfDay = (utc_input.get_hour() * 3600 + utc_input.get_min() * 60.0 + utc_input.get_sec()) / SEC_PER_DAY;
 
     mjd = static_cast<double>(MjdMidnight) + FracOfDay;
-
-    /*printf("mjd = %.15f\n", mjd); */
-
-    /*** Algorithm provided by Vallado's book 3rd Edition ***/
-    /*** page 189, Algorithm 14, verified same result as  ***/
-    /*** the above algorithm.                             ***/
-    /***
-    double jd;
-
-    jd = 367.0 * in.get_year() -
-         floor((7 * (in.get_year() + floor((in.get_month() + 9) / 12.0))) * 0.25) +
-         floor( 275 * in.get_month() / 9.0 ) +
-         in.get_day() + 1721013.5 +
-         ((in.get_sec() / 60.0 + in.get_min()) / 60.0 + in.get_hour()) / 24.0; ***/
-    /* - 0.5 * sgn(100.0*year + mon - 190002.5) + 0.5; */
-
-    /***
-    mjd = jd - 2400000.5;
-    ***/
 
     this->modified_julian_date = mjd;
 }

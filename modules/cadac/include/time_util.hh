@@ -35,20 +35,20 @@ public:
     explicit GPS_TIME(time_t);
     virtual ~GPS_TIME();
 
-    GPS_TIME &operator+=(double in);
-    GPS_TIME &operator-=(double in);
+    GPS_TIME &operator+=(double input);
+    GPS_TIME &operator-=(double input);
 
-    GPS_TIME operator+(double in);
-    GPS_TIME operator-(double in);
+    GPS_TIME operator+(double input);
+    GPS_TIME operator-(double input);
 
-    GPS_TIME &operator-=(GPS_TIME &in);
-    GPS_TIME operator-(GPS_TIME &in);
+    GPS_TIME &operator-=(GPS_TIME &input);
+    GPS_TIME operator-(GPS_TIME &input);
 
     uint32_t get_week() { return week; }
     double get_SOW() { return SOW; }
 
-    void set_week(uint32_t in) { week = in; }
-    void set_SOW(double in) { SOW = in; }
+    void set_week(uint32_t input) { week = input; }
+    void set_SOW(double input) { SOW = input; }
 
     time_t to_unix();
 
@@ -72,12 +72,12 @@ public:
     uint32_t get_min() { return min; }
     double get_sec() { return sec; }
 
-    void set_year(uint32_t in) { year = in; }
-    void set_month(uint32_t in) { month = in; }
-    void set_day(uint32_t in) { day = in; }
-    void set_hour(uint32_t in) { hour = in; }
-    void set_min(uint32_t in) { min = in; }
-    void set_sec(double in) { sec = in; }
+    void set_year(uint32_t input) { year = input; }
+    void set_month(uint32_t input) { month = input; }
+    void set_day(uint32_t input) { day = input; }
+    void set_hour(uint32_t input) { hour = input; }
+    void set_min(uint32_t input) { min = input; }
+    void set_sec(double input) { sec = input; }
 
     uint32_t get_day_of_year();
     void set_day_of_year(uint32_t year_in, uint32_t doy);
@@ -94,7 +94,7 @@ private:
 class Modified_julian_date
 {
 public:
-    Modified_julian_date() {}
+    Modified_julian_date(){};
     explicit Modified_julian_date(GPS_TIME);
     explicit Modified_julian_date(UTC_TIME);
     explicit Modified_julian_date(time_t);
@@ -110,7 +110,7 @@ public:
     time_t to_unix();
 
 private:
-    double modified_julian_date; /* *io (s) julian date */
+    double modified_julian_date; /* *io (--) julian date */
 };
 
 double time_fmod(double a, double b);

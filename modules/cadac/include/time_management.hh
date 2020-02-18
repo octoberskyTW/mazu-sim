@@ -8,25 +8,13 @@
 #include "aux.hh"
 #include "cadac_constants.hh"
 #include "time_util.hh"
+#include "singleton.hh"
 
-class time_management
+class time_management : public Singleton<time_management>
 {
     TRICK_INTERFACE(time_management);
-
+    friend class Singleton<time_management>;
 public:
-    uint32_t tm_gps_start_time_year;
-    uint32_t tm_gps_start_time_month;
-    uint32_t tm_gps_start_time_day;
-    uint32_t tm_gps_start_time_hour;
-    uint32_t tm_gps_start_time_minute;
-    double tm_gps_start_time_second;
-    static time_management *get_instance()
-    {
-        static time_management time;
-
-        return &time;
-    }
-
     time_management(const time_management &other) = delete;
     time_management &operator=(const time_management &other) = delete;
 
