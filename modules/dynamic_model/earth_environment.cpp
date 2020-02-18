@@ -33,7 +33,9 @@ void EarthEnvironment::init(LaunchVehicle *VehicleIn)
 {
     VehicleIn->Env->dvba = VehicleIn->DM->_dvbe;
     VehicleIn->Env->TEI = RNP();
-    // data_exchang->hset("TEI", VehicleIn->Env->TEI);
+    VehicleIn->Env->WEIE_skew(0, 1) = -WEII3;
+    VehicleIn->Env->WEIE_skew(1, 0) = WEII3;
+    VehicleIn->Env->WEIE(2) = WEII3;
 }
 
 void EarthEnvironment::atmosphere_use_public()
@@ -124,8 +126,7 @@ void EarthEnvironment::algorithm(LaunchVehicle *VehicleIn)
 /* Rotation-Nutation-Precession transfor Matrix (ECI to ECEF) */
 arma::mat EarthEnvironment::RNP()
 {
-    /* double We = 7.2921151467E-5; */
-    // GPSR gpsr;/* call gpsr function */
+    /* double WEIE = 7.2921151467E-5; */
     time_util::UTC_TIME utc_caldate;
     time_util::GPS_TIME tmp_gps;
     unsigned char i;
@@ -133,10 +134,10 @@ arma::mat EarthEnvironment::RNP()
     arma::mat33 M_rotation;
     arma::mat33 M_nutation;
     arma::mat33 M_precession;
-    arma::mat33 M_nut_n_pre;
+    // arma::mat33 M_nut_n_pre;
     double t, t2, t3, thetaA, zetaA, zA;
     double epsilonA, epsilonAP, F, D, omega;
-    double temps_sideral(0);
+    double sideral_time(0);
     double L, La, gamma, delta_psi, delta_epsilon;
     double dUT1;
     double s_thetaA, c_thetaA, s_zetaA, c_zetaA, s_zA, c_zA;
@@ -231,10 +232,9 @@ arma::mat EarthEnvironment::RNP()
         gamma = NUTATION_COEFF[i][0] * L + NUTATION_COEFF[i][1] * La +
                 NUTATION_COEFF[i][2] * F + NUTATION_COEFF[i][3] * D +
                 NUTATION_COEFF[i][4] * omega; /* unit: radian */
-        delta_psi = delta_psi + (NUTATION_COEFF[i][5] + NUTATION_COEFF[i][6] * t) *
+        delta_psi += (NUTATION_COEFF[i][5] + NUTATION_COEFF[i][6] * t) *
                                     sin(gamma); /* unit: arcsec */
-        delta_epsilon =
-            delta_epsilon + (NUTATION_COEFF[i][7] + NUTATION_COEFF[i][8] * t) *
+        delta_epsilon += (NUTATION_COEFF[i][7] + NUTATION_COEFF[i][8] * t) *
                                 cos(gamma); /* unit: arcsec */
     }
 
@@ -268,27 +268,27 @@ arma::mat EarthEnvironment::RNP()
     /*----------------------------------------------------------- */
     /*-------- Matrice of Nutation * Precession --------*/
     /*----------------------------------------------------------- */
-    M_nut_n_pre = M_nutation * M_precession;
+    // M_nut_n_pre = M_nutation * M_precession;
 
     /*----------------------------------------------------------- */
     /*------------------- Rotation Matrix --------------------*/
     /*----------------------------------------------------------- */
-    temps_sideral =
+    sideral_time =
         UT1 + (24110.54841 + 8640184.812866 * t + 0.093104 * t2 - 0.0000062 * t3);
-    temps_sideral = temps_sideral * DM_sec2r +
+    sideral_time = sideral_time * DM_sec2r +
                     delta_psi * cos(epsilonA) * DM_arcsec2r; /* unit: radian */
 
-    M_rotation(0, 0) = cos(temps_sideral);
-    M_rotation(0, 1) = sin(temps_sideral);
+    M_rotation(0, 0) = cos(sideral_time);
+    M_rotation(0, 1) = sin(sideral_time);
     M_rotation(0, 2) = 0.0;
-    M_rotation(1, 0) = -sin(temps_sideral);
-    M_rotation(1, 1) = cos(temps_sideral);
+    M_rotation(1, 0) = -sin(sideral_time);
+    M_rotation(1, 1) = cos(sideral_time);
     M_rotation(1, 2) = 0.0;
     M_rotation(2, 0) = 0.0;
     M_rotation(2, 1) = 0.0;
     M_rotation(2, 2) = 1.0;
 
-    return M_rotation * M_nut_n_pre;
+    return M_rotation * (M_nutation * M_precession);
 } /* End of dm_RNP() */
 
 /*******************************************************************************
@@ -326,16 +326,9 @@ arma::vec EarthEnvironment::AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
     arma::vec S_FIX(3); /* Earth-fixed position */
     arma::vec ACC_FIX(3); /* Earth-fixed acceleration */
 
-    double V[N_JGM3 + 2][N_JGM3 + 2] = {
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-    }; /* Harmonic functions
+    double V[N_JGM3 + 2][N_JGM3 + 2]; /* Harmonic functions
                                                           */
-    double
-        W[N_JGM3 + 2]
-         [N_JGM3 + 2] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }; /* work array
+    double W[N_JGM3 + 2][N_JGM3 + 2]; /* work array
                                                          (0..n_max+1,0..n_max+1)
                                                        */
     /* Earth-fixed position */
@@ -419,6 +412,5 @@ arma::vec EarthEnvironment::AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
     ACC_FIX(1) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * ay;
     ACC_FIX(2) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * az;
 
-    arma::vec tmp_vec = trans(TEI) * ACC_FIX;
-    return tmp_vec;
+    return trans(TEI) * ACC_FIX;
 } /* end of AccelHarmonic */

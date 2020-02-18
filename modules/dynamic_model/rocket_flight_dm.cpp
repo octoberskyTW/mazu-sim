@@ -50,10 +50,6 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
     arma::mat33 TEI = E->TEI;  // cad::tei(get_elapsed_time());
     arma::vec3 XCG = P->XCG;
 
-    D->WEII_skew(0, 1) = -WEII3;
-    D->WEII_skew(1, 0) = WEII3;
-    D->WEII(2) = WEII3;
-
     reference_point_calc(D, P);
     D->rhoC_1(0) = XCG(0) - D->reference_point;
     D->rhoC_1(1) = 0.0;
@@ -74,7 +70,7 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
     D->TBI = D->TBD * D->TDI;
     D->TLI = D->TBI;
 
-    D->WBIB = D->WBEB + D->TBI * D->WEII;
+    D->WBIB = D->WBEB + D->TBI * E->WEIE;
 
     D->TBI_Q =
         Matrix2Quaternion(D->TBI);  // Convert Direct Cosine Matrix to Quaternion
@@ -84,18 +80,18 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
     D->VBED = trans(D->TBD) * VBEB;
 
     D->VBII =
-        trans(D->TDI) * D->VBED + trans(TEI) * (D->WEII_skew * (TEI * D->SBII));
+        trans(D->TDI) * D->VBED + trans(TEI) * (E->WEIE_skew * (TEI * D->SBII));
     D->SBIIP = D->SBII - trans(D->TBI) * D->rhoC_1;
     D->VBIIP = D->VBII - trans(D->TBI) * cross(D->WBIB, D->rhoC_1);
     // arma::vec3 GRAVG;
     // data_exchang->hget("GRAVG", GRAVG);
-    D->ABII = trans(TEI) * (D->WEII_skew * D->WEII_skew * (TEI * D->SBII));
+    D->ABII = trans(TEI) * (E->WEIE_skew * E->WEIE_skew * (TEI * D->SBII));
     // FSPB = TBI * (-GRAVG + ABII);  // FSPB: body force include gravity acc
     D->SBEE = TEI * D->SBII;  // Calculate position in ECEF
     D->VBEE =
-        TEI * D->VBII - cross(D->WEII, D->SBEE);  // Calculate velocity in ECEF
+        TEI * D->VBII - cross(E->WEIE, D->SBEE);  // Calculate velocity in ECEF
     D->NEXT_ACC =
-        trans(TEI) * (cross(D->WEII, cross(D->WEII, (TEI * (D->SBIIP)))));
+        trans(TEI) * (cross(E->WEIE, cross(E->WEIE, (TEI * (D->SBIIP)))));
     D->Interpolation_Extrapolation_flag = 4;
 
     if (D->liftoff == 1) {
@@ -192,7 +188,7 @@ void Rocket_Flight_DM::algorithm(LaunchVehicle *VehicleIn)
     // Send(D);
 
     D->TBD = calculate_TBD(VehicleIn);
-    aux_calulate(TEI, int_step, D);
+    aux_calulate(TEI, int_step, D, E);
     if (D->liftoff == 1) {
         propagate_aeroloss(VehicleIn);
         propagate_gravityloss(VehicleIn);
@@ -334,88 +330,88 @@ void Rocket_Flight_DM::orbital(DM_var *VarIn)
 }
 
 void Rocket_Flight_DM::aux_calulate(arma::mat33 TEI, double int_step,
-                                    DM_var *VarIn)
+                                    DM_var *DMIn, EarthEnvironment_var *EnvIn)
 {
     double lon, lat, al;
     arma::mat33 TBL;
 
     // angular velocity wrt inertial frame in inertial coordinates
-    VarIn->WBII = trans(VarIn->TBI) * VarIn->WBIB;
+    DMIn->WBII = trans(DMIn->TBI) * DMIn->WBIB;
 
     // angular velocity wrt Earth in body coordinates
-    VarIn->WBEB = VarIn->WBIB - VarIn->TBI * VarIn->WEII;
+    DMIn->WBEB = DMIn->WBIB - DMIn->TBI * EnvIn->WEIE;
 
-    VarIn->SBEE_old = VarIn->SBEE;
-    VarIn->VBEE_old = VarIn->VBEE;
-    VarIn->ABEE_old = VarIn->ABEE;
+    DMIn->SBEE_old = DMIn->SBEE;
+    DMIn->VBEE_old = DMIn->VBEE;
+    DMIn->ABEE_old = DMIn->ABEE;
 
-    VarIn->ABIB = VarIn->TBI * VarIn->ABII;
-    VarIn->SBEE = TEI * VarIn->SBII;  // Calculate position in ECEF
-    VarIn->VBEE = TEI * VarIn->VBII -
-                  cross(VarIn->WEII, VarIn->SBEE);  // Calculate velocity in ECEF
-    VarIn->ABEE = TEI * VarIn->ABII - cross(VarIn->WEII, VarIn->VBEE) -
-                  cross(VarIn->WEII, VarIn->VBEE) -
-                  cross(VarIn->WEII, cross(VarIn->WEII, VarIn->SBEE));
-    VarIn->JBEE =
-        TEI * VarIn->JBII -
-        cross(VarIn->WEII, cross(VarIn->WEII, cross(VarIn->WEII, VarIn->SBEE))) -
-        cross(VarIn->WEII, cross(VarIn->WEII, VarIn->VBEE)) -
-        cross(VarIn->WEII, VarIn->ABEE);
+    DMIn->ABIB = DMIn->TBI * DMIn->ABII;
+    DMIn->SBEE = TEI * DMIn->SBII;  // Calculate position in ECEF
+    DMIn->VBEE = TEI * DMIn->VBII -
+                  cross(EnvIn->WEIE, DMIn->SBEE);  // Calculate velocity in ECEF
+    DMIn->ABEE = TEI * DMIn->ABII - cross(EnvIn->WEIE, DMIn->VBEE) -
+                  cross(EnvIn->WEIE, DMIn->VBEE) -
+                  cross(EnvIn->WEIE, cross(EnvIn->WEIE, DMIn->SBEE));
+    DMIn->JBEE =
+        TEI * DMIn->JBII -
+        cross(EnvIn->WEIE, cross(EnvIn->WEIE, cross(EnvIn->WEIE, DMIn->SBEE))) -
+        cross(EnvIn->WEIE, cross(EnvIn->WEIE, DMIn->VBEE)) -
+        cross(EnvIn->WEIE, DMIn->ABEE);
 
     // Calculate lon lat alt
-    std::tie(lon, lat, al) = cad::geo84_in(VarIn->SBII, TEI);
-    VarIn->lonx = lon * DEG;
-    VarIn->latx = lat * DEG;
-    VarIn->alt = al;
+    std::tie(lon, lat, al) = cad::geo84_in(DMIn->SBII, TEI);
+    DMIn->lonx = lon * DEG;
+    DMIn->latx = lat * DEG;
+    DMIn->alt = al;
     // std::cout<<alt<<std::endl;
-    if (VarIn->liftoff == 1)
-        assert(VarIn->alt >= 0.0 && " *** Stop: Ground impact detected !! *** ");
+    if (DMIn->liftoff == 1)
+        assert(DMIn->alt >= 0.0 && " *** Stop: Ground impact detected !! *** ");
 
-    VarIn->TDI = cad::tdi84(lon, lat, al, TEI);
-    VarIn->TDE = cad::tde84(lon, lat, al);
-    VarIn->TGI = cad::tgi84(lon, lat, al, TEI);
-    TBL = VarIn->TBI * trans(VarIn->TLI);
-    VarIn->LT_euler = euler_angle(TBL);
+    DMIn->TDI = cad::tdi84(lon, lat, al, TEI);
+    DMIn->TDE = cad::tde84(lon, lat, al);
+    DMIn->TGI = cad::tgi84(lon, lat, al, TEI);
+    TBL = DMIn->TBI * trans(DMIn->TLI);
+    DMIn->LT_euler = euler_angle(TBL);
 
-    VarIn->ABID = VarIn->TDI * VarIn->ABII;
-    VarIn->VBED = VarIn->TDE * VarIn->VBEE;
+    DMIn->ABID = DMIn->TDI * DMIn->ABII;
+    DMIn->VBED = DMIn->TDE * DMIn->VBEE;
 
-    arma::vec3 tmp = euler_angle(VarIn->TBD);
+    arma::vec3 tmp = euler_angle(DMIn->TBD);
 
-    VarIn->thtbdx = tmp(1) * DEG;
-    VarIn->psibdx = tmp(2) * DEG;
-    VarIn->phibdx = tmp(0) * DEG;
+    DMIn->thtbdx = tmp(1) * DEG;
+    DMIn->psibdx = tmp(2) * DEG;
+    DMIn->phibdx = tmp(0) * DEG;
 
-    VarIn->ppx = VarIn->WBEB(0) * DEG;
-    VarIn->qqx = VarIn->WBEB(1) * DEG;
-    VarIn->rrx = VarIn->WBEB(2) * DEG;
+    DMIn->ppx = DMIn->WBEB(0) * DEG;
+    DMIn->qqx = DMIn->WBEB(1) * DEG;
+    DMIn->rrx = DMIn->WBEB(2) * DEG;
 
-    VarIn->_dbi = norm(VarIn->SBII);
-    VarIn->_dvbi = norm(VarIn->VBII);
+    DMIn->_dbi = norm(DMIn->SBII);
+    DMIn->_dvbi = norm(DMIn->VBII);
 
     arma::vec3 VBED;
 
-    VBED = VarIn->TDI * (VarIn->VBII - VarIn->WEII_skew * VarIn->SBII);
+    VBED = DMIn->TDI * (DMIn->VBII - EnvIn->WEIE_skew * DMIn->SBII);
 
     double vbed1 = VBED(0);
     double vbed2 = VBED(1);
-    VarIn->_grndtrck += sqrt(vbed1 * vbed1 + vbed2 * vbed2) * int_step * REARTH /
-                        norm(VarIn->SBII);
-    VarIn->_gndtrkmx = 0.001 * VarIn->_grndtrck;
-    VarIn->_gndtrnmx = NMILES * VarIn->_grndtrck;
+    DMIn->_grndtrck += sqrt(vbed1 * vbed1 + vbed2 * vbed2) * int_step * REARTH /
+                        norm(DMIn->SBII);
+    DMIn->_gndtrkmx = 0.001 * DMIn->_grndtrck;
+    DMIn->_gndtrnmx = NMILES * DMIn->_grndtrck;
 
-    VarIn->_ayx = VarIn->FSPB(1) / AGRAV;
-    VarIn->_anx = -VarIn->FSPB(2) / AGRAV;
+    DMIn->_ayx = DMIn->FSPB(1) / AGRAV;
+    DMIn->_anx = -DMIn->FSPB(2) / AGRAV;
 
-    VarIn->_dvbe = pol_from_cart(VBED)(0);
-    VarIn->_psivdx = pol_from_cart(VBED)(1);
-    VarIn->_thtvdx = pol_from_cart(VBED)(2);
+    DMIn->_dvbe = pol_from_cart(VBED)(0);
+    DMIn->_psivdx = pol_from_cart(VBED)(1);
+    DMIn->_thtvdx = pol_from_cart(VBED)(2);
 
-    if (VarIn->liftoff == 1) {
+    if (DMIn->liftoff == 1) {
         // T.M. of geographic velocity wrt geodetic coordinates
-        VarIn->TVD =
-            build_psivg_thtvg_TM(VarIn->_psivdx * RAD, VarIn->_thtvdx * RAD);
-        orbital(VarIn);
+        DMIn->TVD =
+            build_psivg_thtvg_TM(DMIn->_psivdx * RAD, DMIn->_thtvdx * RAD);
+        orbital(DMIn);
     }
 }
 
@@ -465,7 +461,7 @@ void Rocket_Flight_DM::RK4F(std::vector<arma::vec> Var_in,
             D->liftoff = 1;
         }
         D->NEXT_ACC =
-            trans(TEI) * (cross(D->WEII, cross(D->WEII, (TEI * (D->SBIIP)))));
+            trans(TEI) * (cross(E->WEIE, cross(E->WEIE, (TEI * (D->SBIIP)))));
         D->FSPB = QuaternionRotation(
             D->TBI_Q,
             (-GRAVG + D->NEXT_ACC +

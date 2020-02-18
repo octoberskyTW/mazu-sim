@@ -45,7 +45,8 @@ private:
     void propagate_gravityloss(LaunchVehicle *VehicleIn);
     void propagate_control_loss(LaunchVehicle *VehicleIn);
     void orbital(DM_var *VarIn);
-    void aux_calulate(arma::mat33 TEI, double int_step, DM_var *VarIn);
+    void aux_calulate(arma::mat33 TEI, double int_step,
+                                    DM_var *DMIn, EarthEnvironment_var *EnvIn);
     void RK4F(std::vector<arma::vec> Var_in, std::vector<arma::vec> &Var_out,
               LaunchVehicle *VehicleIn);
     void reference_point_calc(DM_var *D, Prop_var *P);
