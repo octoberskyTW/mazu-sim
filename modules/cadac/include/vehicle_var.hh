@@ -4,7 +4,6 @@
 #include <armadillo>
 #include <vector>
 #include "aux.hh"
-#include "body.hh"
 #include "signal_process.hh"
 
 enum STAGE { STAGE_1 = 0,
@@ -366,8 +365,6 @@ public:
     int DOF;                  /* *o (--)  Number of Degree of Freedom */
     int reference_point_flag; /* *o (--)  check if reference point equal to xcg */
     unsigned int Aero_flag;   /* *o (-)  Aerodynamics flag */
-
-    Body *Body_ptr;
 };
 
 class Prop_var

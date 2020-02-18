@@ -104,8 +104,6 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
         D->alppx = calculate_alppx(D->VBAB, norm(D->VBAB));
         D->phipx = calculate_phipx(D->VBAB);
     }
-
-    D->Body_ptr = new Mobilized_body(1, D->SBIIP, D->VBIIP, D->NEXT_ACC, D->TBI_Q, D->WBIB, D->WBIBD, P->vmass, P->IBBB);
 }
 
 void Rocket_Flight_DM::set_DOF(int ndof) { DOF = ndof; }

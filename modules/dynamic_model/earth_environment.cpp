@@ -256,14 +256,14 @@ arma::mat EarthEnvironment::RNP()
     M_nutation(0, 2) = -s_delta_psi * s_epsilonA;
     M_nutation(1, 0) = c_epsilonAP * s_delta_psi;
     M_nutation(1, 1) =
-        c_delta_epsilon - 2 * s2_half_delta_psi * c_epsilonA * c_epsilonAP;
+        c_delta_epsilon - 2. * s2_half_delta_psi * c_epsilonA * c_epsilonAP;
     M_nutation(1, 2) =
-        -s_delta_epsilon - 2 * s2_half_delta_psi * s_epsilonA * c_epsilonAP;
+        -s_delta_epsilon - 2. * s2_half_delta_psi * s_epsilonA * c_epsilonAP;
     M_nutation(2, 0) = s_epsilonAP * s_delta_psi;
     M_nutation(2, 1) =
-        s_delta_epsilon - 2 * s2_half_delta_psi * c_epsilonA * s_epsilonAP;
+        s_delta_epsilon - 2. * s2_half_delta_psi * c_epsilonA * s_epsilonAP;
     M_nutation(2, 2) =
-        c_delta_epsilon - 2 * s2_half_delta_psi * s_epsilonA * s_epsilonAP;
+        c_delta_epsilon - 2. * s2_half_delta_psi * s_epsilonA * s_epsilonAP;
 
     /*----------------------------------------------------------- */
     /*-------- Matrice of Nutation * Precession --------*/
