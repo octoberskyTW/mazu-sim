@@ -30,7 +30,7 @@ class FlightSoftware_SimObject : public Trick::SimObject {
         Guidance guidance;
         RCS_FC rcs_fc;
 
-        time_management *time = time_management::get_instance();
+        time_management *time = time_management::Instance();
         uint64_t egse_flight_event_trigger_bitmap = 0xFFFFFFFFFFFFFFFF;
         
         refactor_uplink_packet_t dm_ins_db;
