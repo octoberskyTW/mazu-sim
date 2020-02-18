@@ -1,5 +1,16 @@
 #define N_JGM3 20
-
+/********************************************************************
+ *
+ * Earth gravity field JGM3
+ * Gravitational coefficients C, S are efficiently stored in a single
+ * array CS. The lower triangle matrix CS holds the non-sectorial C
+ * coefficients C_n,m (n!=m). Sectorial C coefficients C_n,n are the
+ * diagonal elements of CS and the upper triangular matrix stores
+ * the S_n,m (m!=0) coefficients in columns, for the same degree n.
+ * Mapping of CS to C, S is achieved through
+ * C_n,m = CS(n,m), S_n,m = CS(m-1,n)
+ *
+ *********************************************************************/
 const double GRAV_COEFF_JGM3[N_JGM3 + 1][N_JGM3 + 1] = {
     { 1.000000e+00, 0.000000e+00, 1.543100e-09, 2.680119e-07, -4.494599e-07,
       -8.066346e-08, 2.116466e-08, 6.936989e-08, 4.019978e-08, 1.423657e-08,

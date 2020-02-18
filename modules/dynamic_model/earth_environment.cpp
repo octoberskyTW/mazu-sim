@@ -15,20 +15,7 @@
 #include "env/wind_tabular.hh"
 #include "earth_coeff.hh"
 
-/********************************************************************
- *
- * Earth gravity field JGM3
- * Gravitational coefficients C, S are efficiently stored in a single
- * array CS. The lower triangle matrix CS holds the non-sectorial C
- * coefficients C_n,m (n!=m). Sectorial C coefficients C_n,n are the
- * diagonal elements of CS and the upper triangular matrix stores
- * the S_n,m (m!=0) coefficients in columns, for the same degree n.
- * Mapping of CS to C, S is achieved through
- * C_n,m = CS(n,m), S_n,m = CS(m-1,n)
- *
- *********************************************************************/
-
-EarthEnvironment::EarthEnvironment() : time(time_management::get_instance())
+EarthEnvironment::EarthEnvironment() : time(time_management::Instance())
 {
     atmosphere = NULL;
     wind = NULL;
@@ -97,26 +84,6 @@ void EarthEnvironment::set_wind_turbulunce(double turb_length,
 
 void EarthEnvironment::algorithm(LaunchVehicle *VehicleIn)
 {
-    /* passing data*/
-    // arma::vec3 VBED;
-    // arma::vec3 SBII;
-    // double alt, alppx, phipx;
-    // arma::mat33 TGI;
-    // arma::mat33 TBI;
-    // arma::mat33 TBD;
-    // arma::vec3 VBEE;
-    // arma::mat33 TDE;
-    // data_exchang->hget("VBED", VBED);
-    // data_exchang->hget("SBII", SBII);
-    // data_exchang->hget("alt", &alt);
-    // data_exchang->hget("TGI", TGI);
-    // data_exchang->hget("TBI", TBI);
-    // data_exchang->hget("TBD", TBD);
-    // data_exchang->hget("alppx", &alppx);
-    // data_exchang->hget("phipx", &phipx);
-    // data_exchang->hget("VBEE", VBEE);
-    // data_exchang->hget("TDE", TDE);
-
     EarthEnvironment_var *E;
     DM_var *D;
     E = VehicleIn->Env;
@@ -152,17 +119,6 @@ void EarthEnvironment::algorithm(LaunchVehicle *VehicleIn)
     E->rho = atmosphere->get_density();
     E->tempk = atmosphere->get_temperature_in_kelvin();
     E->VAED = wind->get_VAED();
-
-    // data_exchang->hset("press", atmosphere->get_pressure());
-    // data_exchang->hset("rho", atmosphere->get_density());
-    // data_exchang->hset("vmach", E->vmach);
-    // data_exchang->hset("pdynmc", E->pdynmc);
-    // data_exchang->hset("tempk", atmosphere->get_temperature_in_kelvin());
-    // data_exchang->hset("dvba", E->dvba);
-    // data_exchang->hset("GRAVG", E->GRAVG);
-    // data_exchang->hset("TEI", E->TEI);
-    // data_exchang->hset("VAED", wind->get_VAED());
-    // data_exchang->hset("gravg", norm(E->GRAVG));
 }
 
 /* Rotation-Nutation-Precession transfor Matrix (ECI to ECEF) */
