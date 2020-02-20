@@ -93,21 +93,17 @@ void EarthEnvironment::algorithm(LaunchVehicle *VehicleIn)
 
     /******************************/
 
-    E->TEI =
-        RNP();  // Calculate Rotation-Nutation-Precession (ECI to ECEF) Matrix
-
-    E->GRAVG = AccelHarmonic(D->SBII, E->TEI, 20, 20);
-
-    atmosphere->set_altitude(D->alt);
-
-    wind->set_altitude(D->alt);
-    wind->propagate_VAED(int_step);
-    wind->apply_turbulance_if_have(int_step, E->dvba, D->TBD, D->alppx, D->phipx);
+    AccelHarmonic(E->GRAVG, D->SBEE, E->TEI, 20, 20);
 
     // flight conditionsnorm(VBAD)
     E->VBAB =
         D->TBI * trans(E->TEI) * (D->VBEE - trans(D->TDE) * wind->get_VAED());
     E->dvba = norm(E->VBAB);
+
+    atmosphere->set_altitude(D->alt);
+    wind->set_altitude(D->alt);
+    wind->propagate_VAED(int_step);
+    wind->apply_turbulance_if_have(int_step, E->dvba, D->TBD, D->alppx, D->phipx);
 
     // mach number
     E->vmach = fabs(E->dvba / atmosphere->get_speed_of_sound());
@@ -120,6 +116,8 @@ void EarthEnvironment::algorithm(LaunchVehicle *VehicleIn)
     E->rho = atmosphere->get_density();
     E->tempk = atmosphere->get_temperature_in_kelvin();
     E->VAED = wind->get_VAED();
+    /* Timing issue */
+    E->TEI = RNP();  // Calculate Rotation-Nutation-Precession (ECI to ECEF) Matrix
 }
 
 /* Rotation-Nutation-Precession transfor Matrix (ECI to ECEF) */
@@ -311,8 +309,8 @@ arma::mat EarthEnvironment::RNP()
  *       acc         Gravitational acceleration
  *
  ********************************************************************************/
-arma::vec EarthEnvironment::AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
-                                          int n_max,
+void EarthEnvironment::AccelHarmonic(arma::vec &GRAV_ACC, const arma::vec &SBEE_In,
+                                          const arma::mat &TEI, int n_max,
                                           int m_max)
 {
     /* Local variables */
@@ -322,23 +320,18 @@ arma::vec EarthEnvironment::AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
     double ax(0.0), ay(0.0), az(0.0);      /* Acceleration vector */
     double C, S;            /* Gravitational coefficients */
 
-    arma::vec S_FIX(3); /* Earth-fixed position */
-    arma::vec ACC_FIX(3); /* Earth-fixed acceleration */
-
     double V[N_JGM3 + 2][N_JGM3 + 2]; /* Harmonic functions
                                                           */
     double W[N_JGM3 + 2][N_JGM3 + 2]; /* work array
                                                          (0..n_max+1,0..n_max+1)
                                                        */
-    /* Earth-fixed position */
-    S_FIX = TEI * SBII;
 
     /* Auxiliary quantities */
-    r_sqr = dot(S_FIX, S_FIX); /* Square of distance */
+    r_sqr = dot(SBEE_In, SBEE_In); /* Square of distance */
     rho = SMAJOR_AXIS * SMAJOR_AXIS / r_sqr;
-    x0 = SMAJOR_AXIS * S_FIX(0) / r_sqr; /* Normalized  */
-    y0 = SMAJOR_AXIS * S_FIX(1) / r_sqr; /* coordinates */
-    z0 = SMAJOR_AXIS * S_FIX(2) / r_sqr;
+    x0 = SMAJOR_AXIS * SBEE_In(0) / r_sqr; /* Normalized  */
+    y0 = SMAJOR_AXIS * SBEE_In(1) / r_sqr; /* coordinates */
+    z0 = SMAJOR_AXIS * SBEE_In(2) / r_sqr;
 
     /*******************************
    *
@@ -407,9 +400,11 @@ arma::vec EarthEnvironment::AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
     }
 
     /* Body-fixed acceleration */
-    ACC_FIX(0) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * ax;
-    ACC_FIX(1) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * ay;
-    ACC_FIX(2) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * az;
+    GRAV_ACC(0) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * ax;
+    GRAV_ACC(1) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * ay;
+    GRAV_ACC(2) = (GM / (SMAJOR_AXIS * SMAJOR_AXIS)) * az;
 
-    return trans(TEI) * ACC_FIX;
+    GRAV_ACC = trans(TEI) * GRAV_ACC;
+
+    return;
 } /* end of AccelHarmonic */

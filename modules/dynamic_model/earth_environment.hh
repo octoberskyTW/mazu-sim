@@ -56,8 +56,7 @@ private:
 
     /* Function declaration */
     arma::mat RNP();
-    arma::vec AccelHarmonic(arma::vec3 SBII, arma::mat33 TEI,
-                            int n_max, int m_max);
+    void AccelHarmonic(arma::vec &GRAV_ACC, const arma::vec &SBEE_In, const arma::mat &TEI, int n_max, int m_max);
 };
 
 #endif  // __EARTH_ENVIRONMENT_HH__
