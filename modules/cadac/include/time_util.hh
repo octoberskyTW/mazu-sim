@@ -9,17 +9,17 @@
 namespace time_util
 {
 /** UTC Time/Julian Day/GPS Time **/
-const double SEC_PER_DAY = 86400.0;
-const double SEC_PER_WEEK = 604800.0;
+constexpr double SEC_PER_DAY = 86400.0;
+constexpr double SEC_PER_WEEK = 604800.0;
 
 /* Difference between TAI and GPS */
-const uint32_t TAI_GPS_DIFF = 19;
+constexpr uint32_t TAI_GPS_DIFF = 19;
 /* MJD of Unix epoch : 00:00:00 on January 1, 1970 */
-const uint32_t MJD_UNIX = 40587;
+constexpr uint32_t MJD_UNIX = 40587;
 /* MJD of GPS epoch : Jan. 6 1980 */
-const double MJD_JAN61980 = 44244.0;
+constexpr double MJD_JAN61980 = 44244.0;
 /* MJD of Jan 1, 1901 */
-const double MJD_JAN11901 = 15385.0;
+constexpr double MJD_JAN11901 = 15385.0;
 
 class GPS_TIME;
 class UTC_TIME;

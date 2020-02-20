@@ -1,7 +1,6 @@
+#include <algorithm>
 #include "earth_environment.hh"
-
 #include "cadac_util.hh"
-
 #include "aux.hh"
 
 #include "env/atmosphere.hh"
@@ -288,7 +287,7 @@ arma::mat EarthEnvironment::RNP()
     M_rotation(2, 1) = 0.0;
     M_rotation(2, 2) = 1.0;
 
-    return M_rotation * (M_nutation * M_precession);
+    return std::move(M_rotation * (M_nutation * M_precession));
 } /* End of dm_RNP() */
 
 /*******************************************************************************
