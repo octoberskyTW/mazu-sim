@@ -55,12 +55,14 @@ double cad::distance(const double &lon1,
  * @author 030414 Created from FORTRAN by Peter H Zipfel
  * @author 170121 Create Armadillo Version by soncyang
  */
-std::tuple<double, double, double> cad::geo84_in(arma::vec3 SBII,
-                                                 arma::mat33 TEI)
+std::tuple<double, double, double> cad::geo84_in(const arma::vec3 &SBII,
+                                                 const arma::mat33 &TEI)
 {
-    int count(0);
-    double lat0(0);
-    double alamda(0);
+    int count(0.);
+    double lat0(0.);
+    double alamda(0.);
+    double r0(0.);
+    double dd(0.);
 
     /* tuple */
     double lon(0);
@@ -78,12 +80,12 @@ std::tuple<double, double, double> cad::geo84_in(arma::vec3 SBII,
     /** iterating to calculate geodetic latitude and altitude */
     do {
         lat0 = lat;
-        double r0 =
+        r0 =
             SMAJOR_AXIS *
             (1. - FLATTENING * (1. - cos(2. * lat0)) / 2. +
              5. * pow(FLATTENING, 2) * (1. - cos(4. * lat0)) / 16.); /** eq 4-21 */
         alt = dbi - r0;
-        double dd = FLATTENING * sin(2. * lat0) *
+        dd = FLATTENING * sin(2. * lat0) *
                     (1. - FLATTENING / 2. - alt / r0); /** eq 4-15 */
         lat = latg + dd;
         count++;
@@ -130,9 +132,9 @@ std::tuple<double, double, double> cad::geo84_in(arma::vec3 SBII,
  *
  * @author 040710 created by Peter H Zipfel
  */
-std::tuple<double, double, double> cad::geo84vel_in(arma::vec3 SBII,
-                                                    arma::vec3 VBII,
-                                                    arma::mat33 TEI)
+std::tuple<double, double, double> cad::geo84vel_in(const arma::vec3 &SBII,
+                                                    const arma::vec3 &VBII,
+                                                    const arma::mat33 &TEI)
 {
     double lon(0);
     double lat(0);
@@ -145,7 +147,7 @@ std::tuple<double, double, double> cad::geo84vel_in(arma::vec3 SBII,
 
     /** geodetic longitude, latitude and altitude */
     std::tie(lon, lat, alt) = geo84_in(SBII, TEI);
-    arma::mat33 TDI = tdi84(lon, lat, alt, TEI);
+    arma::mat33 TDI = tdi84(lon, lat, TEI);
 
     /** Earth's angular velocity skew-symmetric matrix (3x3) */
     arma::mat33 WEII(arma::fill::zeros);
@@ -178,7 +180,7 @@ std::tuple<double, double, double> cad::geo84vel_in(arma::vec3 SBII,
  * @author 030416 Modified for SBII (not SBIE) input, PZi
  */
 
-std::tuple<double, double, double> cad::geoc_in(arma::vec3 SBII,
+std::tuple<double, double, double> cad::geoc_in(const arma::vec3 &SBII,
                                                 const double &time)
 {
     double lon_cel(0);
@@ -228,7 +230,7 @@ std::tuple<double, double, double> cad::geoc_in(arma::vec3 SBII,
  *
  * @author 010628 Created by Peter H Zipfel
  */
-std::tuple<double, double, double> cad::geoc_ine(arma::vec3 SBIE)
+std::tuple<double, double, double> cad::geoc_ine(const arma::vec3 &SBIE)
 {
     double dum4(0);
     double alamda(0);
@@ -286,7 +288,7 @@ std::tuple<double, double, double> cad::geoc_ine(arma::vec3 SBIE)
  *
  * @author 030417 Created from FORTRAN by Peter H Zipfel
  */
-arma::vec3 cad::grav84(arma::vec3 SBII, const double &time)
+arma::vec3 cad::grav84(const arma::vec3 &SBII, const double &time)
 {
     double lonc(0), latc(0), altc(0);
 
@@ -321,10 +323,10 @@ arma::vec3 cad::grav84(arma::vec3 SBII, const double &time)
  * @author 030411 Created from FORTRAN by Peter H Zipfel
  * @author 170121 Create Armadillo Version by soncyanga
  */
-arma::vec3 cad::in_geo84(const double lon,
-                         const double lat,
-                         const double alt,
-                         arma::mat33 TEI)
+arma::vec3 cad::in_geo84(const double &lon,
+                         const double &lat,
+                         const double &alt,
+                         const arma::mat33 &TEI)
 {
     arma::vec3 SBIE;
     arma::vec3 SBII;
@@ -344,15 +346,6 @@ arma::vec3 cad::in_geo84(const double lon,
     SBIE(2, 0) = ((1. - e * e) * r0 + alt) * sin(lat);
 
     SBII = trans(TEI) * SBIE;
-    // double dum = (1.0 - FLATTENING) * (1.0 - FLATTENING);
-    // double lamdas = atan(dum * tan(lat));
-    // double rs = sqrt(SMAJOR_AXIS * SMAJOR_AXIS / (1.0 + ((1.0 / dum) - 1.0) * sin(lamdas) * sin(lamdas)));
-
-    // SBIE(0, 0) = rs * cos(lamdas) * cos(lon) + alt * cos(lat) * cos(lon);
-    // SBIE(1, 0) = rs * cos(lamdas) * sin(lon) + alt * cos(lat) * sin(lon);
-    // SBIE(2, 0) = rs * sin(lamdas) + alt * sin(lat);
-
-    // SBII = trans(TEI) * SBIE;
     return SBII;
 }
 
@@ -478,8 +471,8 @@ int cad::in_orb(arma::vec3 &SBII,
  */
 int cad::kepler(arma::vec3 &SPII,
                 arma::vec3 &VPII,
-                arma::vec3 SBII,
-                arma::vec3 VBII,
+                const arma::vec3 &SBII,
+                const arma::vec3 &VBII,
                 const double &tgo)
 {
     // local variables
@@ -558,8 +551,8 @@ int cad::kepler(arma::vec3 &SPII,
  */
 int cad::kepler1(arma::vec3 &SPII,
                  arma::vec3 &VPII,
-                 arma::vec3 SBII,
-                 arma::vec3 VBII,
+                 const arma::vec3 &SBII,
+                 const arma::vec3 &VBII,
                  const double &tgo)
 {
     double c(0);
@@ -703,8 +696,8 @@ int cad::orb_in(double &semi,
                 double &lon_anodex,
                 double &arg_perix,
                 double &true_anomx,
-                arma::vec3 SBII,
-                arma::vec3 VBII)
+                const arma::vec3 &SBII,
+                const arma::vec3 &VBII)
 {
     // local variable
     int cadorbin_flag(0);
@@ -813,8 +806,7 @@ int cad::orb_in(double &semi,
  */
 arma::mat33 cad::tdi84(const double &lon,
                        const double &lat,
-                       const double &alt,
-                       arma::mat33 TEI)
+                       const arma::mat33 &TEI)
 {
     arma::mat33 TDE;
 
@@ -860,22 +852,6 @@ arma::mat33 cad::tde84(const double &lon,
     TGD(1, 1) = 1;
     TGD(2, 0) = sin(dd);
     TGD(0, 2) = -sin(dd);
-
-
-    // T.M. of geodetic coord wrt inertial coord., TDI(3x3)
-    // double tdi13 = cos(lat);
-    // double tdi33 = -sin(lat);
-    // double tdi22 = cos(lon);
-    // double tdi21 = -sin(lon);
-    // TDE(0, 0) = tdi33 * tdi22;
-    // TDE(0, 1) = -tdi33 * tdi21;
-    // TDE(0, 2) = tdi13;
-    // TDE(1, 0) = tdi21;
-    // TDE(1, 1) = tdi22;
-    // TDE(1, 2) = 0;
-    // TDE(2, 0) = -tdi13 * tdi22;
-    // TDE(2, 1) = tdi13 * tdi21;
-    // TDE(2, 2) = tdi33;
 
     return trans(TGD) * TGE;
 }
@@ -954,9 +930,9 @@ arma::mat33 cad::tge(const double &lon, const double &lat)
 arma::mat33 cad::tgi84(const double &lon,
                        const double &lat,
                        const double &alt,
-                       arma::mat33 TEI)
+                       const arma::mat33 &TEI)
 {
-    arma::mat33 TDI = tdi84(lon, lat, alt, TEI);
+    arma::mat33 TDI = tdi84(lon, lat, TEI);
     arma::mat33 TGD(arma::fill::zeros);
 
     // deflection of the normal, dd, and length of earth's radius to ellipse
@@ -974,10 +950,7 @@ arma::mat33 cad::tgi84(const double &lon,
     TGD(2, 0) = sin(dd);
     TGD(0, 2) = -sin(dd);
 
-    // T.M. of geographic (geocentric) wrt inertial coord., TGI(3x3)
-    arma::mat33 TGI = TGD * TDI;
-
-    return TGI;
+    return (TGD * TDI);
 }
 /**
  * @brief Returns the transformation matrix of inertial wrt perifocal coordinates

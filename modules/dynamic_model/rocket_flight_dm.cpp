@@ -59,7 +59,7 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
     D->SBII = cad::in_geo84(D->lonx * RAD, D->latx * RAD, D->alt, TEI);
 
     // building inertial velocity
-    D->TDI = cad::tdi84(D->lonx * RAD, D->latx * RAD, D->alt, TEI);
+    D->TDI = cad::tdi84(D->lonx * RAD, D->latx * RAD, TEI);
     D->TGI = cad::tgi84(D->lonx * RAD, D->latx * RAD, D->alt, TEI);
     D->TDE = cad::tde84(D->lonx * RAD, D->latx * RAD, D->alt);
     D->TBD =
@@ -214,8 +214,7 @@ arma::mat Rocket_Flight_DM::calculate_TBD(LaunchVehicle *VehicleIn)
     arma::mat33 TEI = VehicleIn->Env->TEI;
     // data_exchang->hget("TEI", TEI);
     arma::mat tdi =
-        cad::tdi84(VehicleIn->DM->lonx * RAD, VehicleIn->DM->latx * RAD,
-                   VehicleIn->DM->alt, TEI);
+        cad::tdi84(VehicleIn->DM->lonx * RAD, VehicleIn->DM->latx * RAD, TEI);
     return VehicleIn->DM->TBI * trans(tdi);
 }
 
@@ -365,7 +364,7 @@ void Rocket_Flight_DM::aux_calulate(arma::mat33 TEI, double int_step,
     if (DMIn->liftoff == 1)
         assert(DMIn->alt >= 0.0 && " *** Stop: Ground impact detected !! *** ");
 
-    DMIn->TDI = cad::tdi84(lon, lat, al, TEI);
+    DMIn->TDI = cad::tdi84(lon, lat, TEI);
     DMIn->TDE = cad::tde84(lon, lat, al);
     DMIn->TGI = cad::tgi84(lon, lat, al, TEI);
     TBL = DMIn->TBI * trans(DMIn->TLI);
@@ -444,9 +443,6 @@ void Rocket_Flight_DM::RK4F(std::vector<arma::vec> Var_in,
 
     arma::vec3 XCG = P->XCG;
 
-    // data_exchang->hget("XCG", XCG);
-    D->WBIBD = D->ddang_1;
-
     rhoC_IMU(0) = XCG(0) - (D->reference_point);
     rhoC_IMU(1) = 0.0;
     rhoC_IMU(2) = 0.0;
@@ -465,6 +461,7 @@ void Rocket_Flight_DM::RK4F(std::vector<arma::vec> Var_in,
             (-GRAVG + D->NEXT_ACC +
              QuaternionRotation(QuaternionInverse(D->TBI_Q),
                                 ddrhoC_IMU)));  // Strapdown Analytics 4.3-14
+        D->WBIBD.zeros();
     } else {
         D->FSPB = QuaternionRotation(
             D->TBI_Q,
@@ -472,6 +469,7 @@ void Rocket_Flight_DM::RK4F(std::vector<arma::vec> Var_in,
              QuaternionRotation(QuaternionInverse(D->TBI_Q),
                                 ddrhoC_IMU)));  //+ TBI * GRAVG;  // FSPB: body
                                                 // force include gravity acc
+        D->WBIBD = D->ddang_1;
     }
     /* Prepare for orthonormalization */
     double quat_metric = D->TBI_Q(0) * D->TBI_Q(0) + D->TBI_Q(1) * D->TBI_Q(1) +
@@ -496,10 +494,6 @@ void Rocket_Flight_DM::RK4F(std::vector<arma::vec> Var_in,
     Var_out[1] = D->VBIIP;
     Var_out[2] = D->WBIBD;
     Var_out[3] = TBID_Q_NEW;
-
-    // data_exchang->hset("NEXT_ACC", D->NEXT_ACC);
-    // data_exchang->hset("liftoff", D->liftoff);
-    // data_exchang->hset("FSPB", D->FSPB);
 }
 
 void Rocket_Flight_DM::collect_forces_and_propagate(LaunchVehicle *VehicleIn)

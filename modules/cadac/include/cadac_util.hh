@@ -40,8 +40,8 @@ double distance(const double &lon1,
      * @author 030414 Created from FORTRAN by Peter H Zipfel
      * @author 170121 Create Armadillo Version by soncyang
      */
-std::tuple<double, double, double> geo84_in(arma::vec3 SBII,
-                                            arma::mat33 TEI);
+std::tuple<double, double, double> geo84_in(const arma::vec3 &SBII,
+                                            const arma::mat33 &TEI);
 
 /**
      * @return geodetic velocity vector information from inertial postion and
@@ -60,9 +60,9 @@ std::tuple<double, double, double> geo84_in(arma::vec3 SBII,
      *
      * @author 040710 created by Peter H Zipfel
      */
-std::tuple<double, double, double> geo84vel_in(arma::vec3 SBII,
-                                               arma::vec3 VBII,
-                                               arma::mat33 TEI);
+std::tuple<double, double, double> geo84vel_in(const arma::vec3 &SBII,
+                                               const arma::vec3 &VBII,
+                                               const arma::mat33 &TEI);
 /**
      * @return geocentric lon, lat, alt from inertial displacement vector
      * for spherical Earth
@@ -77,7 +77,7 @@ std::tuple<double, double, double> geo84vel_in(arma::vec3 SBII,
      * @author 010628 Created by Peter H Zipfel
      * @author 030416 Modified for SBII (not SBIE) input, PZi
      */
-std::tuple<double, double, double> geoc_in(arma::vec3 SBII,
+std::tuple<double, double, double> geoc_in(const arma::vec3 &SBII,
                                            const double &time);
 
 /**
@@ -91,7 +91,7 @@ std::tuple<double, double, double> geoc_in(arma::vec3 SBII,
      *
      * @author 010628 Created by Peter H Zipfel
      */
-std::tuple<double, double, double> geoc_ine(arma::vec3 SBIE);
+std::tuple<double, double, double> geoc_ine(const arma::vec3 &SBIE);
 
 /**
      * @brief Earth gravitational acceleration, using the WGS 84 ellipsoid
@@ -105,7 +105,7 @@ std::tuple<double, double, double> geoc_ine(arma::vec3 SBIE);
      *
      * @author 030417 Created from FORTRAN by Peter H Zipfel
      */
-arma::vec3 grav84(arma::vec3 SBII, const double &time);
+arma::vec3 grav84(const arma::vec3 &SBII, const double &time);
 
 /**
      * @brief Returns the inertial displacement vector from longitude, latitude and
@@ -124,10 +124,10 @@ arma::vec3 grav84(arma::vec3 SBII, const double &time);
      * @author 030411 Created from FORTRAN by Peter H Zipfel
      * @author 170121 Create Armadillo Version by soncyanga
      */
-arma::vec3 in_geo84(const double lon,
-                    const double lat,
-                    const double alt,
-                    arma::mat33 TEI);
+arma::vec3 in_geo84(const double &lon,
+                    const double &lat,
+                    const double &alt,
+                    const arma::mat33 &TEI);
 
 /**
      * @brief Returns the inertial displacement vector from geocentric longitude, latitude
@@ -195,8 +195,8 @@ int in_orb(arma::vec3 &SBII,
      */
 int kepler(arma::vec3 &SPII,
            arma::vec3 &VPII,
-           arma::vec3 SBII,
-           arma::vec3 VBII,
+           const arma::vec3 &SBII,
+           const arma::vec3 &VBII,
            const double &tgo);
 
 /**
@@ -218,8 +218,8 @@ int kepler(arma::vec3 &SPII,
      */
 int kepler1(arma::vec3 &SPII,
             arma::vec3 &VPII,
-            arma::vec3 SBII,
-            arma::vec3 VBII,
+            const arma::vec3 &SBII,
+            const arma::vec3 &VBII,
             const double &tgo);
 
 /**
@@ -265,8 +265,8 @@ int orb_in(double &semi,
            double &lon_anodex,
            double &arg_perix,
            double &true_anomx,
-           arma::vec3 SBII,
-           arma::vec3 VBII);
+           const arma::vec3 &SBII,
+           const arma::vec3 &VBII);
 
 /**
      * @brief Returns the T.M. of geodetic wrt inertial coordinates
@@ -283,8 +283,7 @@ int orb_in(double &semi,
      */
 arma::mat33 tdi84(const double &lon,
                   const double &lat,
-                  const double &alt,
-                  arma::mat33 TEI);
+                  const arma::mat33 &TEI);
 
 arma::mat33 tde84(const double &lon,
                   const double &lat,
@@ -330,7 +329,7 @@ arma::mat33 tge(const double &lon, const double &lat);
 arma::mat33 tgi84(const double &lon,
                   const double &lat,
                   const double &alt,
-                  arma::mat33 TEI);
+                  const arma::mat33 &TEI);
 
 /**
      * @brief Returns the transformation matrix of inertial wrt perifocal coordinates

@@ -313,7 +313,7 @@ void INS::load_angle(double yaw, double roll, double pitch)
     TBD = build_psi_tht_phi_TM(psibdcx * RAD, thtbdcx * RAD, phibdcx * RAD);
     TLI = build_psi_tht_phi_TM(psibdcx * RAD, thtbdcx * RAD, phibdcx * RAD);
 
-    TDCI = cad::tdi84(loncx * RAD, latcx * RAD, altc, TEIC);
+    TDCI = cad::tdi84(loncx * RAD, latcx * RAD, TEIC);
 
     TBIC = TBD * TDCI;
     this->TBIC_Q = Matrix2Quaternion(
@@ -325,7 +325,7 @@ void INS::load_geodetic_velocity(double alpha0x, double beta0x, double dvbe)
 {
     // building geodetic velocity VBED(3x1) from  alpha, beta, and dvbe
     arma::mat VBEB = this->build_VBEB(alpha0x, beta0x, dvbe);
-    arma::mat33 TDI = cad::tdi84(loncx * RAD, latcx * RAD, altc, TEIC);
+    arma::mat33 TDI = cad::tdi84(loncx * RAD, latcx * RAD, TEIC);
     // Geodetic velocity
     arma::mat VBED = trans(TBD) * VBEB;
     SBIIC = cad::in_geo84(loncx * RAD, latcx * RAD, altc, TEIC);
@@ -712,7 +712,7 @@ void INS::update(double int_step)
     latcx = latc * DEG;
 
     // getting T.M. of geodetic wrt inertial coord
-    this->TDCI = cad::tdi84(lonc, latc, altc, TEIC);
+    this->TDCI = cad::tdi84(lonc, latc, TEIC);
     // getting Launch site T.M. of inertial coord
     if (this->liftoff == 0)
         TBICI = TLI * TDCI;
