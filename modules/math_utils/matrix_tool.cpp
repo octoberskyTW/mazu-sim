@@ -5,7 +5,7 @@
 #include "matrix_tool.hh"
 #include "numerical_constants.hh"
 
-arma::vec3 pol_from_cart(arma::vec3 in)
+arma::vec3 pol_from_cart(const arma::vec3 &in)
 {
     double d = 0.0;
     double azimuth = 0.0;
@@ -44,7 +44,7 @@ arma::vec3 pol_from_cart(arma::vec3 in)
 // Example: theta=angle(VEC1,VEC2);
 // 010824 Created by Peter H Zipfel
 ///////////////////////////////////////////////////////////////////////////////
-double angle(arma::vec3 VEC1, arma::vec3 VEC2)
+double angle(const arma::vec3 &VEC1, const arma::vec3 &VEC2)
 {
     double argument;
     double scalar = dot(VEC1, VEC2);
@@ -72,7 +72,7 @@ double angle(arma::vec3 VEC1, arma::vec3 VEC2)
 //
 // Example: MAT = VEC.skew_sym();
 ///////////////////////////////////////////////////////////////////////////////
-arma::mat33 skew_sym(arma::vec3 vec)
+arma::mat33 skew_sym(const arma::vec3 &vec)
 {
     arma::mat33 RESULT;
 
@@ -187,7 +187,7 @@ arma::vec4 Matrix2Quaternion(arma::mat33 Matrix_in)
     return Quaternion;
 }
 
-arma::mat33 Quaternion2Matrix(arma::vec4 Quaternion_in)
+arma::mat33 Quaternion2Matrix(const arma::vec4 &Quaternion_in)
 {
     arma::mat33 Matrix_out;
 
@@ -204,7 +204,7 @@ arma::mat33 Quaternion2Matrix(arma::vec4 Quaternion_in)
     return Matrix_out;
 }
 
-arma::vec4 Quaternion_conjugate(arma::vec4 Quaternion_in)
+arma::vec4 Quaternion_conjugate(const arma::vec4 &Quaternion_in)
 {
     arma::vec4 Quaternion_out;
 
@@ -216,7 +216,7 @@ arma::vec4 Quaternion_conjugate(arma::vec4 Quaternion_in)
     return Quaternion_out;
 }
 
-arma::vec4 Quaternion_cross(arma::vec4 Quaternion_in1, arma::vec4 Quaternion_in2)
+arma::vec4 Quaternion_cross(const arma::vec4 &Quaternion_in1, const arma::vec4 &Quaternion_in2)
 {
     arma::vec4 Quaternion_out;
 
@@ -228,14 +228,14 @@ arma::vec4 Quaternion_cross(arma::vec4 Quaternion_in1, arma::vec4 Quaternion_in2
     return Quaternion_out;
 }
 
-void Quaternion2Euler(arma::vec4 Quaternion_in, double &Roll, double &Pitch, double &Yaw)
+void Quaternion2Euler(const arma::vec4 &Quaternion_in, double &Roll, double &Pitch, double &Yaw)
 {
     Roll = atan2(2.0 * (Quaternion_in(0) * Quaternion_in(1) + Quaternion_in(2) * Quaternion_in(3)), 1.0 - 2.0 * (Quaternion_in(1) * Quaternion_in(1) + Quaternion_in(2) * Quaternion_in(2)));
     Pitch = asin(2.0 * (Quaternion_in(0) * Quaternion_in(2) - Quaternion_in(3) * Quaternion_in(1)));
     Yaw = atan2(2.0 * (Quaternion_in(0) * Quaternion_in(3) + Quaternion_in(1) * Quaternion_in(2)), 1.0 - 2.0 * (Quaternion_in(2) * Quaternion_in(2) + Quaternion_in(3) * Quaternion_in(3)));
 }
 
-arma::vec4 Euler2Quaternion(double Roll, double Pitch, double Yaw)
+arma::vec4 Euler2Quaternion(const double &Roll, const double &Pitch, const double &Yaw)
 {
     arma::vec4 Quaternion_out;
     double cr = cos(Roll * 0.5);
@@ -270,7 +270,7 @@ arma::vec4 QuaternionInverse(arma::vec4 Q_in)
     return Quaternion_conjugate(Q_in) / sqrt(Q_in(0) * Q_in(0) + Q_in(1) * Q_in(1) + Q_in(2) * Q_in(2) + Q_in(3) * Q_in(3));
 }
 
-arma::vec4 QuaternionTranspose(arma::vec4 Q_in)
+arma::vec4 QuaternionTranspose(const arma::vec4 &Q_in)
 {
     arma::vec4 Q_out;
 
@@ -282,7 +282,7 @@ arma::vec4 QuaternionTranspose(arma::vec4 Q_in)
     return Q_out;
 }
 
-arma::vec3 QuaternionRotation(arma::vec4 Q_in, arma::vec3 V_in)
+arma::vec3 QuaternionRotation(const arma::vec4 &Q_in, const arma::vec3 &V_in)
 {
     arma::vec4 Q_temp;
     arma::vec3 V_out;
@@ -301,7 +301,7 @@ arma::vec3 QuaternionRotation(arma::vec4 Q_in, arma::vec3 V_in)
     return V_out;
 }
 
-arma::mat33 cross_matrix(arma::vec3 in)
+arma::mat33 cross_matrix(const arma::vec3 &in)
 {
     arma::mat33 c_matrix;
 
@@ -318,7 +318,7 @@ arma::mat33 cross_matrix(arma::vec3 in)
     return c_matrix;
 }
 
-arma::mat33 TMX(double ang)
+arma::mat33 TMX(const double &ang)
 {
     arma::mat33 TM;
 
@@ -335,7 +335,7 @@ arma::mat33 TMX(double ang)
     return TM;
 }
 
-arma::mat33 TMY(double ang)
+arma::mat33 TMY(const double &ang)
 {
     arma::mat33 TM;
 
@@ -352,7 +352,7 @@ arma::mat33 TMY(double ang)
     return TM;
 }
 
-arma::mat33 TMZ(double ang)
+arma::mat33 TMZ(const double &ang)
 {
     arma::mat33 TM;
 
@@ -385,7 +385,7 @@ int sign(const double &variable)
     return sign;
 }
 
-arma::vec3 euler_angle(arma::mat33 TBD_in)
+arma::vec3 euler_angle(const arma::mat33 &TBD_in)
 {
     double psibdc(0), thtbdc(0), phibdc(0);
     double cthtbd(0);
