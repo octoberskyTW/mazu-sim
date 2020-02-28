@@ -265,7 +265,7 @@ int QuaternionMultiply(arma::vec4 &Q_out, arma::vec4 const &Q_in1, arma::vec4 co
     return 0;
 }
 
-arma::vec4 QuaternionInverse(arma::vec4 Q_in)
+arma::vec4 QuaternionInverse(const arma::vec4 &Q_in)
 {
     return Quaternion_conjugate(Q_in) / sqrt(Q_in(0) * Q_in(0) + Q_in(1) * Q_in(1) + Q_in(2) * Q_in(2) + Q_in(3) * Q_in(3));
 }

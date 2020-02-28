@@ -2,12 +2,14 @@
 #define __ROCKET_FLIGHT_DM_HH__
 
 #include <armadillo>
+#include <memory>
 #include "aux.hh"
 #include "cadac_constants.hh"
 #include "numerical_constants.hh"
 #include "time_management.hh"
 #include "vehicle.hh"
 #include "vehicle_var.hh"
+#include "Dynamics_System.hh"
 
 class Rocket_Flight_DM : public FH_module
 {
@@ -84,6 +86,8 @@ private:
     int DOF;                  /* *o (--)  Number of Degree of Freedom */
     int reference_point_flag; /* *o (--)  check if reference point equal to xcg */
     unsigned int Aero_flag;   /* *o (-)  Aerodynamics flag */
+    
+    Dynamics_Sys *sys_ptr;
 };
 
 template <typename T>

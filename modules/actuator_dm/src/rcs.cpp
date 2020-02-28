@@ -2,7 +2,7 @@
 
 RCS::RCS() {}
 
-void RCS::init(LaunchVehicle *VehicleIn){};
+void RCS::init(LaunchVehicle *VehicleIn){}
 
 void RCS::algorithm(LaunchVehicle *VehicleIn)
 {

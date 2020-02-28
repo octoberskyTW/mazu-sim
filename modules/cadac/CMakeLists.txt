@@ -20,6 +20,9 @@ add_library(cadac STATIC
             src/vehicle.cpp
             src/time_management.cpp
             src/time_util.cpp
+            src/Body.cpp
+            src/Joint.cpp
+            src/Dynamics_System.cpp
 )
 
 # Declare your flags: Don’t use TARGET_INCLUDE_DIRECTORIES() with a path outside your module

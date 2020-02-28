@@ -1,4 +1,4 @@
-#include "Dynamics_System.hpp"
+#include "Dynamics_System.hh"
 
 Dynamics_Sys::Dynamics_Sys(double dt_In) {
     nbody = 0;
@@ -6,12 +6,12 @@ Dynamics_Sys::Dynamics_Sys(double dt_In) {
     dt = dt_In;
 }
 
-void Dynamics_Sys::Add(BodyPtr bodyPtr_In) {
+void Dynamics_Sys::Add(Body *bodyPtr_In) {
     Body_ptr_array.push_back(bodyPtr_In);
     nbody++;
 }
 
-void Dynamics_Sys::Add(JointPtr jointPtr_In) {
+void Dynamics_Sys::Add(Joint *jointPtr_In) {
     Joint_ptr_array.push_back(jointPtr_In);
     njoint++;
 }
@@ -79,7 +79,7 @@ void Dynamics_Sys::Cal_Constraints() {
 }
 
 void Dynamics_Sys::Assembly() { //Need to be done, Initialization sequence!!!
-    BodyPtr i_ptr, j_ptr;
+    Body *i_ptr, *j_ptr;
     arma::mat TIB_i(3, 3, arma::fill::zeros);
     arma::mat TIB_j(3, 3, arma::fill::zeros);
 
@@ -187,14 +187,6 @@ void Dynamics_Sys::dynamic_function(std::vector<arma::vec> qIn, std::vector<arma
     //     }
     //     std::cout << std::endl;
     // }
-}
-void Dynamics_Sys::output_data(std::ofstream &fout_In) {
-    // arma::vec3 v_temp;
-    for (unsigned int i = 1; i < nbody; i++) {
-        // v_temp = Joint_ptr_array[i - 1]->get_Pj();
-        fout_In << q[i * 4](0) << '\t' << q[i * 4](1) << '\t' << q[i * 4](2) << '\t';
-    }
-    fout_In << std::endl;
 }
 
 unsigned int Dynamics_Sys::get_nbody() { return nbody; }

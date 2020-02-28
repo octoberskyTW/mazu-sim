@@ -1,17 +1,16 @@
 #ifndef JOINT_HPP
 #define JOINT_HPP
 #include <armadillo>
-#include "Body.hpp"
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
+#include "Body.hh"
 #include "matrix_tool.hh"
 
 
-class Joint : public boost::enable_shared_from_this<Joint>
+class Joint
 {
 public:
     Joint(unsigned int TypeIn, arma::vec piIn, arma::vec pjIn, arma::vec qiIn,
-            arma::vec qjIn, BodyPtr i_In, BodyPtr j_In);
+            arma::vec qjIn, Body *i_In, Body *j_In);
     ~Joint() {};
     void Build_C();
     void Build_Cq();
@@ -26,8 +25,8 @@ public:
     arma::vec get_pi();
     arma::vec get_pj();
     arma::vec get_CONSTRAINT();
-    BodyPtr get_body_i_ptr();
-    BodyPtr get_body_j_ptr();
+    Body* get_body_i_ptr();
+    Body* get_body_j_ptr();
 
 private:
     unsigned int Type;  
@@ -49,9 +48,7 @@ private:
     arma::vec wj;
     arma::vec Si;
     arma::vec Sj;
-    BodyPtr body_i_ptr;
-    BodyPtr body_j_ptr;
+    Body *body_i_ptr;
+    Body *body_j_ptr;
 };
-
-typedef boost::shared_ptr<Joint> JointPtr;
 #endif  //JOINT_HPP

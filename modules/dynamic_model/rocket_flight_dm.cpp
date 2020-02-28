@@ -47,6 +47,8 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
     P = VehicleIn->Prop;
     D = VehicleIn->DM;
 
+    sys_ptr = new Dynamics_Sys(VehicleIn->dt);
+    
     arma::mat33 TEI = E->TEI;  // cad::tei(get_elapsed_time());
     arma::vec3 XCG = P->XCG;
 
@@ -90,8 +92,7 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
     D->SBEE = TEI * D->SBII;  // Calculate position in ECEF
     D->VBEE =
         TEI * D->VBII - cross(E->WEIE, D->SBEE);  // Calculate velocity in ECEF
-    D->NEXT_ACC =
-        trans(TEI) * (cross(E->WEIE, cross(E->WEIE, (TEI * (D->SBIIP)))));
+    D->NEXT_ACC = trans(TEI) * (E->WEIE_skew * E->WEIE_skew * (TEI * D->SBII));
     D->Interpolation_Extrapolation_flag = 4;
 
     if (D->liftoff == 1) {
@@ -104,6 +105,10 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
         D->alppx = calculate_alppx(D->VBAB, norm(D->VBAB));
         D->phipx = calculate_phipx(D->VBAB);
     }
+    /* Self-develop multi-body solver */
+    sys_ptr->Add(new Ground(0));
+    D->testbody = new Mobilized_body(1, D->SBII, D->VBII, D->NEXT_ACC, D->TBI, D->WBIB, D->WBIBD, P->vmass, P->IBBB, P->vmass * D->NEXT_ACC);
+    sys_ptr->Add(D->testbody);
 }
 
 void Rocket_Flight_DM::set_DOF(int ndof) { DOF = ndof; }

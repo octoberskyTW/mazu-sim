@@ -1,4 +1,4 @@
-#include "Body.hpp"
+#include "Body.hh"
 
 Body::Body() :
     POSITION(3, arma::fill::zeros),
@@ -51,9 +51,9 @@ Ground::Ground(unsigned int NumIn) {
     TBI.eye();
 }
 
-Mobilized_body::Mobilized_body(unsigned int NumIn, arma::vec PosIn, arma::vec VelIn, arma::vec AccIn, arma::vec AttIn
-        , arma::vec ANG_VEL_In, arma::vec ANG_ACC_In, double MIn, arma::vec IIn
-        , arma::vec F_In, arma::vec T_In) {
+Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const arma::vec &VelIn, const arma::vec &AccIn, const arma::mat &TBIIn
+        , const arma::vec &ANG_VEL_In, const arma::vec &ANG_ACC_In, double MIn, const arma::mat &IIn
+        , const arma::vec &F_In, const arma::vec &T_In) {
     
     type = 1;
     num = NumIn;
@@ -61,18 +61,56 @@ Mobilized_body::Mobilized_body(unsigned int NumIn, arma::vec PosIn, arma::vec Ve
     POSITION = PosIn;
     VELOCITY = VelIn;
     ACCELERATION = AccIn;
-    ANGLE = AttIn;
     ANGLE_VEL = ANG_VEL_In;
     ANGLE_ACC = ANG_ACC_In;
     FORCE = F_In;
     APPILED_TORQUE = T_In;
-    for (unsigned int i = 0; i < 3; i++) {
+    for (auto i = 0; i < 3; i++) {
         M(i, i) = MIn;
-        M(i + 3, i + 3) = IIn(i);
     }
 
-    TBI = build_psi_tht_phi_TM(ANGLE(2), ANGLE(1), ANGLE(0));
+    for (auto i = 0; i < 3; ++i) {
+        for (auto j = 0; j < 3; ++j) {
+            M(3 + i, 3 + j) = IIn(i, j);
+        }
+    }
+
+    TBI = TBIIn;
     TBI_Q = Matrix2Quaternion(TBI);
+    ANGLE = euler_angle(TBI);
+    POSITION = trans(TBI) * POSITION;
+    VELOCITY = trans(TBI) * VELOCITY;
+    ACCELERATION = trans(TBI) * ACCELERATION;
+    ANGLE_VEL = trans(TBI) * ANGLE_VEL;
+    ANGLE_ACC = trans(TBI) * ANGLE_ACC;
+}
+
+Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const arma::vec &VelIn, const arma::vec &AccIn, const arma::mat &TBIIn
+        , const arma::vec &ANG_VEL_In, const arma::vec &ANG_ACC_In, double MIn, const arma::mat &IIn
+        , const arma::vec &F_In) {
+    
+    type = 1;
+    num = NumIn;
+
+    POSITION = PosIn;
+    VELOCITY = VelIn;
+    ACCELERATION = AccIn;
+    ANGLE_VEL = ANG_VEL_In;
+    ANGLE_ACC = ANG_ACC_In;
+    FORCE = F_In;
+    for (auto i = 0; i < 3; i++) {
+        M(i, i) = MIn;
+    }
+
+    for (auto i = 0; i < 3; ++i) {
+        for (auto j = 0; j < 3; ++j) {
+            M(3 + i, 3 + j) = IIn(i, j);
+        }
+    }
+
+    TBI = TBIIn;
+    TBI_Q = Matrix2Quaternion(TBI);
+    ANGLE = euler_angle(TBI);
     POSITION = trans(TBI) * POSITION;
     VELOCITY = trans(TBI) * VELOCITY;
     ACCELERATION = trans(TBI) * ACCELERATION;

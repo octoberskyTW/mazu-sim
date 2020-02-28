@@ -10,7 +10,7 @@
 
 #define TRICK_INTERFACE(class_name) \
     friend class InputProcessor;    \
-    friend void init_attr##class_name();
+    friend void init_attr##class_name()
 
 #define MATRIX_INIT(mat_name, n, m) \
     mat_name(&_##mat_name[0][0], n, m, false, true)
@@ -33,9 +33,9 @@
 
 #define VECTOR(vec_name, n) \
     arma::vec vec_name;     \
-    double _##vec_name[n];
+    double _##vec_name[n]
 
 #define MATRIX(mat_name, n, m) \
     arma::mat mat_name;        \
-    double _##mat_name[n][m];
+    double _##mat_name[n][m]
 #endif  // __AUX_HH__

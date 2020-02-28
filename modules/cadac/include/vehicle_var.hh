@@ -5,6 +5,8 @@
 #include <vector>
 #include "aux.hh"
 #include "signal_process.hh"
+#include "Body.hh"
+
 
 enum STAGE { STAGE_1 = 0,
              STAGE_2 = 1,
@@ -365,6 +367,8 @@ public:
     int DOF;                  /* *o (--)  Number of Degree of Freedom */
     int reference_point_flag; /* *o (--)  check if reference point equal to xcg */
     unsigned int Aero_flag;   /* *o (-)  Aerodynamics flag */
+
+    Body *testbody; 
 };
 
 class Prop_var

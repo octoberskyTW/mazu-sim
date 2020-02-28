@@ -2,11 +2,10 @@
 #define BODY_HPP
 
 #include <armadillo>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include "matrix_tool.hh"
 
-class Body : public boost::enable_shared_from_this<Body>
+class Body
 {
 public:
     Body();
@@ -62,21 +61,22 @@ class Ground : public Body
 public:
     Ground(unsigned int NumIn);
     ~Ground() {};
-    virtual void update([[maybe_unused]]arma::vec PosIn, [[maybe_unused]]arma::vec VelIn, [[maybe_unused]]arma::vec AttIn
-        , [[maybe_unused]]arma::vec ANG_VEL_In) {};
+    virtual void update(arma::vec , arma::vec , arma::vec 
+        , arma::vec ) {};
 };
 
 class Mobilized_body : public Body
 {
 public:
-    Mobilized_body(unsigned int NumIn, arma::vec PosIn, arma::vec VelIn, arma::vec AccIn, arma::vec AttIn
-        , arma::vec ANG_VEL_In, arma::vec ANG_ACC_In, double MIn, arma::vec IIn
-        , arma::vec F_In, arma::vec T_In);
+    Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const arma::vec &VelIn, const arma::vec &AccIn, const arma::mat &TBIIn
+        , const arma::vec &ANG_VEL_In, const arma::vec &ANG_ACC_In, double MIn, const arma::mat &IIn
+        , const arma::vec &F_In, const arma::vec &T_In);
+    Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const arma::vec &VelIn, const arma::vec &AccIn, const arma::mat &TBIIn
+        , const arma::vec &ANG_VEL_In, const arma::vec &ANG_ACC_In, double MIn, const arma::mat &IIn
+        , const arma::vec &F_In);
     ~Mobilized_body() {};
 
     virtual void update(arma::vec PosIn, arma::vec VelIn, arma::vec TBI_QIn
         , arma::vec ANG_VEL_In) override;
 };
-
-typedef boost::shared_ptr<Body> BodyPtr;
 #endif  //BODY_HPP
