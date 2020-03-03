@@ -109,6 +109,8 @@ void Rocket_Flight_DM::init(LaunchVehicle *VehicleIn)
     sys_ptr->Add(new Ground(0));
     D->testbody = new Mobilized_body(1, D->SBII, D->VBII, D->NEXT_ACC, D->TBI, D->WBIB, D->WBIBD, P->vmass, P->IBBB, P->vmass * D->NEXT_ACC);
     sys_ptr->Add(D->testbody);
+    sys_ptr->Assembly();
+    sys_ptr->init();
 }
 
 void Rocket_Flight_DM::set_DOF(int ndof) { DOF = ndof; }
@@ -166,10 +168,15 @@ void Rocket_Flight_DM::algorithm(LaunchVehicle *VehicleIn)
     V_State_In.push_back(D->WBIB);
     V_State_In.push_back(D->TBI_Q);
 
-    IntegratorRK4(V_State_In, V_State_Out, &Rocket_Flight_DM::RK4F, this,
-                  VehicleIn, int_step);
-    // IntegratorEuler(V_State_In, V_State_Out, &Rocket_Flight_DM::RK4F, this,
-    //                VehicleIn, int_step);
+    arma::vec tmp = trans(TEI) * (cross(E->WEIE, cross(E->WEIE, (TEI * (D->SBIIP)))));
+
+    D->testbody->set_FORCE(P->vmass * tmp);
+    sys_ptr->solve();
+
+    // IntegratorRK4(V_State_In, V_State_Out, &Rocket_Flight_DM::RK4F, this,
+    //               VehicleIn, int_step);
+    IntegratorEuler(V_State_In, V_State_Out, &Rocket_Flight_DM::RK4F, this,
+                   VehicleIn, int_step);
 
     D->VBIIP = V_State_Out[0];
     D->SBIIP = V_State_Out[1];

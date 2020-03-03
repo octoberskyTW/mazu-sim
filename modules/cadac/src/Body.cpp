@@ -1,18 +1,20 @@
 #include "Body.hh"
 
 Body::Body() :
-    POSITION(3, arma::fill::zeros),
-    VELOCITY(3, arma::fill::zeros),
-    ACCELERATION(3, arma::fill::zeros),
-    ANGLE(3, arma::fill::zeros),
-    ANGLE_VEL(3, arma::fill::zeros),
-    ANGLE_ACC(3, arma::fill::zeros),
-    M(6, 6, arma::fill::eye),
-    FORCE(3, arma::fill::zeros),
-    TORQUE(3, arma::fill::zeros),
-    TBI(3, 3, arma::fill::zeros),
-    TBI_Q(4, arma::fill::zeros),
-    TBID_Q(4, arma::fill::zeros) {
+    VECTOR_INIT(POSITION, 3),
+    VECTOR_INIT(VELOCITY, 3),
+    VECTOR_INIT(ACCELERATION, 3),
+    VECTOR_INIT(ANGLE, 3),
+    VECTOR_INIT(ANGLE_VEL, 3),
+    VECTOR_INIT(ANGLE_ACC, 3),
+    MATRIX_INIT(M, 6, 6),
+    VECTOR_INIT(FORCE, 3),
+    VECTOR_INIT(TORQUE, 3),
+    VECTOR_INIT(APPILED_TORQUE, 3),
+    MATRIX_INIT(TBI, 3, 3),
+    VECTOR_INIT(TBI_Q, 4),
+    VECTOR_INIT(TBID_Q, 4) {
+    M.eye();
 }
 
 arma::vec Body::get_POSITION() { return POSITION; }
@@ -39,6 +41,7 @@ void Body::set_TBI(const arma::mat &TBIIn) {
     TBI = TBIIn; 
     TBI_Q = Matrix2Quaternion(TBI);
     }
+void Body::set_FORCE(const arma::vec &ForceIn) { FORCE = ForceIn; }
 
 Ground::Ground(unsigned int NumIn) {
     for (unsigned int i = 0; i < 3; i++) {
@@ -49,11 +52,20 @@ Ground::Ground(unsigned int NumIn) {
     type = 0;
     num = NumIn;
     TBI.eye();
+    TBI_Q = Matrix2Quaternion(TBI);
+    POSITION.zeros();
+    VELOCITY.zeros();
+    ACCELERATION.zeros();
+    ANGLE.zeros();
+    ANGLE_VEL.zeros();
+    ANGLE_ACC.zeros();
+    FORCE.zeros();
+    TORQUE.zeros();
 }
 
-Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const arma::vec &VelIn, const arma::vec &AccIn, const arma::mat &TBIIn
-        , const arma::vec &ANG_VEL_In, const arma::vec &ANG_ACC_In, double MIn, const arma::mat &IIn
-        , const arma::vec &F_In, const arma::vec &T_In) {
+Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec PosIn, const arma::vec VelIn, const arma::vec AccIn, const arma::mat TBIIn
+        , const arma::vec ANG_VEL_In, const arma::vec ANG_ACC_In, double MIn, const arma::mat IIn
+        , const arma::vec F_In, const arma::vec T_In) {
     
     type = 1;
     num = NumIn;
@@ -83,11 +95,13 @@ Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const
     ACCELERATION = trans(TBI) * ACCELERATION;
     ANGLE_VEL = trans(TBI) * ANGLE_VEL;
     ANGLE_ACC = trans(TBI) * ANGLE_ACC;
+    FORCE.zeros();
+    TORQUE.zeros();
 }
 
-Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const arma::vec &VelIn, const arma::vec &AccIn, const arma::mat &TBIIn
-        , const arma::vec &ANG_VEL_In, const arma::vec &ANG_ACC_In, double MIn, const arma::mat &IIn
-        , const arma::vec &F_In) {
+Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec PosIn, const arma::vec VelIn, const arma::vec AccIn, const arma::mat TBIIn
+        , const arma::vec ANG_VEL_In, const arma::vec ANG_ACC_In, double MIn, const arma::mat IIn
+        , const arma::vec F_In) {
     
     type = 1;
     num = NumIn;
@@ -116,6 +130,9 @@ Mobilized_body::Mobilized_body(unsigned int NumIn, const arma::vec &PosIn, const
     ACCELERATION = trans(TBI) * ACCELERATION;
     ANGLE_VEL = trans(TBI) * ANGLE_VEL;
     ANGLE_ACC = trans(TBI) * ANGLE_ACC;
+    FORCE.zeros();
+    TORQUE.zeros();
+    APPILED_TORQUE.zeros();
 }
 
 void Mobilized_body::update(arma::vec PosIn, arma::vec VelIn, arma::vec TBI_QIn

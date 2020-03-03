@@ -8,6 +8,7 @@
 
 class Dynamics_Sys
 {
+    TRICK_INTERFACE(Dynamics_Sys);
 public:
     Dynamics_Sys(double dt_In);
     ~Dynamics_Sys() {};

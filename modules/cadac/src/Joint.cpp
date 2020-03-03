@@ -2,24 +2,24 @@
 
 Joint::Joint(unsigned int TypeIn, arma::vec piIn, arma::vec pjIn, arma::vec qiIn,
             arma::vec qjIn, Body *i_In, Body *j_In) :
-    pi(3, arma::fill::zeros),
-    pj(3, arma::fill::zeros),
-    qi(3, arma::fill::zeros),
-    qj(3, arma::fill::zeros),
-    Cqi(3, 6, arma::fill::zeros),
-    Cqj(3, 6, arma::fill::zeros),
-    GAMMA(3, arma::fill::zeros),
-    CONSTRAINT(3, arma::fill::zeros),
-    TBI_i(3, 3, arma::fill::eye),
-    TBI_j(3, 3, arma::fill::eye),
-    Pi(3, arma::fill::zeros),
-    Pj(3, arma::fill::zeros),
-    Qi(3, arma::fill::zeros),
-    Qj(3, arma::fill::zeros),
-    wi(3, arma::fill::zeros),
-    wj(3, arma::fill::zeros),
-    Si(3, arma::fill::zeros),
-    Sj(3, arma::fill::zeros) {
+    VECTOR_INIT(pi, 3),
+    VECTOR_INIT(pj, 3),
+    VECTOR_INIT(qi, 3),
+    VECTOR_INIT(qj, 3),
+    MATRIX_INIT(Cqi, 3, 6),
+    MATRIX_INIT(Cqj, 3, 6),
+    VECTOR_INIT(GAMMA, 3),
+    VECTOR_INIT(CONSTRAINT, 3),
+    MATRIX_INIT(TBI_i, 3, 3),
+    MATRIX_INIT(TBI_j, 3, 3),
+    VECTOR_INIT(Pi, 3),
+    VECTOR_INIT(Pj, 3),
+    VECTOR_INIT(Qi, 3),
+    VECTOR_INIT(Qj, 3),
+    VECTOR_INIT(wi, 3),
+    VECTOR_INIT(wj, 3),
+    VECTOR_INIT(Si, 3),
+    VECTOR_INIT(Sj, 3) {
         Type = TypeIn;
         body_i_ptr = i_In;
         body_j_ptr = j_In;

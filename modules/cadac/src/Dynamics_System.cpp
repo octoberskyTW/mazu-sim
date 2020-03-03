@@ -165,7 +165,6 @@ void Dynamics_Sys::dynamic_function(std::vector<arma::vec> qIn, std::vector<arma
     arma::vec ANS;
 
     ANS = arma::solve(SYS_MAT, SYS_RHS);
-
     // for (auto it = ANS.begin(); it != ANS.end(); it++) std::cout << *it << std::endl;
     // for (unsigned int i = 0; i < SYS_MAT.n_rows; i++) {
     //    for (unsigned int j = 0; j < SYS_MAT.n_cols; j++) {
