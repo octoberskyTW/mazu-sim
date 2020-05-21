@@ -1,8 +1,8 @@
 
-# ifeq ($(project), $(filter $(project), sample all))
-# SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sample_master/
-# SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sample_slave/
-# endif
+ifeq ($(project), $(filter $(project), sample all))
+SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sample_master/
+SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/sample_slave/
+endif
 
 ifeq ($(project), $(filter $(project), skyline all))
 SIM_EXE_TRICK_PATH+=$(TOP_DIR)/sim_exe/skyline_dm/

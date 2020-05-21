@@ -88,7 +88,7 @@ void ENG::set_ENG_Dir(int type_in) { type = static_cast<EngType>(type_in); }
 
 void ENG::Allocate_Actuator(int NumAct, enum ActDynType TYPE)
 {
-    ACT **act_list = new ACT *[NumAct];
+    ACT *act_list[NumAct];
     switch (TYPE) {
     case FIRST:
         for (int i = 0; i < NumAct; i++) {

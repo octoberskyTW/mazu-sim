@@ -17,13 +17,6 @@ case $PROJECT in
         cd $TOP_DIR/sim_exe/skyline_gnc
         ./S_main_*.exe RUN_golden/input_gnc.cpp
         ;;
-    "sheipa")
-        cd $TOP_DIR/sim_exe/sheipa_dm
-        ./S_main_*.exe RUN_golden/input_dm.cpp &
-
-        cd $TOP_DIR/sim_exe/sheipa_gnc
-        ./S_main_*.exe RUN_golden/input_gnc.cpp
-        ;;
     *)
         echo "Pleas check the PROJECT name !!"
         exit 1

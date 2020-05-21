@@ -25,7 +25,7 @@ void LaunchVehicle::load_angle(double yaw, double roll, double pitch)
 
 void LaunchVehicle::Allocate_ENG(int NumEng, std::vector<ENG *> &Eng_list_In)
 {
-    ENG **ENG_list = new ENG *[NumEng];
+    ENG *ENG_list[NumEng];
     for (int i = 0; i < NumEng; i++) {
         ENG_list[i] = new ENG;
         Eng_list_In.push_back(ENG_list[i]);
@@ -59,7 +59,7 @@ void LaunchVehicle::set_no_thrust() { Prop->thrust_state = NO_THRUST; }
 void LaunchVehicle::Allocate_stage(unsigned int stage_num)
 {
     //struct STAGE_VAR **stage_var = new STAGE_VAR *[stage_num];
-    STAGE_VAR **STAGE_VAR_PP = new STAGE_VAR *[stage_num];
+    STAGE_VAR *STAGE_VAR_PP[stage_num];
     unsigned int ii = 0;
     for (ii = 0; ii < stage_num; ii++) {
         STAGE_VAR_PP[ii] = new STAGE_VAR;
@@ -100,7 +100,7 @@ void LaunchVehicle::set_stage_var(double isp, double fmass_init,
 void LaunchVehicle::Allocate_RCS(int num,
                                  std::vector<RCS_Thruster *> &RT_list)
 {
-    RCS_Thruster **RT_LIST = new RCS_Thruster *[num];
+    RCS_Thruster *RT_LIST[num];
     for (int i = 0; i < num; i++) {
         RT_LIST[i] = new RCS_Thruster;
         RT_list.push_back(RT_LIST[i]);

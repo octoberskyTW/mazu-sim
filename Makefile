@@ -38,10 +38,6 @@ run-skyline:
 	./run_sim.sh $(TOP_DIR) skyline
 	./run_sim_error_check.sh $(TOP_DIR) skyline_dm
 
-run-sheipa:
-	./run_sim.sh $(TOP_DIR) sheipa
-	./run_sim_error_check.sh $(TOP_DIR) sheipa_dm
-
 clean:
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) module_clean $(SIM_MODULES_PATH)
 	$(TOP_DIR)/loop_build.sh $(TOP_DIR) trick_clean $(SIM_EXE_TRICK_PATH)
