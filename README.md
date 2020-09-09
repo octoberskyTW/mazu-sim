@@ -90,3 +90,8 @@ open the docs/build/index.html in browser
 <p align=center>
 <img src="docs/mazu-sim_software_stack.png" alt="Software Stack" height=400px>
 </p>
+
+# 使用 mazu-sim 的組織
+<p align=center>
+<img src="https://scontent.ftpe8-1.fna.fbcdn.net/v/t31.0-8/1796904_588326357979241_7725115450624607776_o.png?_nc_cat=105&_nc_sid=09cbfe&_nc_ohc=Fu1zcfz43HoAX-mgu6V&_nc_ht=scontent.ftpe8-1.fna&oh=5a9de391e58a5dfa10c971abcae1957c&oe=5F7D22DE" height=200px>
+</p>
