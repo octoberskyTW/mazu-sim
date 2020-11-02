@@ -33,9 +33,9 @@
 
 #define VECTOR(vec_name, n) \
     arma::vec vec_name;     \
-    double _##vec_name[n]
+    double _##vec_name[n] = { 0 }
 
 #define MATRIX(mat_name, n, m) \
     arma::mat mat_name;        \
-    double _##mat_name[n][m]
+    double _##mat_name[n][m] = { 0 }
 #endif  // __AUX_HH__
