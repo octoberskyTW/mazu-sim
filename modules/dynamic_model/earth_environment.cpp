@@ -161,10 +161,9 @@ arma::mat EarthEnvironment::RNP()
           utc_caldate.get_sec();
 
     index = static_cast<int32_t>(time->get_modified_julian_date().get_mjd() -
-                                 55197.00); /* get dUT1 = Ut1 - UT from table*/
+                                 DM_UT1_UT_BASE_MJD); /* get dUT1 = Ut1 - UT from table*/
     if ((index >= 0) &&
-        (index < Max_DM_UT1_UT_Index)) { /* MJD = 55197.00 (1-1-2010)~
-                                          56150.00(8-11-2012) */
+        (index < MAX_DM_UT1_UT_INDEX)) {
         dUT1 = DM_UT1_UT[index];
     } else {
         dUT1 = -0.008853655954360; /* mean value during 19760519~20120811, FSW: dUT1
