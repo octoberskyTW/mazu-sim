@@ -49,7 +49,7 @@ void AeroDynamics::algorithm(LaunchVehicle *VehicleIn)
         A->ca0b = aerotable.look_up("ca0b_vs_mach", vmach, 0);
 
         // axial force coefficient
-        if ((thrust_state = NO_THRUST))
+        if (thrust_state == INPUT_THRUST)
             thrust_on = 1;
         A->ca = A->ca0 + A->caa * alppx + thrust_on * A->ca0b;
 
